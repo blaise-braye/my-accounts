@@ -1,0 +1,12 @@
+﻿[
+  {
+    "Name": "BankTransfert",
+    "SourceKind": "SodexoCsvExport",
+    "Expression": "^(?<Communication>Versement de [0-9]+ eLunch Pass d'une valeur de [0-9\\.]+ €) de (?<ThirdParty>.+)$"
+  },
+  {
+    "Name": "CartPayment",
+    "SourceKind": "SodexoCsvExport",
+    "Expression": "^Dépense (?<ThirdPartyThenCity>.+)\\(Transaction \\d+\\)$"
+  },
+]
