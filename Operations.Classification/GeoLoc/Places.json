@@ -1,6 +1,6 @@
 ﻿[
   {
-    "Name": "WOLUWE SAINT LAMBERT",
+    "Name": "WOLUWE-SAINT-LAMBERT",
     "Abbrevs": [ "WOLUWE SA", "1200 BRUX", "1200 BRUSS" ]
   },
   {
@@ -17,7 +17,7 @@
   },
   {
     "Name": "BRAINE L'ALLEUD",
-    "Abbrevs": [ "BRAINE AL", "BRAINE L'" ]
+    "Abbrevs": [ "BRAINE AL", "BRAINE L'", "BRAINE-L'ALLEU" ]
   },
   {
     "Name": "LA LOUVIERE"
@@ -37,7 +37,7 @@
   },
   {
     "Name": "ETTERBEEK",
-    "Abbrevs": [ "1040 BRUX" ]
+    "Abbrevs": [ "1040 BRUX", "ETTERBE", "JOURDAN" ]
   },
   {
     "Name": "AUDERGHEM",

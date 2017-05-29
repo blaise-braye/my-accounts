@@ -2,11 +2,19 @@
   {
     "Name": "BankTransfert",
     "SourceKind": "SodexoCsvExport",
-    "Expression": "^(?<Communication>Versement de [0-9]+ eLunch Pass d'une valeur de [0-9\\.]+ €) de (?<ThirdParty>.+)$"
+    "Expression": {
+      "Detail": "^(?<Communication>Versement de [0-9]+ eLunch Pass d'une valeur de [0-9\\.]+ €) de (?<ThirdParty>.+)$"
+    },
+    "ExplicitMappings": {
+      "OperationId": "{Date | format yyyyMMdd}-IN"
+    }
   },
   {
     "Name": "CartPayment",
     "SourceKind": "SodexoCsvExport",
-    "Expression": "^Dépense (?<ThirdPartyThenCity>.+)\\(Transaction \\d+\\)$"
-  },
+    "Expression": { "Detail": "^Dépense (?<ThirdPartyThenCity>.+)\\(Transaction (?<Transaction>\\d+)\\)$" },
+    "ExplicitMappings": {
+      "OperationId": "{Date | format yyyyMMdd}-{Transaction}"
+    }
+  }
 ]

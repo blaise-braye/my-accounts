@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="Operations.Classification.WpfUi.Managers.Transactions.ImportOperationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.TransactionsManager}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                    Command="{Binding CommitImportCommand}">
+                <Rectangle Width="24" Height="24">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+        </StackPanel>
+        <StackPanel>
+            <Label Content="File path :" Target="{Binding ElementName=txtFilePath}" />
+            <TextBox Name="txtFilePath"
+                     Style="{StaticResource OpenFileMetroTextBox}"
+                     controls:TextBoxHelper.Watermark="enter the path of the file(s) to import here"
+                     controls:TextBoxHelper.ButtonCommand="{Binding SelectFilesToImportCommand}"
+                     Text="{Binding FilePaths}" />
+
+            <Label Target="{Binding ElementName=txtGmgAccountName}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Source kind : ( " />
+                    <CheckBox IsChecked="{Binding AutoDetectSourceKind, Mode=TwoWay}" Content="Auto detect" />
+                    <TextBlock Text=" )" />
+                </StackPanel>
+            </Label>
+            <ComboBox Name="txtGmgAccountName"
+                      IsEnabled="{Binding AutoDetectSourceKind, Converter={StaticResource InvertBooleanConverter}, Mode=TwoWay}"
+                      controls:TextBoxHelper.Watermark="select the source kind"
+                      SelectedValue="{Binding SourceKind}"
+                      ItemsSource="{Binding SourceKinds}" />
+        </StackPanel>
+    </DockPanel>
+</UserControl>

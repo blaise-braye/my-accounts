@@ -13,7 +13,7 @@ namespace Operations.Classification.AccountOperations.Fortis
             Map(m => m.ValueDate).Name("Date valeur").TypeConverterOption("dd/MM/yyyy");
             Map(m => m.Amount).Name("Montant");
             Map(m => m.Currency).Name("Devise du compte");
-            Map(m => m.CounterpartyOfTheTransaction).Ignore();
+            Map(m => m.CounterpartyOfTheTransaction).Name("CONTREPARTIE DE LA TRANSACTION");
             Map(m => m.Detail).Name("Détails");
             Map(m => m.Account).Name("Numéro de compte");
             Map(m => m.SourceKind).Default(SourceKind.Unknwon);

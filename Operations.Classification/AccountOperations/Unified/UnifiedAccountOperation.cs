@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Operations.Classification.AccountOperations.Contracts;
 
 namespace Operations.Classification.AccountOperations.Unified
@@ -35,7 +34,7 @@ namespace Operations.Classification.AccountOperations.Unified
         public string ThirdPartyOperationRef { get; set; }
         
         public string Communication { get; set; }
-
+        
         public string Note { get; set; }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 
-using QifApi.Config;
-using QifApi.Transactions;
+using Operations.Classification.GererMesComptes;
 
 namespace Operations.Classification.AccountOperations.Unified
 {
@@ -29,45 +27,14 @@ namespace Operations.Classification.AccountOperations.Unified
             }
         }
 
-        public void WriteQif(string targetFilePath, IEnumerable<UnifiedAccountOperation> operations)
+        public async Task WriteQif(string targetFilePath, IEnumerable<UnifiedAccountOperation> operations)
         {
-            var qifDom = new QifApi.QifDom();
-
-            foreach (var operation in operations)
+            var qifData = operations.ToQifData();
+            using (var fs = File.Open(targetFilePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+            using (var sw = new StreamWriter(fs))
             {
-                var label = operation.Note;
-
-                if (!string.IsNullOrEmpty(operation.PatternName))
-                {
-                    var humanFriendlyParts =
-                        new List<string>()
-                                {
-                                    operation.ThirdParty,
-                                    operation.Address,
-                                    operation.City,
-                                    operation.IBAN,
-                                    operation.BIC?.Insert(0, "BIC "),
-                                    operation.Communication?.Insert(0, "COMMUNICATION : "),
-                                    operation.PatternName
-                                }.Where(s => !string.IsNullOrWhiteSpace(s))
-                            .Select(s => s.Trim());
-                    label = string.Join(" - ", humanFriendlyParts);
-                }
-
-                var basicTransaction = new BasicTransaction()
-                {
-                    Number = operation.OperationId,
-                    Amount = operation.Income - operation.Outcome,
-                    Date = operation.ValueDate,
-                    Memo = label,
-                };
-                qifDom.BankTransactions.Add(basicTransaction);
+                await sw.WriteAsync(qifData);
             }
-
-            qifDom.Configuration.WriteDateFormatMode = WriteDateFormatMode.Custom;
-            qifDom.Configuration.CustomWriteDateFormat = "dd'/'MM'/'yyyy";
-
-            qifDom.Export(targetFilePath);
         }
 
         private static CsvConfiguration GetCsvConfiguration()

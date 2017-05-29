@@ -1,0 +1,16 @@
+using CsvHelper.Configuration;
+
+namespace Operations.Classification.GeoLoc
+{
+    public sealed class BelgianPlaceCsvMap : CsvClassMap<BelgianPlace>
+    {
+        public BelgianPlaceCsvMap()
+        {
+            Map(m => m.PostalCode).Name("Code postal");
+            Map(m => m.Locality).Name("Localité");
+            Map(m => m.SubCommune).Name("Sous-commune");
+            Map(m => m.Province).Name("Province");
+            Map(m => m.Language).Name("Langue");
+        }
+    }
+}

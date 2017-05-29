@@ -1,0 +1,99 @@
+﻿<controls:MetroWindow x:Class="Operations.Classification.WpfUi.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:accounts="clr-namespace:Operations.Classification.WpfUi.Managers.Accounts"
+                      xmlns:transactions="clr-namespace:Operations.Classification.WpfUi.Managers.Transactions"
+                      xmlns:gererMesComptes="clr-namespace:Operations.Classification.WpfUi.Managers.Integration.GererMesComptes"
+                      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                      xmlns:command="http://www.galasoft.ch/mvvmlight"
+                      mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+                      Title="Accounts Operations Manager" d:DesignWidth="900" d:DesignHeight="400">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=AccountsManager.LoadCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=AccountsManager.CommitEditCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <TabControl>
+            <TabItem Header="accounts">
+                <accounts:AccountsView DataContext="{Binding AccountsManager}" />
+            </TabItem>
+            <TabItem Header="transactions"
+                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <transactions:TransactionsFileManagerView DataContext="{Binding TransactionsManager}" />
+            </TabItem>
+            <TabItem Header="gmg"
+                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <gererMesComptes:GmgManagerView DataContext="{Binding GmgManager}" />
+            </TabItem>
+        </TabControl>
+        <Grid Visibility="{Binding BusyIndicator.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Background="Gray" Opacity="0.70">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <controls:ProgressRing IsActive="{Binding BusyIndicator.IsBusy}" />
+            <TextBlock FontSize="22" Text="{Binding BusyIndicator.Reason}"></TextBlock>
+        </StackPanel>
+        </Grid>
+    </Grid>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal">
+                <Button Command="{Binding AccountsManager.LoadCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="20"
+                                   Height="20"
+                                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_refresh}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <TextBlock Margin="4 0 0 0"
+                                   VerticalAlignment="Center"
+                                   Text="refresh" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <Button Command="{Binding AccountsManager.BeginEditCommand}">
+                <Rectangle Width="20"
+                           Height="20"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_edit}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <ComboBox ItemsSource="{Binding AccountsManager.Accounts}"
+                      SelectedItem="{Binding AccountsManager.CurrentAccount}"
+                      DisplayMemberPath="Name"
+                      Foreground="WhiteSmoke"
+                      BorderThickness="0"
+                      Background="Transparent"
+                      controls:TextBoxHelper.Watermark="select an account" />
+
+
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Header="Flyout" Position="Right"
+                             IsModal="True"
+                             CloseCommand="{Binding AccountsManager.CommitEditCommand}"
+                             IsOpen="{Binding AccountsManager.IsEditing, Mode=OneWay}">
+                <accounts:AccountEditorView Width="350" DataContext="{Binding AccountsManager}" />
+            </controls:Flyout>
+            <controls:Flyout Header="Flyout" Position="Right"
+                             IsModal="True"
+                             IsOpen="{Binding TransactionsManager.IsImporting, Mode=TwoWay}">
+                <transactions:ImportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+
+
+</controls:MetroWindow>

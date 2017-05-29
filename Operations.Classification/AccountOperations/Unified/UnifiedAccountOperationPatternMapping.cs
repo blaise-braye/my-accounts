@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 using Operations.Classification.AccountOperations.Contracts;
 
@@ -8,15 +6,15 @@ namespace Operations.Classification.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternMapping
     {
-        private string _expression;
+        private JObject _expression;
 
-        private Regex _compiledExpression;
+        private ObjectExpression _compiledExpression;
 
         public string Name { get; set; }
 
         public SourceKind SourceKind { get; set; }
 
-        public string Expression
+        public JObject Expression
         {
             get
             {
@@ -33,19 +31,19 @@ namespace Operations.Classification.AccountOperations.Unified
             }
         }
 
-        public Regex CompiledExpression
+        public ObjectExpression CompiledExpression
         {
             get
             {
                 if (_compiledExpression == null)
                 {
-                    _compiledExpression = new Regex(_expression ?? string.Empty, RegexOptions.Compiled);
+                    _compiledExpression = ObjectExpression.Parse(_expression);
                 }
                 
                 return _compiledExpression;
             }
         }
 
-        public JObject StaticValues { get; set; }
+        public JObject ExplicitMappings { get; set; }
     }
 }

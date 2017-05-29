@@ -65,16 +65,15 @@ namespace Operations.Classification.Properties {
         ///  {
         ///    &quot;Name&quot;: &quot;CartPayment&quot;,
         ///    &quot;SourceKind&quot;: &quot;FortisCsvArchive&quot;,
-        ///    &quot;Expression&quot;: &quot;^PAIEMENT PAR CARTE DE BANQUE.{59}XXXX X[0-9]{3} [0-9] (?&lt;ThirdPartyThenCity&gt;.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$&quot;
+        ///    &quot;Expression&quot;: { &quot;Note&quot;: &quot;^PAIEMENT PAR CARTE DE BANQUE.{59}XXXX X[0-9]{3} [0-9] (?&lt;ThirdPartyThenCity&gt;.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$&quot; }
         ///  },
         ///  {
         ///    &quot;Name&quot;: &quot;CartPayment&quot;,
         ///    &quot;SourceKind&quot;: &quot;FortisCsvExport&quot;,
-        ///    &quot;Expression&quot;: &quot;^AVEC LA CARTE.{11}XXXX X[0-9]{3} [0-9] (?&lt;ThirdPartyThenCity&gt;.*?)([0-9]{2}-[0-9]{2}-[0-9]{4}.*|EXECUTE|DATE VALEUR|$)&quot;
+        ///    &quot;Expression&quot;: { &quot;Note&quot;: &quot;^AVEC LA CARTE.{11}XXXX X[0-9]{3} [0-9] (?&lt;ThirdPartyThenCity&gt;.*?)([0-9]{2}-[0-9]{2}-[0-9]{4}.*|EXECUTE|DATE VALEUR|$)&quot; }
         ///  },
         ///  {
-        ///    &quot;Name&quot;: &quot;Withdrawal&quot;,
-        ///   [rest of string was truncated]&quot;;.
+        ///    &quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FortisUnifiedAccountPatternMappings {
             get {
@@ -85,7 +84,7 @@ namespace Operations.Classification.Properties {
         /// <summary>
         ///   Looks up a localized string similar to [
         ///  {
-        ///    &quot;Name&quot;: &quot;WOLUWE SAINT LAMBERT&quot;,
+        ///    &quot;Name&quot;: &quot;WOLUWE-SAINT-LAMBERT&quot;,
         ///    &quot;Abbrevs&quot;: [ &quot;WOLUWE SA&quot;, &quot;1200 BRUX&quot;, &quot;1200 BRUSS&quot; ]
         ///  },
         ///  {
@@ -102,14 +101,13 @@ namespace Operations.Classification.Properties {
         ///  },
         ///  {
         ///    &quot;Name&quot;: &quot;BRAINE L&apos;ALLEUD&quot;,
-        ///    &quot;Abbrevs&quot;: [ &quot;BRAINE AL&quot;, &quot;BRAINE L&apos;&quot; ]
+        ///    &quot;Abbrevs&quot;: [ &quot;BRAINE AL&quot;, &quot;BRAINE L&apos;&quot;, &quot;BRAINE-L&apos;ALLEU&quot; ]
         ///  },
         ///  {
         ///    &quot;Name&quot;: &quot;LA LOUVIERE&quot;
         ///  },
         ///  {
-        ///    &quot;Name&quot;: &quot;BEAUFAYS&quot;,
-        ///    &quot;Street [rest of string was truncated]&quot;;.
+        ///    &quot;Name&quot;: &quot;BEAUF [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Places {
             get {
@@ -122,13 +120,13 @@ namespace Operations.Classification.Properties {
         ///  {
         ///    &quot;Name&quot;: &quot;BankTransfert&quot;,
         ///    &quot;SourceKind&quot;: &quot;SodexoCsvExport&quot;,
-        ///    &quot;Expression&quot;: &quot;^(?&lt;Communication&gt;Versement de [0-9]+ eLunch Pass d&apos;une valeur de [0-9\\.]+ €) de (?&lt;ThirdParty&gt;.+)$&quot;
+        ///    &quot;Expression&quot;: { &quot;Note&quot;: &quot;^(?&lt;Communication&gt;Versement de [0-9]+ eLunch Pass d&apos;une valeur de [0-9\\.]+ €) de (?&lt;ThirdParty&gt;.+)$&quot; }
         ///  },
         ///  {
         ///    &quot;Name&quot;: &quot;CartPayment&quot;,
         ///    &quot;SourceKind&quot;: &quot;SodexoCsvExport&quot;,
-        ///    &quot;Expression&quot;: &quot;^Dépense (?&lt;ThirdPartyThenCity&gt;.+)\\(Transaction \\d+\\)$&quot;
-        ///  },
+        ///    &quot;Expression&quot;: { &quot;Note&quot;: &quot;^Dépense (?&lt;ThirdPartyThenCity&gt;.+)\\(Transaction \\d+\\)$&quot; }
+        ///  }
         ///].
         /// </summary>
         internal static string SodexoUnifiedAccountPatternMappings {

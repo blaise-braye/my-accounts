@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
+
+using CsvHelper;
+using CsvHelper.Configuration;
 
 using Newtonsoft.Json;
 
@@ -17,17 +23,31 @@ namespace Operations.Classification.GeoLoc
 
         private readonly ILookup<string, Place> _placesByWordLookup;
 
+        private readonly List<BelgianPlace> _belgianPlaces;
+
         public PlaceInfoResolver()
         {
             _placesWordsTrie = new Trie();
 
             var places = JsonConvert.DeserializeObject<List<Place>>(Resources.Places);
 
+            using (var sr = new StringReader(Resources.zipcodes_alpha_beligum))
+            {
+                var config = new CsvConfiguration();
+                config.RegisterClassMap<BelgianPlaceCsvMap>();
+                using (var reader = new CsvReader(sr, config))
+                {
+                    _belgianPlaces = reader.GetRecords<BelgianPlace>().ToList();
+                }
+            }
+
             IEnumerable<Tuple<Place, string>> wordFlatifiedPlaces =
                 places.Select(l => Tuple.Create(l, l.Name)).Union(places.SelectMany(l => l.Abbrevs.Select(abbrev => Tuple.Create(l, abbrev))));
 
             _placesByWordLookup = wordFlatifiedPlaces.ToLookup(s => s.Item2, s => s.Item1);
             _placesWordsTrie.InsertRange(_placesByWordLookup.Select(grp => grp.Key));
+            _placesWordsTrie.InsertRange(_belgianPlaces.Select(p => RemoveDiacritics(p.Locality).ToUpper()));
+            _placesWordsTrie.InsertRange(_belgianPlaces.Select(p => RemoveDiacritics(p.Province).ToUpperInvariant()));
         }
 
         public PlaceInfo ResolveKnowingPlaceInfoIsAtEndOfText(string freetext, bool containsAdressInfo)
@@ -65,17 +85,35 @@ namespace Operations.Classification.GeoLoc
             else
             {
                 int cityStartIndex;
-                var city = GetCityFromEndOfInput(freetext, out cityStartIndex);
-                if (!string.IsNullOrEmpty(city))
+                var cityWord = GetCityFromEndOfInput(freetext, out cityStartIndex);
+                if (!string.IsNullOrEmpty(cityWord))
                 {
-                    result.City = city;
+                    var cityPlace = _placesByWordLookup[cityWord].SingleOrDefault();
+                    result.City = cityPlace?.Name ?? cityWord;
                     result.SetNotRelatedToPlaceInfo(cityStartIndex, freetext.Length - cityStartIndex);
                 }
             }
 
             return result;
         }
-        
+
+        private static string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
         private string GetCityFromEndOfInput(string input, out int localisationIndex)
         {
             var words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -88,21 +126,16 @@ namespace Operations.Classification.GeoLoc
             for (int i = words.Length; i > 0; i--)
             {
                 var word = string.Join(" ", words.Skip(words.Length - i));
-                if (_placesWordsTrie.Search(word))
+                var trimmedWord = word.Trim('/', '-', '.', ' ');
+                if (_placesWordsTrie.Search(trimmedWord))
                 {
                     localisationIndex = input.Length - word.Length;
-                    return word;
+                    return trimmedWord;
                 }
             }
-
-            // if not found special cases' knowledge, take the latest word
-            var fallbackWord = words[words.Length - 1];
-            localisationIndex = input.Length - fallbackWord.Length;
-
-            // trim the fallback word (cleanup of extensions)
-            fallbackWord = fallbackWord.Trim('/');
-
-            return fallbackWord;
+            
+            localisationIndex = -1;
+            return string.Empty;
         }
 
         private string GetAdressFromEndOfInput(string input, out int localisationIndex)
