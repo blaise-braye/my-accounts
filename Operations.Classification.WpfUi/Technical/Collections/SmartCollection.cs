@@ -34,7 +34,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections
         public void Reset(IEnumerable<T> range)
         {
             Items.Clear();
-
             AddRange(range);
         }
     }

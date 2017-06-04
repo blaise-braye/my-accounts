@@ -7,9 +7,6 @@
              mc:Ignorable="d"
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.TransactionsManager}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-
-    </UserControl.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"

@@ -19,20 +19,23 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
     {
         private readonly BusyIndicatorViewModel _busyIndicator;
         private AccountViewModel _currentAccount;
-
-        private bool _isDeltaAvailable;
-
         private TransactionDeltaSet _transactionDelta;
+        private bool _isDeltaAvailable;
+        private bool _isFiltering;
 
         public GmgManager(BusyIndicatorViewModel busyIndicator)
         {
             _busyIndicator = busyIndicator;
+
             RefreshRemoteKnowledgeCommand = new AsyncCommand(ComputeDeltaWithRemote);
             SynchronizeCommand = new AsyncCommand(Synchronize);
             ResetCommand = new RelayCommand(Reset);
             Transactions = new SmartCollection<BasicTransactionModel>();
             RemoteTransactions = new SmartCollection<BasicTransactionModel>();
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
+
+            TransactionDeltaFilterItems = new TransactionDeltaFilter();
+            TransactionDeltaFilterItems.FilterItemChanged += OnTransactionDeltaFilterItemChanged;
         }
 
         public AccountViewModel CurrentAccount
@@ -71,6 +74,48 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             private set { Set(nameof(IsDeltaAvailable), ref _isDeltaAvailable, value); }
         }
 
+        public bool IsFiltering
+        {
+            get { return _isFiltering; }
+            set
+            {
+                if (Set(nameof(IsFiltering), ref _isFiltering, value))
+                    RefreshIsFilteringState();
+            }
+        }
+
+        public TransactionDeltaFilter TransactionDeltaFilterItems { get; }
+
+        private void OnTransactionDeltaFilterItemChanged(object sender, EventArgs e)
+        {
+            RefreshIsFilteringState();
+            RefreshTransactionsFromDelta();
+        }
+
+        private void RefreshIsFilteringState()
+        {
+            IsFiltering = TransactionDeltaFilterItems.IsActive();
+        }
+
+        private void RefreshTransactionsFromDelta()
+        {
+            var deltas = TransactionDelta.ToList();
+            
+            if (TransactionDeltaFilterItems.IsActive())
+            {
+                var filterScope = TransactionDeltaFilterItems.BuildFilterScope();
+                deltas = deltas.Where(d => filterScope.Contains(d.Action)).ToList();
+            }
+
+            var locals = deltas.Where(d => d.Source != null).Select(d => d.Source);
+            var vmLocals = ProjectToViewModelCollection(locals);
+            Transactions.Reset(vmLocals);
+
+            var remotes = deltas.Where(d => d.Target != null).Select(d => d.Target);
+            var vmRemotes = ProjectToViewModelCollection(remotes);
+            RemoteTransactions.Reset(vmRemotes);
+        }
+
         private IEnumerable<BasicTransactionModel> ComputeTransactions()
         {
             var operations = CurrentAccount?.Operations ?? new List<UnifiedAccountOperation>();
@@ -103,6 +148,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         private void Reset()
         {
+            TransactionDeltaFilterItems.Reset();
             Transactions.Reset(ComputeTransactions());
             RemoteTransactions.Clear();
             TransactionDelta = new TransactionDeltaSet();
@@ -112,7 +158,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         {
             TransactionDeltaSet delta = null;
 
-            using(_busyIndicator.EncapsulateActiveJobDescription(this, "Computing delta with remote"))
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Computing delta with remote"))
             using (var client = new GererMesComptesClient())
             {
                 if (await client.Connect(Settings.Default.GmgUserName, Settings.Default.GmgPassword))
@@ -124,9 +170,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                     var qifData = Transactions.Select(t => t.SourceItem).ToQifData();
 
                     delta = TransactionDelta = await repository.DryRunImport(account.Id, qifData);
-                    var vmRemotes = ProjectToViewModelCollection(TransactionDelta.GetRemoteTransactions());
-                    RemoteTransactions.Clear();
-                    RemoteTransactions.AddRange(vmRemotes);
+                    RefreshTransactionsFromDelta();
                 }
             }
 
@@ -155,7 +199,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                         {
                             await repository.WaitExportAvailability(account.Id, runImportResult.ImportedQifData);
                         }
-                        
+
                         await ComputeDeltaWithRemote();
                     }
                 }

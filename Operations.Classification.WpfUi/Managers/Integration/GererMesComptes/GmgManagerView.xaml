@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:wpfUi="clr-namespace:Operations.Classification.WpfUi"
              xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
              mc:Ignorable="d"
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.GmgManager}"
@@ -35,6 +34,27 @@
                     </Rectangle.Fill>
                 </Rectangle>
             </Button>
+            <ToggleButton Padding="12" Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                          ContextMenuService.Placement="Top"
+                          ContextMenuService.IsEnabled="false"
+                          IsChecked="{Binding IsFiltering, Mode=TwoWay}">
+                <i:Interaction.Behaviors>
+                    <controls:ContextMenuBehavior DisplayOnClick="True"/>
+                </i:Interaction.Behaviors>
+                <Rectangle Width="24" Height="24">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_filter}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+                <ToggleButton.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="synchronization state" 
+                                  ItemContainerStyle="{StaticResource MenuItemViewModelStyle}"
+                                  ItemsSource="{Binding TransactionDeltaFilterItems}">
+                        </MenuItem>
+                    </ContextMenu>
+                </ToggleButton.ContextMenu>
+            </ToggleButton>
         </StackPanel>
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>

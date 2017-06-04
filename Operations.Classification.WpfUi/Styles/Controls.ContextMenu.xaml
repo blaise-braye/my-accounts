@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    mc:Ignorable="d">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.contextmenu.xaml" />
+        <ResourceDictionary>
+            <Style x:Key="MenuItemViewModelStyle"
+                    TargetType="{x:Type MenuItem}" 
+                   BasedOn="{StaticResource MetroMenuItem}">
+                <!--d:DataContext="{d:DesignInstance {x:Type controls:MenuItemViewModel}}"-->
+                <Setter Property="Header" Value="{Binding Header}"/>
+                <Setter Property="IsCheckable" Value="{Binding IsCheckable}"/>
+                <Setter Property="IsChecked" Value="{Binding IsChecked}"/>
+                <Setter Property="StaysOpenOnClick" Value="{Binding StaysOpenOnClick}"/>
+                <Setter Property="Command" Value="{Binding Command}"/>
+                <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+            </Style>
+        </ResourceDictionary>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
