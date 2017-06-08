@@ -1,3 +1,4 @@
+using System;
 using QifApi.Transactions;
 
 namespace Operations.Classification.GererMesComptes
@@ -11,5 +12,7 @@ namespace Operations.Classification.GererMesComptes
         public BasicTransaction Target { get; set; }
 
         public DeltaAction Action { get; set; }
+
+        public DateTime CreationDate { get; set; }
     }
 }

@@ -12,20 +12,9 @@ namespace Operations.Classification.GererMesComptes
             _fields = fields;
         }
 
-        public Dictionary<string, string> ToDictionnary()
-        {
-            return new Dictionary<string, string>(_fields);
-        }
-
         public ICollection<string> GetKeys()
         {
             return _fields.Keys;
-        }
-
-        public void SetValue(string key, string value)
-        {
-            EnsureFieldExists(key);
-            _fields[key] = value;
         }
 
         public string GetValue(string key, string defaultValue = null)
@@ -37,6 +26,17 @@ namespace Operations.Classification.GererMesComptes
             }
 
             return _fields.ContainsKey(key) ? _fields[key] : defaultValue;
+        }
+
+        public void SetValue(string key, string value)
+        {
+            EnsureFieldExists(key);
+            _fields[key] = value;
+        }
+
+        public Dictionary<string, string> ToDictionnary()
+        {
+            return new Dictionary<string, string>(_fields);
         }
 
         private void EnsureFieldExists(string key)

@@ -10,9 +10,9 @@ namespace Operations.Classification.WpfUi.Data
 {
     public interface IAccountsRepository
     {
-        Task<List<AccountEntity>> GetList();
         Task<bool> AddOrUpdate(AccountEntity entity);
         Task<AccountEntity> Find(Guid entityId);
+        Task<List<AccountEntity>> GetList();
     }
 
     public class AccountsRepository : IAccountsRepository
@@ -32,8 +32,11 @@ namespace Operations.Classification.WpfUi.Data
         {
             List<AccountEntity> list;
             if (!File.Exists(_workingCopy.SettingsPath))
+            {
                 list = new List<AccountEntity>();
+            }
             else
+            {
                 try
                 {
                     using (var DestinationStream = File.OpenRead(_workingCopy.SettingsPath))
@@ -48,6 +51,7 @@ namespace Operations.Classification.WpfUi.Data
                     _logger.Error($"Could not read setting file ({_workingCopy.SettingsPath})", exn);
                     list = new List<AccountEntity>();
                 }
+            }
 
             return list;
         }
@@ -76,6 +80,19 @@ namespace Operations.Classification.WpfUi.Data
             return entites.Find(e => e.Id == entityId);
         }
 
+        public async Task<bool> Delete(Guid accountId)
+        {
+            var entities = await GetList();
+            var idx = entities.FindIndex(a => a.Id == accountId);
+            if (idx >= 0)
+            {
+                entities.RemoveAt(idx);
+            }
+
+            var result = await ReplaceAll(entities);
+            return result;
+        }
+
         private async Task<bool> ReplaceAll(List<AccountEntity> entities)
         {
             await _workingCopy.MakeFolderOrSkip(_workingCopy.Root);
@@ -96,17 +113,6 @@ namespace Operations.Classification.WpfUi.Data
             }
 
             return true;
-        }
-
-        public async Task<bool> Delete(Guid accountId)
-        {
-            var entities = await GetList();
-            var idx = entities.FindIndex(a => a.Id == accountId);
-            if (idx >= 0)
-                entities.RemoveAt(idx);
-
-            var result = await ReplaceAll(entities);
-            return result;
         }
     }
 }

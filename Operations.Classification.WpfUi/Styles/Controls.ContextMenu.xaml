@@ -7,15 +7,15 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.contextmenu.xaml" />
         <ResourceDictionary>
             <Style x:Key="MenuItemViewModelStyle"
-                    TargetType="{x:Type MenuItem}" 
+                   TargetType="{x:Type MenuItem}"
                    BasedOn="{StaticResource MetroMenuItem}">
                 <!--d:DataContext="{d:DesignInstance {x:Type controls:MenuItemViewModel}}"-->
-                <Setter Property="Header" Value="{Binding Header}"/>
-                <Setter Property="IsCheckable" Value="{Binding IsCheckable}"/>
-                <Setter Property="IsChecked" Value="{Binding IsChecked}"/>
-                <Setter Property="StaysOpenOnClick" Value="{Binding StaysOpenOnClick}"/>
-                <Setter Property="Command" Value="{Binding Command}"/>
-                <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+                <Setter Property="Header" Value="{Binding Header}" />
+                <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
+                <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+                <Setter Property="StaysOpenOnClick" Value="{Binding StaysOpenOnClick}" />
+                <Setter Property="Command" Value="{Binding Command}" />
+                <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
             </Style>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>

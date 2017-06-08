@@ -82,5 +82,17 @@ namespace Operations.Classification.WpfUi.Properties {
                 this["UiCulture"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost:32773")]
+        public string RedisConnectionString {
+            get {
+                return ((string)(this["RedisConnectionString"]));
+            }
+            set {
+                this["RedisConnectionString"] = value;
+            }
+        }
     }
 }

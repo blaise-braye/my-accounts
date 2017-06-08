@@ -8,119 +8,135 @@
 //      the code is regenerated.
 //  </auto-generated>
 // ------------------------------------------------------------------------------
+
 #region Designer generated code
+
+using TechTalk.SpecFlow;
+
 #pragma warning disable
 namespace Operations.Classification.Tests.Features.GererMesComptes
 {
-    using TechTalk.SpecFlow;
-    
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.2.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("ManageBankAccounts")]
     public partial class ManageBankAccountsFeature
     {
-        
+        [NUnit.Framework.SetUpAttribute()]
+        public virtual void TestInitialize()
+        {
+        }
+
+        [NUnit.Framework.TearDownAttribute()]
+        public virtual void ScenarioTearDown()
+        {
+            testRunner.OnScenarioEnd();
+        }
+
         private TechTalk.SpecFlow.ITestRunner testRunner;
-        
-#line 1 "ManageBankAccounts.feature"
-#line hidden
-        
+
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ManageBankAccounts", "\tUser must be able to manage its bank accounts in order to manage its bank operat" +
-                    "ions", ProgrammingLanguage.CSharp, ((string[])(null)));
+            var featureInfo = new TechTalk.SpecFlow.FeatureInfo(
+                new System.Globalization.CultureInfo("en-US"),
+                "ManageBankAccounts",
+                "\tUser must be able to manage its bank accounts in order to manage its bank operat" +
+                "ions",
+                ProgrammingLanguage.CSharp,
+                ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
-        
+
         [NUnit.Framework.OneTimeTearDownAttribute()]
         public virtual void FeatureTearDown()
         {
             testRunner.OnFeatureEnd();
             testRunner = null;
         }
-        
-        [NUnit.Framework.SetUpAttribute()]
-        public virtual void TestInitialize()
-        {
-        }
-        
-        [NUnit.Framework.TearDownAttribute()]
-        public virtual void ScenarioTearDown()
-        {
-            testRunner.OnScenarioEnd();
-        }
-        
+
         public virtual void ScenarioSetup(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
         {
             testRunner.OnScenarioStart(scenarioInfo);
         }
-        
+
         public virtual void ScenarioCleanup()
         {
             testRunner.CollectScenarioErrors();
         }
-        
+
         public virtual void FeatureBackground()
         {
 #line 4
 #line 5
- testRunner.Given("I connect on GererMesComptes with email \'blaisemail@gmail.com\' and password \'kT5X" +
-                    "eI!I9AI9\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given(
+                "I connect on GererMesComptes with email \'blaisemail@gmail.com\' and password \'kT5X" +
+                "eI!I9AI9\'",
+                ((string)(null)),
+                ((TechTalk.SpecFlow.Table)(null)),
+                "Given ");
 #line hidden
         }
-        
+
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create an account")]
         public virtual void CreateAnAccount()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an account", ((string[])(null)));
+            var scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an account", ((string[])(null)));
 #line 7
-this.ScenarioSetup(scenarioInfo);
+            this.ScenarioSetup(scenarioInfo);
 #line 4
-this.FeatureBackground();
+            this.FeatureBackground();
 #line 8
- testRunner.When("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.When("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 9
- testRunner.Then("the bank account \'Automated Test Account\' exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.Then("the bank account \'Automated Test Account\' exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Key",
-                        "Value"});
-            table1.AddRow(new string[] {
-                        "name",
-                        "Automated Test Account"});
-            table1.AddRow(new string[] {
-                        "currency",
-                        "EUR"});
+            var table1 = new TechTalk.SpecFlow.Table(
+                new string[]
+                {
+                    "Key",
+                    "Value"
+                });
+            table1.AddRow(
+                new string[]
+                {
+                    "name",
+                    "Automated Test Account"
+                });
+            table1.AddRow(
+                new string[]
+                {
+                    "currency",
+                    "EUR"
+                });
 #line 10
- testRunner.And("the account information of the bank account \'Automated Test Account\' are", ((string)(null)), table1, "And ");
+            testRunner.And("the account information of the bank account \'Automated Test Account\' are", ((string)(null)), table1, "And ");
 #line hidden
             this.ScenarioCleanup();
         }
-        
+
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("delete an account")]
         public virtual void DeleteAnAccount()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("delete an account", ((string[])(null)));
+            var scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("delete an account", ((string[])(null)));
 #line 15
-this.ScenarioSetup(scenarioInfo);
+            this.ScenarioSetup(scenarioInfo);
 #line 4
-this.FeatureBackground();
+            this.FeatureBackground();
 #line 16
- testRunner.Given("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 17
- testRunner.When("I delete the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.When("I delete the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 18
- testRunner.Then("the bank account \'Automated Test Account\' does not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.Then("the bank account \'Automated Test Account\' does not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
     }
 }
 #pragma warning restore
+
 #endregion

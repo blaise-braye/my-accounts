@@ -1,5 +1,4 @@
 using System;
-
 using Operations.Classification.AccountOperations.Contracts;
 
 namespace Operations.Classification.AccountOperations.Fortis

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
 using Operations.Classification.AccountOperations.Sodexo;

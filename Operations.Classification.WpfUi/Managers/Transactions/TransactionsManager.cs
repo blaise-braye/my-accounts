@@ -19,8 +19,9 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 {
     public class TransactionsManager : ViewModelBase
     {
+        private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly OpenFileDialog _ofd;
-        private readonly TransactionsRepository _transactionsRepository;
+        private readonly ITransactionsRepository _transactionsRepository;
 
         private bool _autoDetectSourceKind;
         private AccountViewModel _currentAccount;
@@ -29,9 +30,8 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private bool _isImporting;
         private List<UnifiedAccountOperation> _operations;
         private SourceKind? _sourceKind;
-        private readonly BusyIndicatorViewModel _busyIndicator;
 
-        public TransactionsManager(BusyIndicatorViewModel busyIndicator, TransactionsRepository transactionsRepository)
+        public TransactionsManager(BusyIndicatorViewModel busyIndicator, ITransactionsRepository transactionsRepository)
         {
             _busyIndicator = busyIndicator;
             _transactionsRepository = transactionsRepository;
@@ -92,21 +92,18 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             set
             {
                 if (Set(nameof(AutoDetectSourceKind), ref _autoDetectSourceKind, value))
+                {
                     if (value)
+                    {
                         SourceKind = null;
+                    }
+                }
             }
         }
 
-        private void SelectFilesToImport()
+        private void BeginImport()
         {
-            if (_ofd.ShowDialog() == true)
-                FilePaths = string.Join(",", _ofd.FileNames);
-        }
-
-        private void OnAccountViewModelReceived(AccountViewModel currentAccount)
-        {
-            CurrentAccount = currentAccount;
-            Operations = currentAccount?.Operations;
+            IsImporting = true;
         }
 
         private async Task CommitImport()
@@ -132,21 +129,29 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     var account = CurrentAccount;
                     var someImportSucceeded = false;
                     if (account != null)
+                    {
                         foreach (var file in files)
                         {
                             var sourceKind = AccountOperations.Contracts.SourceKind.Unknwon;
 
                             if (AutoDetectSourceKind)
+                            {
                                 sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(file);
+                            }
                             else if (SourceKind.HasValue)
+                            {
                                 sourceKind = SourceKind.Value;
+                            }
 
                             using (var fs = File.OpenRead(file))
                             {
                                 if (await _transactionsRepository.Import(account.Name, fs, sourceKind))
+                                {
                                     someImportSucceeded = true;
+                                }
                             }
                         }
+                    }
 
                     if (someImportSucceeded)
                     {
@@ -155,14 +160,23 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                         OnAccountViewModelReceived(CurrentAccount);
                     }
                 }
-                
+
                 IsImporting = false;
             }
         }
 
-        private void BeginImport()
+        private void OnAccountViewModelReceived(AccountViewModel currentAccount)
         {
-            IsImporting = true;
+            CurrentAccount = currentAccount;
+            Operations = currentAccount?.Operations;
+        }
+
+        private void SelectFilesToImport()
+        {
+            if (_ofd.ShowDialog() == true)
+            {
+                FilePaths = string.Join(",", _ofd.FileNames);
+            }
         }
     }
 }

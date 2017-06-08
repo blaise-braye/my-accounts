@@ -18,6 +18,7 @@ namespace Operations.Classification.WpfUi.Technical.Controls
             get { return (bool)GetValue(DisplayOnClickProperty); }
             set { SetValue(DisplayOnClickProperty, value); }
         }
+
         protected override void OnAttached()
         {
             base.OnAttached();

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-
 using TechTalk.SpecFlow;
 
 namespace Operations.Classification.Tests.Steps
@@ -25,7 +24,7 @@ namespace Operations.Classification.Tests.Steps
                 _tasks.Add(task);
             }
         }
-        
+
         [AfterScenario]
         public async Task Cleanup()
         {
@@ -35,10 +34,9 @@ namespace Operations.Classification.Tests.Steps
                 tasks = _tasks.ToList();
                 _tasks.Clear();
             }
-            
+
             tasks.Reverse();
             foreach (var task in tasks)
-            {
                 try
                 {
                     await task();
@@ -47,7 +45,6 @@ namespace Operations.Classification.Tests.Steps
                 {
                     Trace.TraceError(exn.Message);
                 }
-            }
         }
     }
 }

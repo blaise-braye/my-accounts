@@ -31,7 +31,9 @@ namespace Operations.Classification.WpfUi.Technical.Input
             : base(_doNothing, canExecute)
         {
             if (taskBuilder == null)
+            {
                 throw new ArgumentNullException(nameof(taskBuilder));
+            }
 
             _taskBuilder = new WeakFunc<Task>(taskBuilder);
         }
@@ -51,7 +53,9 @@ namespace Operations.Classification.WpfUi.Technical.Input
         public virtual Task ExecuteAsync(object input)
         {
             if (!CanExecute(input) || _taskBuilder == null || !_taskBuilder.IsStatic && !_taskBuilder.IsAlive)
+            {
                 return Task.CompletedTask;
+            }
 
             return _taskBuilder.Execute();
         }

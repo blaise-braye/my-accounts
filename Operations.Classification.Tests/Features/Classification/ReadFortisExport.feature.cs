@@ -8,101 +8,114 @@
 //      the code is regenerated.
 //  </auto-generated>
 // ------------------------------------------------------------------------------
+
 #region Designer generated code
+
+using TechTalk.SpecFlow;
+
 #pragma warning disable
 namespace Operations.Classification.Tests.Features.Classification
 {
-    using TechTalk.SpecFlow;
-    
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.2.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("ReadFortisExport")]
     public partial class ReadFortisExportFeature
     {
-        
+        [NUnit.Framework.SetUpAttribute()]
+        public virtual void TestInitialize()
+        {
+        }
+
+        [NUnit.Framework.TearDownAttribute()]
+        public virtual void ScenarioTearDown()
+        {
+            testRunner.OnScenarioEnd();
+        }
+
         private TechTalk.SpecFlow.ITestRunner testRunner;
-        
-#line 1 "ReadFortisExport.feature"
-#line hidden
-        
+
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ReadFortisExport", "\tTrust in the way I parse the csv files is required,\r\n\tThose files are the gold s" +
-                    "ource of the entire claissification tool,\r\n\tThe trust in the way they are read i" +
-                    "s key in the success of this classification", ProgrammingLanguage.CSharp, ((string[])(null)));
+            var featureInfo = new TechTalk.SpecFlow.FeatureInfo(
+                new System.Globalization.CultureInfo("en-US"),
+                "ReadFortisExport",
+                "\tTrust in the way I parse the csv files is required,\r\n\tThose files are the gold s" +
+                "ource of the entire claissification tool,\r\n\tThe trust in the way they are read i" +
+                "s key in the success of this classification",
+                ProgrammingLanguage.CSharp,
+                ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
-        
+
         [NUnit.Framework.OneTimeTearDownAttribute()]
         public virtual void FeatureTearDown()
         {
             testRunner.OnFeatureEnd();
             testRunner = null;
         }
-        
-        [NUnit.Framework.SetUpAttribute()]
-        public virtual void TestInitialize()
-        {
-        }
-        
-        [NUnit.Framework.TearDownAttribute()]
-        public virtual void ScenarioTearDown()
-        {
-            testRunner.OnScenarioEnd();
-        }
-        
+
         public virtual void ScenarioSetup(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
         {
             testRunner.OnScenarioStart(scenarioInfo);
         }
-        
+
         public virtual void ScenarioCleanup()
         {
             testRunner.CollectScenarioErrors();
         }
-        
+
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Read a fortis export csv")]
         public virtual void ReadAFortisExportCsv()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Read a fortis export csv", ((string[])(null)));
+            var scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Read a fortis export csv", ((string[])(null)));
 #line 6
-this.ScenarioSetup(scenarioInfo);
+            this.ScenarioSetup(scenarioInfo);
 #line hidden
 #line 7
- testRunner.When("I read the following fortis operations from an export csv file", @"Numéro de séquence;Date d'exécution;Date valeur;Montant;Devise du compte;CONTREPARTIE DE LA TRANSACTION;Détails;Numéro de compte;SourceKind
-2017-0207;15-05-2017;15-05-2017;11,11;EUR;BE02360096518440;SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L'ALLEU BE02 3600 9651 8440  BIC BBRUBEBB REFERENCE DONNEUR D'ORDRE : 00100110492016462016461 COMMUNICATION : JEEN 108 E0379 04/2017 DATE VALEUR : 15/05/2017;BE02275045085140;FortisCsvExport", ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.When(
+                "I read the following fortis operations from an export csv file",
+                @"Numéro de séquence;Date d'exécution;Date valeur;Montant;Devise du compte;CONTREPARTIE DE LA TRANSACTION;Détails;Numéro de compte;SourceKind
+2017-0207;15-05-2017;15-05-2017;11,11;EUR;BE02360096518440;SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L'ALLEU BE02 3600 9651 8440  BIC BBRUBEBB REFERENCE DONNEUR D'ORDRE : 00100110492016462016461 COMMUNICATION : JEEN 108 E0379 04/2017 DATE VALEUR : 15/05/2017;BE02275045085140;FortisCsvExport",
+                ((TechTalk.SpecFlow.Table)(null)),
+                "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Reference",
-                        "ExecutionDate",
-                        "ValueDate",
-                        "Amount",
-                        "Currency",
-                        "CounterpartyOfTheTransaction",
-                        "Detail",
-                        "Account"});
-            table1.AddRow(new string[] {
-                        "2017-0207",
-                        "2017-05-15T00:00:00",
-                        "2017-05-15T00:00:00",
-                        "11,11",
-                        "EUR",
-                        "BE02360096518440",
-                        "SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L\'ALLEU BE02 3600 9651 844" +
-                            "0  BIC BBRUBEBB REFERENCE DONNEUR D\'ORDRE : 00100110492016462016461 COMMUNICATIO" +
-                            "N : JEEN 108 E0379 04/2017 DATE VALEUR : 15/05/2017",
-                        "BE02275045085140"});
+            var table1 = new TechTalk.SpecFlow.Table(
+                new string[]
+                {
+                    "Reference",
+                    "ExecutionDate",
+                    "ValueDate",
+                    "Amount",
+                    "Currency",
+                    "CounterpartyOfTheTransaction",
+                    "Detail",
+                    "Account"
+                });
+            table1.AddRow(
+                new string[]
+                {
+                    "2017-0207",
+                    "2017-05-15T00:00:00",
+                    "2017-05-15T00:00:00",
+                    "11,11",
+                    "EUR",
+                    "BE02360096518440",
+                    "SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L\'ALLEU BE02 3600 9651 844" +
+                    "0  BIC BBRUBEBB REFERENCE DONNEUR D\'ORDRE : 00100110492016462016461 COMMUNICATIO" +
+                    "N : JEEN 108 E0379 04/2017 DATE VALEUR : 15/05/2017",
+                    "BE02275045085140"
+                });
 #line 12
- testRunner.Then("the read fortis operations are", ((string)(null)), table1, "Then ");
+            testRunner.Then("the read fortis operations are", ((string)(null)), table1, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
     }
 }
 #pragma warning restore
+
 #endregion

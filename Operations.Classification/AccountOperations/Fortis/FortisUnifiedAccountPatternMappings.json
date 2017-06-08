@@ -2,42 +2,66 @@
   {
     "Name": "CartPayment",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^PAIEMENT PAR CARTE DE BANQUE.{59}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^PAIEMENT PAR CARTE DE BANQUE.{59}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+    }
   },
   {
     "Name": "CartPayment",
     "SourceKind": "FortisCsvExport",
-    "Expression": { "Detail": "^AVEC LA CARTE.{11}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*?)([0-9]{2}-[0-9]{2}-[0-9]{4}.*|EXECUTE|DATE VALEUR|$)" }
+    "Expression": {
+      "Detail":
+        "^AVEC LA CARTE.{11}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*?)([0-9]{2}-[0-9]{2}-[0-9]{4}.*|EXECUTE|DATE VALEUR|$)"
+    }
   },
   {
     "Name": "Withdrawal",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^RETRAIT D'ARGENT.{71}XXXX X[0-9]{3} [0-9] (?<CommunicationThenCity>.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^RETRAIT D'ARGENT.{71}XXXX X[0-9]{3} [0-9] (?<CommunicationThenCity>.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+    }
   },
   {
     "Name": "Domiciliation",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^PREMIER.{84}(?<ThirdParty>.*)NUMERO DE MANDAT : (?<Mandat>\\w+) REFERENCE([ :]+)?(?<ThirdPartyOperationRef>.*) COMMUNICATION([ :]+)?(?<Communication>.*) DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^PREMIER.{84}(?<ThirdParty>.*)NUMERO DE MANDAT : (?<Mandat>\\w+) REFERENCE([ :]+)?(?<ThirdPartyOperationRef>.*) COMMUNICATION([ :]+)?(?<Communication>.*) DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+    }
   },
   {
     "Name": "Domiciliation",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^DOMICILIATION.{50}(?<ThirdParty>.*)NUMERO DE MANDAT[ :]+(?<Mandat>\\w+) REFERENCE([ :]+)?(?<ThirdPartyOperationRef>.*) COMMUNICATION([ :]+)?(?<Communication>.*) DATE VALEUR[ :]+[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^DOMICILIATION.{50}(?<ThirdParty>.*)NUMERO DE MANDAT[ :]+(?<Mandat>\\w+) REFERENCE([ :]+)?(?<ThirdPartyOperationRef>.*) COMMUNICATION([ :]+)?(?<Communication>.*) DATE VALEUR[ :]+[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+    }
   },
   {
     "Name": "Domiciliation",
     "SourceKind": "FortisCsvExport",
-    "Expression": { "Detail": "^(?<ThirdParty>.*)NUMERO DE MANDAT[ :]+(?<Mandat>\\w+) REFERENCE([ :]+)?(?<ThirdPartyOperationRef>.*) COMMUNICATION([ :]+)?(?<Communication>.*) DATE VALEUR[ :]+[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^(?<ThirdParty>.*)NUMERO DE MANDAT[ :]+(?<Mandat>\\w+) REFERENCE([ :]+)?(?<ThirdPartyOperationRef>.*) COMMUNICATION([ :]+)?(?<Communication>.*) DATE VALEUR[ :]+[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+    }
   },
   {
     "Name": "CreditPayment",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^.{63}COMPTE INTERNE VISA : (?<ThirdParty>[0-9]+) (?<Communication>.*) +?DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^.{63}COMPTE INTERNE VISA : (?<ThirdParty>[0-9]+) (?<Communication>.*) +?DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+    }
   },
   {
     "Name": "CreditPayment",
     "SourceKind": "FortisCsvExport",
-    "Expression": { "Detail": "^COMPTE INTERNE VISA : (?<ThirdParty>[0-9]+) (?<Communication>.*) *?DATE VALEUR : [0-9]{2}/[0-9]{2}/[0-9]{4}$" }
+    "Expression": {
+      "Detail":
+        "^COMPTE INTERNE VISA : (?<ThirdParty>[0-9]+) (?<Communication>.*) *?DATE VALEUR : [0-9]{2}/[0-9]{2}/[0-9]{4}$"
+    }
   },
   {
     "Name": "BankFees",
@@ -76,46 +100,73 @@
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VIREMENT EUROPEEN DE.{43}(?<ThirdPartyThenAddress>.*) (?<IBAN>(BE|FR|DE|NL)[0-9A-Z ]+)BIC (?<BIC>\\w+) (REFERENCE [\\w ']+([ :]+)?(?<ThirdPartyOperationRef>.*?))?(COMMUNICATION([ :]+)?(?<Communication>.+?))?(PAS DE COMMUNICATION|EXECUTE|DATE VALEUR|$)" }
+    "Expression": {
+      "Detail":
+        "^VIREMENT EUROPEEN DE.{43}(?<ThirdPartyThenAddress>.*) (?<IBAN>(BE|FR|DE|NL)[0-9A-Z ]+)BIC (?<BIC>\\w+) (REFERENCE [\\w ']+([ :]+)?(?<ThirdPartyOperationRef>.*?))?(COMMUNICATION([ :]+)?(?<Communication>.+?))?(PAS DE COMMUNICATION|EXECUTE|DATE VALEUR|$)"
+    }
   },
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VIREMENT EUROPEEN A.{44}(?<ThirdParty>.*)(?<IBAN>(BE|FR|DE|NL)[0-9A-Z ]+)BIC (?<BIC>\\w+) +VIA[\\w ]+?(COMMUNICATION([ :]+)?(?<Communication>.+?))? (PAS DE COMMUNICATION|EXECUTE|DATE VALEUR|$)" }
+    "Expression": {
+      "Detail":
+        "^VIREMENT EUROPEEN A.{44}(?<ThirdParty>.*)(?<IBAN>(BE|FR|DE|NL)[0-9A-Z ]+)BIC (?<BIC>\\w+) +VIA[\\w ]+?(COMMUNICATION([ :]+)?(?<Communication>.+?))? (PAS DE COMMUNICATION|EXECUTE|DATE VALEUR|$)"
+    }
   },
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VIREMENT AU COMPTE (?<IBAN>[0-9\\-]+).{30}DE (?<ThirdParty>.*) VIA.+?(COMMUNICATION([ :]+)?(?<Communication>.+?))? (EXECUTE|DATE VALEUR)" }
+    "Expression": {
+      "Detail":
+        "^VIREMENT AU COMPTE (?<IBAN>[0-9\\-]+).{30}DE (?<ThirdParty>.*) VIA.+?(COMMUNICATION([ :]+)?(?<Communication>.+?))? (EXECUTE|DATE VALEUR)"
+    }
   },
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VIREMENT DU COMPTE (?<IBAN>[0-9\\-]+).{30}DE (?<ThirdPartyThenAddress>.+?)(COMMUNICATION([ :]+)?(?<Communication>.+?))? (SANS COMMUNICATION|EXECUTE|DATE VALEUR)" }
+    "Expression": {
+      "Detail":
+        "^VIREMENT DU COMPTE (?<IBAN>[0-9\\-]+).{30}DE (?<ThirdPartyThenAddress>.+?)(COMMUNICATION([ :]+)?(?<Communication>.+?))? (SANS COMMUNICATION|EXECUTE|DATE VALEUR)"
+    }
   },
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VOTRE VIREMENT AVEC DATE-MEMO.{54}(?<IBAN>[0-9-]+) DE (?<ThirdParty>.+) VIA.*?(COMMUNICATION([ :]+)?(?<Communication>.*))? DATE VALEUR" }
+    "Expression": {
+      "Detail":
+        "^VOTRE VIREMENT AVEC DATE-MEMO.{54}(?<IBAN>[0-9-]+) DE (?<ThirdParty>.+) VIA.*?(COMMUNICATION([ :]+)?(?<Communication>.*))? DATE VALEUR"
+    }
   },
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvExport",
-    "Expression": { "Detail": "^(?<ThirdParty>.*) (?<IBAN>BE[0-9\\-]+) ?BIC (?<BIC>\\w+) +VIA.+?(COMMUNICATION([ :]+)?(?<Communication>.+?))? (EXECUTE|DATE VALEUR)" }
+    "Expression": {
+      "Detail":
+        "^(?<ThirdParty>.*) (?<IBAN>BE[0-9\\-]+) ?BIC (?<BIC>\\w+) +VIA.+?(COMMUNICATION([ :]+)?(?<Communication>.+?))? (EXECUTE|DATE VALEUR)"
+    }
   },
   {
     "Name": "BankTransfert",
     "SourceKind": "FortisCsvExport",
-    "Expression": { "Detail": "^(?<ThirdPartyThenAddress>.*) (?<IBAN>BE[0-9\\- ]+) ?BIC (?<BIC>\\w+) ?((VOTRE )?REFERENCE[\\w ']+([ :]+)?(?<ThirdPartyOperationRef>.*?))?(COMMUNICATION([ :]+)?(?<Communication>.+?))?(PAS DE COMMUNICATION|EXECUTE|DATE VALEUR|$)" }
+    "Expression": {
+      "Detail":
+        "^(?<ThirdPartyThenAddress>.*) (?<IBAN>BE[0-9\\- ]+) ?BIC (?<BIC>\\w+) ?((VOTRE )?REFERENCE[\\w ']+([ :]+)?(?<ThirdPartyOperationRef>.*?))?(COMMUNICATION([ :]+)?(?<Communication>.+?))?(PAS DE COMMUNICATION|EXECUTE|DATE VALEUR|$)"
+    }
   },
   {
     "Name": "PermanentOrder",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VOTRE ORDRE PERMANENT .{41}(?<ThirdParty>.*)(?<IBAN>BE[0-9 ]+)BIC (?<BIC>\\w+) +COMMUNICATION([ :]+)?(?<Communication>.+?)(EXECUTE|DATE VALEUR)" }
+    "Expression": {
+      "Detail":
+        "^VOTRE ORDRE PERMANENT .{41}(?<ThirdParty>.*)(?<IBAN>BE[0-9 ]+)BIC (?<BIC>\\w+) +COMMUNICATION([ :]+)?(?<Communication>.+?)(EXECUTE|DATE VALEUR)"
+    }
   },
   {
     "Name": "PermanentOrder",
     "SourceKind": "FortisCsvArchive",
-    "Expression": { "Detail": "^VOTRE ORDRE PERMANENT .{41}DU COMPTE (?<IBAN>[0-9-]+) DE (?<ThirdParty>.+) +COMMUNICATION([ :]+)?(?<Communication>.+?)(EXECUTE|DATE VALEUR)" }
+    "Expression": {
+      "Detail":
+        "^VOTRE ORDRE PERMANENT .{41}DU COMPTE (?<IBAN>[0-9-]+) DE (?<ThirdParty>.+) +COMMUNICATION([ :]+)?(?<Communication>.+?)(EXECUTE|DATE VALEUR)"
+    }
   }
 ]

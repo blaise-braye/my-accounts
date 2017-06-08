@@ -7,13 +7,18 @@ namespace Operations.Classification.GererMesComptes
 {
     public class TransactionDeltaSet
     {
-        private readonly List<TransactionDelta> _deltas = new List<TransactionDelta>();
         private readonly int[] _counters = new int[Enum.GetValues(typeof(DeltaAction)).Length];
+        private readonly List<TransactionDelta> _deltas = new List<TransactionDelta>();
         private readonly HashSet<BasicTransaction> _processedTarget = new HashSet<BasicTransaction>();
-        
-        public List<TransactionDelta> ToList()
+
+        public TransactionDeltaSet()
         {
-            return _deltas.OrderByDescending(t=>t.Source?.Date ?? t.Target?.Date).ToList();
+        }
+
+        public TransactionDeltaSet(IEnumerable<TransactionDelta> inputs)
+        {
+            foreach (var input in inputs)
+                AddDelta(input);
         }
 
         public int NewCount => _counters[(int)DeltaAction.Add];
@@ -24,8 +29,18 @@ namespace Operations.Classification.GererMesComptes
 
         public int NothingCount => _counters[(int)DeltaAction.Nothing];
 
-        public DateTime? LastActionInsertTime { get; set; }
-        
+        public DateTime? LastDeltaDate { get; set; }
+
+        public List<TransactionDelta> GetDeltaByAction(DeltaAction action)
+        {
+            return _deltas.Where(t => t.Action == action).ToList();
+        }
+
+        public IEnumerable<BasicTransaction> GetRemoteTransactions()
+        {
+            return _deltas.Select(d => d.Target).Where(t => t != null);
+        }
+
         public bool IsTargetProcessed(BasicTransaction transaction)
         {
             return _processedTarget.Contains(transaction);
@@ -34,6 +49,26 @@ namespace Operations.Classification.GererMesComptes
         public void SetAddAction(BasicTransaction transaction)
         {
             SetAction(transaction, null, DeltaAction.Add);
+        }
+
+        public void SetMultipleTargetsPossibleAction(BasicTransaction transaction)
+        {
+            SetAction(transaction, null, DeltaAction.MultipleTargetsPossible);
+        }
+
+        public void SetNothingAction(BasicTransaction availableBt, BasicTransaction exportedItem)
+        {
+            SetAction(availableBt, exportedItem, DeltaAction.Nothing);
+        }
+
+        public void SetNotUniqueKeyInTarget(BasicTransaction transaction)
+        {
+            SetAction(transaction, null, DeltaAction.NotUniqueKeyInTarget);
+        }
+
+        public void SetRemoveAction(BasicTransaction targetTransaction)
+        {
+            SetAction(null, targetTransaction, DeltaAction.Remove);
         }
 
         public void SetUpdateMemoAction(BasicTransaction transaction, BasicTransaction targetTransaction)
@@ -53,24 +88,25 @@ namespace Operations.Classification.GererMesComptes
             SetUpdateMemoAction(originalDelta.Source, targetTransaction);
         }
 
-        public void SetRemoveAction(BasicTransaction targetTransaction)
+        public List<TransactionDelta> ToList()
         {
-            SetAction(null, targetTransaction, DeltaAction.Remove);
+            return _deltas.OrderByDescending(t => t.Source?.Date ?? t.Target?.Date).ToList();
         }
 
-        public void SetNotUniqueKeyInTarget(BasicTransaction transaction)
+        private void AddDelta(TransactionDelta transactionDelta)
         {
-            SetAction(transaction, null, DeltaAction.NotUniqueKeyInTarget);
-        }
+            if (!LastDeltaDate.HasValue || LastDeltaDate < transactionDelta.CreationDate)
+            {
+                LastDeltaDate = transactionDelta.CreationDate;
+            }
 
-        public void SetNothingAction(BasicTransaction availableBt, BasicTransaction exportedItem)
-        {
-            SetAction(availableBt, exportedItem, DeltaAction.Nothing);
-        }
+            _deltas.Add(transactionDelta);
+            _counters[(int)transactionDelta.Action]++;
 
-        public void SetMultipleTargetsPossibleAction(BasicTransaction transaction)
-        {
-            SetAction(transaction, null, DeltaAction.MultipleTargetsPossible);
+            if (transactionDelta.Target != null)
+            {
+                _processedTarget.Add(transactionDelta.Target);
+            }
         }
 
         private void SetAction(BasicTransaction transaction, BasicTransaction targetTransaction, DeltaAction action)
@@ -81,27 +117,11 @@ namespace Operations.Classification.GererMesComptes
                 DeltaKey = transactionLookupKey,
                 Source = transaction,
                 Target = targetTransaction,
-                Action = action
+                Action = action,
+                CreationDate = DateTime.Now
             };
 
-            LastActionInsertTime = DateTime.Now;
-            _deltas.Add(transactionDelta);
-            _counters[(int)transactionDelta.Action]++;
-
-            if (targetTransaction != null)
-            {
-                _processedTarget.Add(targetTransaction);
-            }
-        }
-
-        public List<TransactionDelta> GetDeltaByAction(DeltaAction action)
-        {
-            return _deltas.Where(t => t.Action == action).ToList();
-        }
-
-        public IEnumerable<BasicTransaction> GetRemoteTransactions()
-        {
-            return _deltas.Select(d => d.Target).Where(t => t != null);
+            AddDelta(transactionDelta);
         }
     }
 }

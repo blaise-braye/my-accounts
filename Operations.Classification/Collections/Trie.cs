@@ -11,33 +11,18 @@ namespace Operations.Classification.Collections
             _root = new Node('^', 0, null);
         }
 
-        public Node Prefix(string s)
+        public void Delete(string s)
         {
-            var currentNode = _root;
-            var result = currentNode;
-
-            foreach (var c in s)
+            if (Search(s))
             {
-                currentNode = currentNode.FindChildNode(c);
-                if (currentNode == null)
-                    break;
-                result = currentNode;
-            }
+                var node = Prefix(s).FindChildNode('$');
 
-            return result;
-        }
-        
-        public bool Search(string s)
-        {
-            var prefix = Prefix(s);
-            return prefix.Depth == s.Length && prefix.FindChildNode('$') != null;
-        }
-
-        public void InsertRange(IEnumerable<string> items)
-        {
-            foreach (var item in items)
-            {
-                Insert(item);
+                while (node.IsLeaf())
+                {
+                    var parent = node.Parent;
+                    parent.DeleteChildNode(node.Value);
+                    node = parent;
+                }
             }
         }
 
@@ -56,19 +41,35 @@ namespace Operations.Classification.Collections
             current.Children.Add(new Node('$', current.Depth + 1, current));
         }
 
-        public void Delete(string s)
+        public void InsertRange(IEnumerable<string> items)
         {
-            if (Search(s))
-            {
-                var node = Prefix(s).FindChildNode('$');
+            foreach (var item in items)
+                Insert(item);
+        }
 
-                while (node.IsLeaf())
+        public Node Prefix(string s)
+        {
+            var currentNode = _root;
+            var result = currentNode;
+
+            foreach (var c in s)
+            {
+                currentNode = currentNode.FindChildNode(c);
+                if (currentNode == null)
                 {
-                    var parent = node.Parent;
-                    parent.DeleteChildNode(node.Value);
-                    node = parent;
+                    break;
                 }
+
+                result = currentNode;
             }
+
+            return result;
+        }
+
+        public bool Search(string s)
+        {
+            var prefix = Prefix(s);
+            return prefix.Depth == s.Length && prefix.FindChildNode('$') != null;
         }
 
         public class Node
@@ -89,25 +90,29 @@ namespace Operations.Classification.Collections
 
             public int Depth { get; set; }
 
-            public bool IsLeaf()
+            public void DeleteChildNode(char c)
             {
-                return Children.Count == 0;
+                for (var i = 0; i < Children.Count; i++)
+                    if (Children[i].Value == c)
+                    {
+                        Children.RemoveAt(i);
+                    }
             }
 
             public Node FindChildNode(char c)
             {
                 foreach (var child in Children)
                     if (child.Value == c)
+                    {
                         return child;
+                    }
 
                 return null;
             }
 
-            public void DeleteChildNode(char c)
+            public bool IsLeaf()
             {
-                for (var i = 0; i < Children.Count; i++)
-                    if (Children[i].Value == c)
-                        Children.RemoveAt(i);
+                return Children.Count == 0;
             }
         }
     }

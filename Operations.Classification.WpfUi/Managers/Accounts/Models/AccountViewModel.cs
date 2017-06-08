@@ -49,7 +49,9 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
             set
             {
                 if (Set(nameof(InitialBalance), ref _initialBalance, value))
+                {
                     RefreshStatus();
+                }
             }
         }
 
@@ -59,7 +61,9 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
             set
             {
                 if (Set(nameof(Operations), ref _operations, value))
+                {
                     RefreshStatus();
+                }
             }
         }
 

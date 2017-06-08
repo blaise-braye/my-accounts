@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
+             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.GmgManager}"
              d:DesignHeight="357.203" d:DesignWidth="750">
@@ -27,7 +28,7 @@
                 </Rectangle>
             </Button>
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding ResetCommand}">
+                    Command="{Binding ClearCurrentAccountCacheAndResetCommand}">
                 <Rectangle Width="24" Height="24">
                     <Rectangle.Fill>
                         <VisualBrush Visual="{StaticResource appbar_clear_reflect_horizontal}" Stretch="Fill" />
@@ -35,28 +36,56 @@
                 </Rectangle>
             </Button>
             <ToggleButton Padding="12" Style="{DynamicResource MetroCircleToggleButtonStyle}"
-                          ContextMenuService.Placement="Top"
-                          ContextMenuService.IsEnabled="false"
+                          Click="ShowPopup"
+                          x:Name="btnFilter"
                           IsChecked="{Binding IsFiltering, Mode=TwoWay}">
-                <i:Interaction.Behaviors>
-                    <controls:ContextMenuBehavior DisplayOnClick="True"/>
-                </i:Interaction.Behaviors>
                 <Rectangle Width="24" Height="24">
                     <Rectangle.Fill>
                         <VisualBrush Visual="{StaticResource appbar_filter}" Stretch="Fill" />
                     </Rectangle.Fill>
                 </Rectangle>
-                <ToggleButton.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="synchronization state" 
-                                  ItemContainerStyle="{StaticResource MenuItemViewModelStyle}"
-                                  ItemsSource="{Binding TransactionDeltaFilterItems}">
-                        </MenuItem>
-                    </ContextMenu>
-                </ToggleButton.ContextMenu>
             </ToggleButton>
+            <Popup x:Name="Popup" PlacementTarget="{Binding ElementName=btnFilter}"
+                   Placement="Top" StaysOpen="False">
+                <controls:PopupContent>
+                    <StackPanel>
+                        <GroupBox Header="date range">
+                            <StackPanel>
+                                <DatePicker SelectedDate="{Binding DateFilter.FromDate}"
+                                            controls1:TextBoxHelper.Watermark="from" Margin="0,0,0,4" />
+                                <DatePicker SelectedDate="{Binding DateFilter.ToDate}"
+                                            controls1:TextBoxHelper.Watermark="to" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="delta actions">
+                            <ListBox ItemsSource="{Binding DeltaFilter}" IsEnabled="{Binding IsDeltaAvailable}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type controls:MenuItemViewModel}">
+                                        <CheckBox IsChecked="{Binding IsChecked}" HorizontalContentAlignment="Stretch"
+                                                  Command="{Binding Command}"
+                                                  CommandParameter="{Binding CommandParameter}"
+                                                  Content="{Binding Header}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </GroupBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="6,0,6,4">
+                            <Button Command="{Binding ResetFilterCommad}" ToolTip="Clear filter">
+                                <Rectangle Width="24" Height="24">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Visual="{StaticResource appbar_close}" Stretch="Fill" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
+                </controls:PopupContent>
+            </Popup>
         </StackPanel>
         <Grid DockPanel.Dock="Top">
+            <Grid.Resources>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -70,7 +99,7 @@
                       Header="Delta to apply on remote state">
                 <StackPanel>
                     <TextBlock
-                        Text="{Binding TransactionDelta.LastActionInsertTime, StringFormat='computed time : {0}'}" />
+                        Text="{Binding TransactionDelta.LastDeltaDate, StringFormat='computed time : {0}'}" />
                     <TextBlock Text="{Binding TransactionDelta.NewCount, StringFormat='{}{0} operations to add'}" />
                     <TextBlock Text="{Binding TransactionDelta.DeleteCount, StringFormat='{}{0} operations to delete'}" />
                     <TextBlock
@@ -83,14 +112,30 @@
                 <DataGrid ItemsSource="{Binding Transactions}" AutoGenerateColumns="True">
                     <i:Interaction.Behaviors>
                         <controls:CustomizeAutoGeneratedColumnsBehavior />
+                        <controls:SetupDataGridContextMenuBehavior />
                     </i:Interaction.Behaviors>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem
+                                Command="{Binding FilterOnItemDateCommand}"
+                                Header="Show all operation on selected item date" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
             </GroupBox>
             <GroupBox Grid.Row="1" Grid.Column="1" Header="Remote situation">
                 <DataGrid ItemsSource="{Binding RemoteTransactions}" AutoGenerateColumns="True">
                     <i:Interaction.Behaviors>
                         <controls:CustomizeAutoGeneratedColumnsBehavior />
+                        <controls:SetupDataGridContextMenuBehavior />
                     </i:Interaction.Behaviors>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem
+                                Command="{Binding FilterOnItemDateCommand}"
+                                Header="Show all operation on selected item date" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
             </GroupBox>
         </Grid>

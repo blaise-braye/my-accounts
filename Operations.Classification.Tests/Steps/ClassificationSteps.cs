@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
@@ -18,24 +17,24 @@ namespace Operations.Classification.Tests.Steps
     [Binding]
     public class ClassificationSteps
     {
-        private readonly UnifiedAccountOperationPatternTransformer _transformer = new UnifiedAccountOperationPatternTransformer();
         private readonly CsvAccountOperationManager _csvAccountOperationManager = new CsvAccountOperationManager();
-
-        private List<UnifiedAccountOperation> _unifiedOperations;
+        private readonly UnifiedAccountOperationPatternTransformer _transformer = new UnifiedAccountOperationPatternTransformer();
 
         private List<AccountOperationBase> _readOperations;
-        
+
+        private List<UnifiedAccountOperation> _unifiedOperations;
 
         [Given(@"I have read the following account operations from source of kind (\w+)")]
         public void GivenIHaveReadTheFollowingAccountOperationsFromSourceOfKindFortisCsvArchive(SourceKind sourceKind, Table table)
         {
             _unifiedOperations = table.CreateSet<UnifiedAccountOperation>().Select(
                 o =>
-                    {
-                        o.SourceKind = sourceKind;
-                        return o;
-                    }).ToList();
+                {
+                    o.SourceKind = sourceKind;
+                    return o;
+                }).ToList();
         }
+
         [Given(@"I have read the following fortis operations from archive files")]
         public void GivenIHaveReadTheFollowingFortisOperationsFromArchiveFiles(Table table)
         {
@@ -66,19 +65,30 @@ namespace Operations.Classification.Tests.Steps
             _readOperations = await operationManager.ReadAsync(rawStream, SourceKind.SodexoCsvExport);
         }
 
-
-        [When(@"I read the following fortis operations from an export csv file")]
-        public async Task WhenIReadTheFollowingFortisOperationsFromAnExportCsvFile(string multilineText)
+        [Then(@"File '(.*)' exists")]
+        public void ThenFileExists(string filePath)
         {
-            var utf8bytes = Encoding.UTF8.GetBytes(multilineText);
-            var asciiBytes = Encoding.Convert(
-                Encoding.UTF8,
-                Encoding.GetEncoding("windows-1252"),
-                utf8bytes);
-            
-            var rawStream = new MemoryStream(asciiBytes);
-            var operationManager = new CsvAccountOperationManager();
-            _readOperations = await operationManager.ReadAsync(rawStream, SourceKind.FortisCsvExport);
+            var fileExist = File.Exists(filePath);
+            Assert.IsTrue(fileExist, "File should exist");
+        }
+
+        [Then(@"pattern detection accuracy is higher that (.*) %")]
+        public void ThenPatternDetectionAccuracyIsHigherThat(double minAccuracy)
+        {
+            var patternDetected = _unifiedOperations.Where(p => !string.IsNullOrEmpty(p.PatternName)).ToList();
+            var detectedCount = patternDetected.Count;
+            var total = _unifiedOperations.Count;
+            var detectedPercentage = 100.0 * detectedCount / total;
+            foreach (var op in _unifiedOperations.Where(p => string.IsNullOrEmpty(p.PatternName)))
+                Console.WriteLine($@"{op.SourceKind} {op.OperationId} {op.Note}");
+
+            Assert.That(detectedPercentage, Is.GreaterThanOrEqualTo(minAccuracy));
+        }
+
+        [Then(@"the operations data is")]
+        public void ThenTheOperationsDataIs(Table table)
+        {
+            table.CompareToSet(_unifiedOperations);
         }
 
         [Then(@"the read fortis operations are")]
@@ -87,25 +97,19 @@ namespace Operations.Classification.Tests.Steps
             table.CompareToSet(_readOperations.Cast<FortisOperation>());
         }
 
-
-        [When(@"I parse the details of the files '(.*)'")]
-        public void WhenIParseTheDetailsOfTheFiles(string filePath)
+        [When(@"I apply the cleanup transformation on unified operations")]
+        public void WhenIApplyTheCleanupTransformationOnUnifiedOperations()
         {
-            string[] files = { filePath };
-            
-            FileAttributes attr = File.GetAttributes(filePath);
-            if (attr.HasFlag(FileAttributes.Directory))
-            {
-                files = Directory.GetFiles(filePath, "*.csv");
-            }
-            
-            _unifiedOperations =
-                files.SelectMany(s => _csvAccountOperationManager.Read(s, CsvAccountOperationManager.DetectFileSourceKindFromFileName(s)))
-                    .Select(operation => _transformer.Apply(operation))
-                    .SortByOperationIdDesc()
-                    .ToList();
+            foreach (var operation in _unifiedOperations)
+                _transformer.Apply(operation);
         }
 
+        [When(@"I Filter the details where date is higher than '(.*)' days")]
+        public void WhenIFilterTheDetailsWhereDateIsHigherThanDays(int days)
+        {
+            var comparativeDate = DateTime.Today.AddDays(-days);
+            _unifiedOperations = _unifiedOperations.Where(t => t.ValueDate > comparativeDate).ToList();
+        }
 
         [When(@"I Filter the details where number is higher than '(.*)'")]
         public void WhenIFilterTheDetailsWhereNumberIsHigherThan(string number)
@@ -116,28 +120,38 @@ namespace Operations.Classification.Tests.Steps
             }
         }
 
-        [When(@"I Filter the details where date is higher than '(.*)' days")]
-        public void WhenIFilterTheDetailsWhereDateIsHigherThanDays(int days)
+        [When(@"I parse the details of the files '(.*)'")]
+        public void WhenIParseTheDetailsOfTheFiles(string filePath)
         {
-            var comparativeDate = DateTime.Today.AddDays(-days);
-            _unifiedOperations = _unifiedOperations.Where(t => t.ValueDate > comparativeDate).ToList();
-        }
-        
-        [Then(@"pattern detection accuracy is higher that (.*) %")]
-        public void ThenPatternDetectionAccuracyIsHigherThat(double minAccuracy)
-        {
-            var patternDetected = _unifiedOperations.Where(p => !string.IsNullOrEmpty(p.PatternName)).ToList();
-            var detectedCount = patternDetected.Count;
-            var total = _unifiedOperations.Count;
-            var detectedPercentage = 100.0 * detectedCount / total;
-            foreach (var op in _unifiedOperations.Where(p => string.IsNullOrEmpty(p.PatternName)))
+            string[] files = { filePath };
+
+            var attr = File.GetAttributes(filePath);
+            if (attr.HasFlag(FileAttributes.Directory))
             {
-                Console.WriteLine($@"{op.SourceKind} {op.OperationId} {op.Note}");
+                files = Directory.GetFiles(filePath, "*.csv");
             }
 
-            Assert.That(detectedPercentage, Is.GreaterThanOrEqualTo(minAccuracy));
+            _unifiedOperations =
+                files.SelectMany(s => _csvAccountOperationManager.Read(s, CsvAccountOperationManager.DetectFileSourceKindFromFileName(s)))
+                    .Select(operation => _transformer.Apply(operation))
+                    .SortByOperationIdDesc()
+                    .ToList();
         }
-        
+
+        [When(@"I read the following fortis operations from an export csv file")]
+        public async Task WhenIReadTheFollowingFortisOperationsFromAnExportCsvFile(string multilineText)
+        {
+            var utf8bytes = Encoding.UTF8.GetBytes(multilineText);
+            var asciiBytes = Encoding.Convert(
+                Encoding.UTF8,
+                Encoding.GetEncoding("windows-1252"),
+                utf8bytes);
+
+            var rawStream = new MemoryStream(asciiBytes);
+            var operationManager = new CsvAccountOperationManager();
+            _readOperations = await operationManager.ReadAsync(rawStream, SourceKind.FortisCsvExport);
+        }
+
         [When(@"I store the operation details in file '(.*)'")]
         public void WhenIStoreTheOperationDetailsInFile(string targetFilePath)
         {
@@ -149,33 +163,11 @@ namespace Operations.Classification.Tests.Steps
         {
             await new UnifiedAccountOperationWriter().WriteQif(targetFilePath, _unifiedOperations);
         }
-        
-        [Then(@"File '(.*)' exists")]
-        public void ThenFileExists(string filePath)
-        {
-            var fileExist = File.Exists(filePath);
-            Assert.IsTrue(fileExist, "File should exist");
-        }
 
         [When(@"I unify and transform the read operations")]
         public void WhenIUnifyAndTransformTheReadOperations()
         {
             _unifiedOperations = _readOperations.Select(o => _transformer.Apply(o)).SortByOperationIdDesc().ToList();
-        }
-        
-        [When(@"I apply the cleanup transformation on unified operations")]
-        public void WhenIApplyTheCleanupTransformationOnUnifiedOperations()
-        {
-            foreach (var operation in _unifiedOperations)
-            {
-                _transformer.Apply(operation);
-            }
-        }
-        
-        [Then(@"the operations data is")]
-        public void ThenTheOperationsDataIs(Table table)
-        {
-            table.CompareToSet(_unifiedOperations);
         }
     }
 }

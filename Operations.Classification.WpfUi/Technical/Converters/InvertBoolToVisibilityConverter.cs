@@ -12,7 +12,9 @@ namespace Operations.Classification.WpfUi.Technical.Converters
         {
             var flag = false;
             if (value is bool)
+            {
                 flag = (bool)value;
+            }
 
             return flag ? Visibility.Collapsed : Visibility.Visible;
         }

@@ -1,14 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
-
 using Operations.Classification.AccountOperations.Contracts;
 
 namespace Operations.Classification.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternMapping
     {
-        private JObject _expression;
-
         private ObjectExpression _compiledExpression;
+        private JObject _expression;
 
         public string Name { get; set; }
 
@@ -39,7 +37,7 @@ namespace Operations.Classification.AccountOperations.Unified
                 {
                     _compiledExpression = ObjectExpression.Parse(_expression);
                 }
-                
+
                 return _compiledExpression;
             }
         }

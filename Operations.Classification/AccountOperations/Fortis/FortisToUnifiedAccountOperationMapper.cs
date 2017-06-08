@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-
+﻿using System.Globalization;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
 
@@ -13,7 +11,7 @@ namespace Operations.Classification.AccountOperations.Fortis
             decimal income = 0, outcome = 0;
             if (!string.IsNullOrEmpty(fortisOperation.Amount))
             {
-                decimal amount = decimal.Parse(
+                var amount = decimal.Parse(
                     fortisOperation.Amount,
                     NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint,
                     CultureInfo.GetCultureInfo("fr-BE"));
@@ -27,19 +25,19 @@ namespace Operations.Classification.AccountOperations.Fortis
                     income = amount;
                 }
             }
-            
+
             var trx = new UnifiedAccountOperation
-                          {
-                              Account = fortisOperation.Account,
-                              OperationId = fortisOperation.Reference,
-                              ValueDate = fortisOperation.ValueDate,
-                              Income = income,
-                              Outcome = outcome,
-                              Currency = fortisOperation.Currency,
-                              Note = fortisOperation.Detail,
-                              ThirdParty = fortisOperation.CounterpartyOfTheTransaction,
-                              SourceKind = fortisOperation.SourceKind
-                          };
+            {
+                Account = fortisOperation.Account,
+                OperationId = fortisOperation.Reference,
+                ValueDate = fortisOperation.ValueDate,
+                Income = income,
+                Outcome = outcome,
+                Currency = fortisOperation.Currency,
+                Note = fortisOperation.Detail,
+                ThirdParty = fortisOperation.CounterpartyOfTheTransaction,
+                SourceKind = fortisOperation.SourceKind
+            };
 
             return trx;
         }

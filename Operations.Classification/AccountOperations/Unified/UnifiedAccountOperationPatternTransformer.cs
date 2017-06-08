@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using FastMember;
-
 using Newtonsoft.Json;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.GeoLoc;
@@ -14,12 +13,12 @@ namespace Operations.Classification.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternTransformer
     {
+        private readonly AccountToUnifiedOperationMapper _mapper;
         private readonly List<UnifiedAccountOperationPatternMapping> _patterns;
 
-        private readonly TypeAccessor _unifiedOpAccessors;
-        
         private readonly PlaceInfoResolver _placeInfoResolver;
-        private readonly AccountToUnifiedOperationMapper _mapper;
+
+        private readonly TypeAccessor _unifiedOpAccessors;
         private readonly Dictionary<string, Type> _unifiedOpProperties;
 
         public UnifiedAccountOperationPatternTransformer()
@@ -28,7 +27,8 @@ namespace Operations.Classification.AccountOperations.Unified
             _mapper = new AccountToUnifiedOperationMapper();
             _placeInfoResolver = new PlaceInfoResolver();
             _unifiedOpAccessors = TypeAccessor.Create(typeof(UnifiedAccountOperation));
-            _unifiedOpProperties = typeof(UnifiedAccountOperation).GetProperties().Where(p => p.CanRead && p.CanWrite).ToDictionary(p => p.Name, p=>p.PropertyType);
+            _unifiedOpProperties = typeof(UnifiedAccountOperation).GetProperties().Where(p => p.CanRead && p.CanWrite)
+                .ToDictionary(p => p.Name, p => p.PropertyType);
         }
 
         public UnifiedAccountOperation Apply(AccountOperationBase operation)
@@ -58,7 +58,7 @@ namespace Operations.Classification.AccountOperations.Unified
             var match = tuple.Match;
 
             target.PatternName = pattern.Name;
-            
+
             foreach (var groupName in groupNames)
             {
                 var matchGroup = match.Groups[groupName];
@@ -119,8 +119,43 @@ namespace Operations.Classification.AccountOperations.Unified
                 }
             }
 
-
             return target;
+        }
+
+        private static void AddSourcePropertiesToSymbols(object source, Dictionary<string, object> symbols)
+        {
+            var sourceProps = source.GetType().GetProperties().Where(p => p.CanRead);
+            var sourcePropAccessor = ObjectAccessor.Create(source);
+            foreach (var sourceProp in sourceProps)
+                symbols[sourceProp.Name] = sourcePropAccessor[sourceProp.Name];
+        }
+
+        private static List<UnifiedAccountOperationPatternMapping> LoadPatterns()
+        {
+            var fortisPatterns = JsonConvert.DeserializeObject<List<UnifiedAccountOperationPatternMapping>>(Resources.FortisUnifiedAccountPatternMappings);
+            var sodexoPatterns = JsonConvert.DeserializeObject<List<UnifiedAccountOperationPatternMapping>>(Resources.SodexoUnifiedAccountPatternMappings);
+            return fortisPatterns.Union(sodexoPatterns).ToList();
+        }
+
+        private object EvaluateBinding(Dictionary<string, object> symbols, string binding)
+        {
+            object result = null;
+            var steps = binding.Split('|');
+            foreach (var step in steps.Select(s => s.Trim()))
+                if (step.StartsWith("format "))
+                {
+                    var formattable = result as IFormattable;
+                    if (formattable != null)
+                    {
+                        result = formattable.ToString(step.Substring("format ".Length), CultureInfo.CurrentCulture);
+                    }
+                }
+                else if (symbols.ContainsKey(step))
+                {
+                    result = symbols[step];
+                }
+
+            return result;
         }
 
         private object EvaluateValue(Dictionary<string, object> symbols, string template, Type targetType)
@@ -150,46 +185,6 @@ namespace Operations.Classification.AccountOperations.Unified
             }
 
             return result;
-        }
-
-        private object EvaluateBinding(Dictionary<string, object> symbols, string binding)
-        {
-            object result = null;
-            var steps = binding.Split('|');
-            foreach (var step in steps.Select(s=>s.Trim()))
-            {
-                if (step.StartsWith("format "))
-                {
-                    var formattable = result as IFormattable;
-                    if (formattable != null)
-                    {
-                        result = formattable.ToString(step.Substring("format ".Length), CultureInfo.CurrentCulture);
-                    }
-                }
-                else if(symbols.ContainsKey(step))
-                {
-                    result = symbols[step];
-                }
-            }
-
-            return result;
-        }
-        
-        private static void AddSourcePropertiesToSymbols(object source, Dictionary<string, object> symbols)
-        {
-            var sourceProps = source.GetType().GetProperties().Where(p => p.CanRead);
-            var sourcePropAccessor = ObjectAccessor.Create(source);
-            foreach (var sourceProp in sourceProps)
-            {
-                symbols[sourceProp.Name] = sourcePropAccessor[sourceProp.Name];
-            }
-        }
-
-        private static List<UnifiedAccountOperationPatternMapping> LoadPatterns()
-        {
-            var fortisPatterns = JsonConvert.DeserializeObject<List<UnifiedAccountOperationPatternMapping>>(Resources.FortisUnifiedAccountPatternMappings);
-            var sodexoPatterns = JsonConvert.DeserializeObject<List<UnifiedAccountOperationPatternMapping>>(Resources.SodexoUnifiedAccountPatternMappings);
-            return fortisPatterns.Union(sodexoPatterns).ToList();
         }
     }
 }

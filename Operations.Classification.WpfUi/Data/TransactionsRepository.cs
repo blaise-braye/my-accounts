@@ -9,7 +9,7 @@ using Operations.Classification.AccountOperations.Unified;
 
 namespace Operations.Classification.WpfUi.Data
 {
-    public class TransactionsRepository
+    public class TransactionsRepository : ITransactionsRepository
     {
         private readonly ICsvAccountOperationManager _csvAccountOperationManager;
         private readonly UnifiedAccountOperationPatternTransformer _transactionPatternMapper;
@@ -44,6 +44,36 @@ namespace Operations.Classification.WpfUi.Data
             return true;
         }
 
+        public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
+        {
+            var operationsBases = await GetAllOperations(accountName);
+            var result = operationsBases
+                .Select(_transactionPatternMapper.Apply)
+                .OrderByDescending(t => t.OperationId, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            return result;
+        }
+
+        private async Task<List<AccountOperationBase>> GetAllOperations(string accountName)
+        {
+            var result = new List<AccountOperationBase>();
+
+            var operationsDirectory = _workingCopy.GetAccountOperationsDirectory(accountName);
+            if (Directory.Exists(operationsDirectory))
+            {
+                var files = Directory.GetFiles(operationsDirectory, "*.csv");
+                foreach (var file in files)
+                {
+                    var sourceKind = CsvAccountOperationManager.DetectSourceKindFromFileContent(file);
+                    var fileOperations = await _csvAccountOperationManager.ReadAsync(file, sourceKind);
+                    result.AddRange(fileOperations);
+                }
+            }
+
+            return result;
+        }
+
         private async Task<ReadAndFilterNewImportDataOnlyResult> ReadAndFilterNewImportDataOnly(
             string accountName,
             Stream importData,
@@ -63,7 +93,9 @@ namespace Operations.Classification.WpfUi.Data
                         var unifiedOperation = _transactionPatternMapper.Apply(operation);
 
                         if (unifiedOperation.ValueDate > tmpLastDate)
+                        {
                             tmpLastDate = unifiedOperation.ValueDate;
+                        }
 
                         return new { operation, unifiedOperation };
                     })
@@ -72,43 +104,15 @@ namespace Operations.Classification.WpfUi.Data
                 .ToArray();
 
             if (tmpLastDate == DateTime.MinValue)
+            {
                 tmpLastDate = DateTime.Today;
+            }
 
             return new ReadAndFilterNewImportDataOnlyResult
             {
                 MaxDate = tmpLastDate,
                 Operations = operationsToImport
             };
-        }
-
-        public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
-        {
-            var operationsBases = await GetAllOperations(accountName);
-            var result = operationsBases
-                .Select(_transactionPatternMapper.Apply)
-                .OrderByDescending(t => t.OperationId, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            return result;
-        }
-
-        public async Task<List<AccountOperationBase>> GetAllOperations(string accountName)
-        {
-            var result = new List<AccountOperationBase>();
-
-            var operationsDirectory = _workingCopy.GetAccountOperationsDirectory(accountName);
-            if (Directory.Exists(operationsDirectory))
-            {
-                var files = Directory.GetFiles(operationsDirectory, "*.csv");
-                foreach (var file in files)
-                {
-                    var sourceKind = CsvAccountOperationManager.DetectSourceKindFromFileContent(file);
-                    var fileOperations = await _csvAccountOperationManager.ReadAsync(file, sourceKind);
-                    result.AddRange(fileOperations);
-                }
-            }
-
-            return result;
         }
 
         private class ReadAndFilterNewImportDataOnlyResult

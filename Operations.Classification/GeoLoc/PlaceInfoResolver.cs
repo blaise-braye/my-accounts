@@ -4,12 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-
 using CsvHelper;
 using CsvHelper.Configuration;
-
 using Newtonsoft.Json;
-
 using Operations.Classification.Collections;
 using Operations.Classification.Properties;
 
@@ -19,11 +16,11 @@ namespace Operations.Classification.GeoLoc
     {
         private const int ExpectedMaximumSpacesInOneLocalisationWord = 2;
 
-        private readonly Trie _placesWordsTrie;
+        private readonly List<BelgianPlace> _belgianPlaces;
 
         private readonly ILookup<string, Place> _placesByWordLookup;
 
-        private readonly List<BelgianPlace> _belgianPlaces;
+        private readonly Trie _placesWordsTrie;
 
         public PlaceInfoResolver()
         {
@@ -41,7 +38,7 @@ namespace Operations.Classification.GeoLoc
                 }
             }
 
-            IEnumerable<Tuple<Place, string>> wordFlatifiedPlaces =
+            var wordFlatifiedPlaces =
                 places.Select(l => Tuple.Create(l, l.Name)).Union(places.SelectMany(l => l.Abbrevs.Select(abbrev => Tuple.Create(l, abbrev))));
 
             _placesByWordLookup = wordFlatifiedPlaces.ToLookup(s => s.Item2, s => s.Item1);
@@ -58,7 +55,7 @@ namespace Operations.Classification.GeoLoc
             {
                 int addressStartIndex;
                 var address = GetAdressFromEndOfInput(freetext, out addressStartIndex);
-                string city = string.Empty;
+                var city = string.Empty;
 
                 if (!string.IsNullOrEmpty(address))
                 {
@@ -80,7 +77,7 @@ namespace Operations.Classification.GeoLoc
                 }
 
                 result.City = city;
-                result.Adress = address;                
+                result.Adress = address;
             }
             else
             {
@@ -114,30 +111,6 @@ namespace Operations.Classification.GeoLoc
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
 
-        private string GetCityFromEndOfInput(string input, out int localisationIndex)
-        {
-            var words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var maxToTake = ExpectedMaximumSpacesInOneLocalisationWord + 1;
-            if (words.Length > maxToTake)
-            {
-                words = words.Skip(words.Length - maxToTake).ToArray();
-            }
-
-            for (int i = words.Length; i > 0; i--)
-            {
-                var word = string.Join(" ", words.Skip(words.Length - i));
-                var trimmedWord = word.Trim('/', '-', '.', ' ');
-                if (_placesWordsTrie.Search(trimmedWord))
-                {
-                    localisationIndex = input.Length - word.Length;
-                    return trimmedWord;
-                }
-            }
-            
-            localisationIndex = -1;
-            return string.Empty;
-        }
-
         private string GetAdressFromEndOfInput(string input, out int localisationIndex)
         {
             var cityWord = GetCityFromEndOfInput(input, out localisationIndex);
@@ -163,6 +136,30 @@ namespace Operations.Classification.GeoLoc
 
             // if address prefix not detected, let's return the city
             return cityWord;
+        }
+
+        private string GetCityFromEndOfInput(string input, out int localisationIndex)
+        {
+            var words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var maxToTake = ExpectedMaximumSpacesInOneLocalisationWord + 1;
+            if (words.Length > maxToTake)
+            {
+                words = words.Skip(words.Length - maxToTake).ToArray();
+            }
+
+            for (var i = words.Length; i > 0; i--)
+            {
+                var word = string.Join(" ", words.Skip(words.Length - i));
+                var trimmedWord = word.Trim('/', '-', '.', ' ');
+                if (_placesWordsTrie.Search(trimmedWord))
+                {
+                    localisationIndex = input.Length - word.Length;
+                    return trimmedWord;
+                }
+            }
+
+            localisationIndex = -1;
+            return string.Empty;
         }
     }
 }

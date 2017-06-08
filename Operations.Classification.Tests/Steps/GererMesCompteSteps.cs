@@ -6,9 +6,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using FluentAssertions;
 using NUnit.Framework;
-
 using Operations.Classification.GererMesComptes;
-
 using QifApi;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -18,20 +16,19 @@ namespace Operations.Classification.Tests.Steps
     [Binding]
     public class GererMesCompteSteps
     {
+        private readonly AccountInfoRepository _accounts;
         private readonly PostScenarioCleaner _cleaner;
 
         private readonly GererMesComptesClient _client;
 
-        private readonly AccountInfoRepository _accounts;
-
         private readonly OperationsRepository _operations;
-        
+
         private string _lastExportedQifData;
+
+        private QifDom _lastExportedQifDom;
 
         private RunImportResult _lastQifImportResult;
 
-        private QifDom _lastExportedQifDom;
-        
         private string _toImportQifData;
 
         public GererMesCompteSteps(PostScenarioCleaner cleaner)
@@ -49,76 +46,6 @@ namespace Operations.Classification.Tests.Steps
             await _client.Disconnect();
         }
 
-        [Then(@"I am (not )?connected")]
-        public async Task ThenIAmConnected(string notConnected)
-        {
-            var isConnected = await _client.IsConnected();
-            var expectedConnectState = string.IsNullOrEmpty(notConnected);
-            Assert.That(isConnected, Is.EqualTo(expectedConnectState));
-        }
-        
-        [When(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
-        [Given(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
-        public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(string userName, string password)
-        {
-            await _client.Connect(userName, password);
-        }
-
-        [Given(@"I create the bank account '(.*)'")]
-        [When(@"I create the bank account '(.*)'")]
-        public async Task WhenICreateTheBankAccount(string accountName)
-        {
-            var values = new { name = accountName };
-            if (await _accounts.Create(values))
-            {
-                _cleaner.Add(() => _accounts.Delete(accountName));
-            }
-        }
-
-        [When(@"I delete the bank account '(.*)'")]
-        public async Task WhenIDeleteTheBankAccount(string accountName)
-        {
-            await _accounts.Delete(accountName);
-        }
-
-        [Then(@"the bank account '(.*)' (exists|does not exist)")]
-        public async Task ThenTheBankAccountExists(string accountName, string existsString)
-        {
-            var expectedExists = existsString.Equals("exists");
-            var account = await _accounts.GetByName(accountName);
-            var accualExist = account != null;
-
-            accualExist.Should().Be(expectedExists);
-        }
-
-        [Then(@"the account information of the bank account '(.*)' are")]
-        public async Task ThenTheAccountInformationOfTheBankAccountAre(string accountName, Table table)
-        {
-            var account = await _accounts.GetByName(accountName);
-            var expectedKeys = table.Rows.Select(r => new { Key = r["Key"], Value = account.GetValue(r["Key"], "KeyNotFound") }).ToList();
-            table.CompareToSet(expectedKeys);
-        }
-        
-        [When(@"I search for the last synchronised operation id")]
-        public void WhenISearchForTheLastSynchronisedOperationId()
-        {
-            ScenarioContext.Current.Pending();
-        }
-        
-        [Then(@"The last synchronisation operation id is known")]
-        public void ThenTheLastSynchronisationOperationIdIsKnown()
-        {
-            ScenarioContext.Current.Pending();
-        }
-
-        [Given(@"I import the qif data on account '(.*)'")]
-        [When(@"I import the qif data on account '(.*)'")]
-        public async Task GivenIImportTheQifDataOnAccount(string accountName, string qifData)
-        {
-            var account = await _accounts.GetByName(accountName);
-            _lastQifImportResult = await _operations.Import(account.Id, qifData);
-        }
-
         [Given(@"I have an update of the qif data file to import")]
         public void GivenIHaveAnUpdateOfTheQifDataFileToImport(string qifData)
         {
@@ -131,15 +58,12 @@ namespace Operations.Classification.Tests.Steps
             _toImportQifData = File.ReadAllText(qifDataPath);
         }
 
-
-
-        [Given(@"I wait that last imported qifdata in account '(.*)' is available in export")]
-        [When(@"I wait that last imported qifdata in account '(.*)' is available in export")]
-        public async Task WhenIWaitThatLastImportedQifdataIsAvailableInExport(string accountName)
+        [Given(@"I import the qif data on account '(.*)'")]
+        [When(@"I import the qif data on account '(.*)'")]
+        public async Task GivenIImportTheQifDataOnAccount(string accountName, string qifData)
         {
             var account = await _accounts.GetByName(accountName);
-            _lastExportedQifData = await _operations.WaitExportAvailability(account.Id, _lastQifImportResult.ImportedQifData);
-            _lastExportedQifDom = QifMapper.ParseQifDom(_lastExportedQifData);
+            _lastQifImportResult = await _operations.Import(account.Id, qifData);
         }
 
         [Then(@"dry run import available qif data to account '(.*)' produces the following delta report")]
@@ -172,27 +96,36 @@ namespace Operations.Classification.Tests.Steps
             //expectedQifDataDelta.CompareToSet(comparableOperationsDelta);
         }
 
-        [When(@"I import only new qif transactions from available qif data to account '(.*)'")]
-        public async Task WhenIImportOnlyNewQifTransactionsFromAvailableQifDataToAccount(string accountName)
+        [Then(@"I am (not )?connected")]
+        public async Task ThenIAmConnected(string notConnected)
+        {
+            var isConnected = await _client.IsConnected();
+            var expectedConnectState = string.IsNullOrEmpty(notConnected);
+            Assert.That(isConnected, Is.EqualTo(expectedConnectState));
+        }
+
+        [Then(@"the account information of the bank account '(.*)' are")]
+        public async Task ThenTheAccountInformationOfTheBankAccountAre(string accountName, Table table)
         {
             var account = await _accounts.GetByName(accountName);
-            var operationsDelta = await _operations.DryRunImport(account.Id, _toImportQifData);
-            var lastQifImportResult = await _operations.RunImport(account.Id, operationsDelta.ToList());
-            _lastQifImportResult = lastQifImportResult;
+            var expectedKeys = table.Rows.Select(r => new { Key = r["Key"], Value = account.GetValue(r["Key"], "KeyNotFound") }).ToList();
+            table.CompareToSet(expectedKeys);
         }
-        
-        [Then(@"the last qif data import succeeded")]
-        public void ThenTheLastQifDataImportSucceeded()
+
+        [Then(@"the bank account '(.*)' (exists|does not exist)")]
+        public async Task ThenTheBankAccountExists(string accountName, string existsString)
         {
-            Assert.That(_lastQifImportResult?.Success, Is.True);
-        }
-        
-        [When(@"I export the qif data from account '(.*)', between '(.*)' and '(.*)'")]
-        public async Task WhenIExportTheQifDataFromAccount(string accountName, DateTime startDate, DateTime endDate)
-        {
+            var expectedExists = existsString.Equals("exists");
             var account = await _accounts.GetByName(accountName);
-            _lastExportedQifData = await _operations.ExportQif(account.Id, startDate, endDate);
-            _lastExportedQifDom = QifMapper.ParseQifDom(_lastExportedQifData);
+            var accualExist = account != null;
+
+            accualExist.Should().Be(expectedExists);
+        }
+
+        [Then(@"the last exported qif data are the following operations")]
+        public void ThenTheLastExportedQifDataContainsTheFollowingOperations(Table table)
+        {
+            table.CompareToSet(_lastExportedQifDom.BankTransactions);
         }
 
         [Then(@"the last exported qif data is")]
@@ -201,10 +134,72 @@ namespace Operations.Classification.Tests.Steps
             Assert.That(_lastExportedQifData, Is.EqualTo(qifData));
         }
 
-        [Then(@"the last exported qif data are the following operations")]
-        public void ThenTheLastExportedQifDataContainsTheFollowingOperations(Table table)
+        [Then(@"the last qif data import succeeded")]
+        public void ThenTheLastQifDataImportSucceeded()
         {
-            table.CompareToSet(_lastExportedQifDom.BankTransactions);
+            Assert.That(_lastQifImportResult?.Success, Is.True);
+        }
+
+        [Then(@"The last synchronisation operation id is known")]
+        public void ThenTheLastSynchronisationOperationIdIsKnown()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [When(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
+        [Given(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
+        public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(string userName, string password)
+        {
+            await _client.Connect(userName, password);
+        }
+
+        [Given(@"I create the bank account '(.*)'")]
+        [When(@"I create the bank account '(.*)'")]
+        public async Task WhenICreateTheBankAccount(string accountName)
+        {
+            var values = new { name = accountName };
+            if (await _accounts.Create(values))
+            {
+                _cleaner.Add(() => _accounts.Delete(accountName));
+            }
+        }
+
+        [When(@"I delete the bank account '(.*)'")]
+        public async Task WhenIDeleteTheBankAccount(string accountName)
+        {
+            await _accounts.Delete(accountName);
+        }
+
+        [When(@"I export the qif data from account '(.*)', between '(.*)' and '(.*)'")]
+        public async Task WhenIExportTheQifDataFromAccount(string accountName, DateTime startDate, DateTime endDate)
+        {
+            var account = await _accounts.GetByName(accountName);
+            _lastExportedQifData = await _operations.ExportQif(account.Id, startDate, endDate);
+            _lastExportedQifDom = QifMapper.ParseQifDom(_lastExportedQifData);
+        }
+
+        [When(@"I import only new qif transactions from available qif data to account '(.*)'")]
+        public async Task WhenIImportOnlyNewQifTransactionsFromAvailableQifDataToAccount(string accountName)
+        {
+            var account = await _accounts.GetByName(accountName);
+            var operationsDelta = await _operations.DryRunImport(account.Id, _toImportQifData);
+            var lastQifImportResult = await _operations.RunImport(account.Id, operationsDelta.ToList());
+            _lastQifImportResult = lastQifImportResult;
+        }
+
+        [When(@"I search for the last synchronised operation id")]
+        public void WhenISearchForTheLastSynchronisedOperationId()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [Given(@"I wait that last imported qifdata in account '(.*)' is available in export")]
+        [When(@"I wait that last imported qifdata in account '(.*)' is available in export")]
+        public async Task WhenIWaitThatLastImportedQifdataIsAvailableInExport(string accountName)
+        {
+            var account = await _accounts.GetByName(accountName);
+            _lastExportedQifData = await _operations.WaitExportAvailability(account.Id, _lastQifImportResult.ImportedQifData);
+            _lastExportedQifDom = QifMapper.ParseQifDom(_lastExportedQifData);
         }
     }
 }

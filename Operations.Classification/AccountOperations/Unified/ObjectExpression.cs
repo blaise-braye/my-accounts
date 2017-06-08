@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
 using FastMember;
-
 using Newtonsoft.Json.Linq;
 
 namespace Operations.Classification.AccountOperations.Unified
@@ -25,8 +23,8 @@ namespace Operations.Classification.AccountOperations.Unified
 
         public static ObjectExpression Parse(JObject compositeExp)
         {
-            List<CompositeRegexEntry> entries = new List<CompositeRegexEntry>();
-            
+            var entries = new List<CompositeRegexEntry>();
+
             foreach (var property in compositeExp.Properties())
             {
                 var entry = new CompositeRegexEntry
@@ -34,7 +32,7 @@ namespace Operations.Classification.AccountOperations.Unified
                     SourceProperty = property.Name,
                     Expression = new Regex(property.Value.ToString(), RegexOptions.Compiled)
                 };
-                
+
                 entries.Add(entry);
             }
 
@@ -77,7 +75,7 @@ namespace Operations.Classification.AccountOperations.Unified
         private class CompositeRegexEntry
         {
             public string SourceProperty { get; set; }
-            
+
             public Regex Expression { get; set; }
         }
     }

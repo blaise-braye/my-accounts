@@ -13,7 +13,7 @@
                       Title="Accounts Operations Manager" d:DesignWidth="900" d:DesignHeight="400">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <command:EventToCommand Command="{Binding Mode=OneWay, Path=AccountsManager.LoadCommand}" />
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadCommand}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="Closing">
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=AccountsManager.CommitEditCommand}" />
@@ -34,17 +34,17 @@
             </TabItem>
         </TabControl>
         <Grid Visibility="{Binding BusyIndicator.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
-            Background="Gray" Opacity="0.70">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <controls:ProgressRing IsActive="{Binding BusyIndicator.IsBusy}" />
-            <TextBlock FontSize="22" Text="{Binding BusyIndicator.Reason}"></TextBlock>
-        </StackPanel>
+              Background="Gray" Opacity="0.70">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <controls:ProgressRing IsActive="{Binding BusyIndicator.IsBusy}" />
+                <TextBlock FontSize="22" Text="{Binding BusyIndicator.Reason}" />
+            </StackPanel>
         </Grid>
     </Grid>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding AccountsManager.LoadCommand}">
+                <Button Command="{Binding LoadCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="20"
                                    Height="20"
@@ -81,13 +81,13 @@
     </controls:MetroWindow.RightWindowCommands>
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout Header="Flyout" Position="Right"
+            <controls:Flyout Header="Account editor" Position="Right"
                              IsModal="True"
                              CloseCommand="{Binding AccountsManager.CommitEditCommand}"
                              IsOpen="{Binding AccountsManager.IsEditing, Mode=OneWay}">
                 <accounts:AccountEditorView Width="350" DataContext="{Binding AccountsManager}" />
             </controls:Flyout>
-            <controls:Flyout Header="Flyout" Position="Right"
+            <controls:Flyout Header="Import command parameters" Position="Right"
                              IsModal="True"
                              IsOpen="{Binding TransactionsManager.IsImporting, Mode=TwoWay}">
                 <transactions:ImportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />

@@ -7,24 +7,11 @@ using Operations.Classification.WpfUi.Technical.Controls;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
-    public class TransactionDeltaFilter : List<MenuItemViewModel>
+    public class TransactionDeltaFilter : List<MenuItemViewModel>, IFilter
     {
-        public event EventHandler FilterItemChanged;
-
-        public bool IsActive()
-        {
-            return !GetAllItem().IsChecked;
-        }
-
-        public void Reset()
-        {
-            GetAllItem().IsChecked = true;
-            OnFilterItemChanged((IList<DeltaAction>)GetAllItem().CommandParameter);
-        }
-
         public TransactionDeltaFilter()
         {
-            var cmd = new RelayCommand<IList<DeltaAction>>(OnFilterItemChanged);
+            var cmd = new RelayCommand<IList<DeltaAction>>(RefreshFilterState);
 
             var mappings = new Dictionary<string, IList<DeltaAction>>
             {
@@ -52,18 +39,53 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             }
         }
 
+        public event EventHandler FilterInvalidated;
 
-        private void OnFilterItemChanged(IList<DeltaAction> filter)
+        public bool IsActive()
+        {
+            return !GetAllItem().IsChecked;
+        }
+
+        public void Reset()
+        {
+            GetAllItem().IsChecked = true;
+            RefreshFilterState((IList<DeltaAction>)GetAllItem().CommandParameter);
+        }
+
+        public IEnumerable<T> Apply<T>(IEnumerable<T> deltas, Func<T, DeltaAction> selector)
+        {
+            var filtered = deltas;
+
+            if (IsActive())
+            {
+                var filterScope = BuildFilterScope();
+                filtered = filtered.Where(d => filterScope.Contains(selector(d))).ToList();
+            }
+
+            return filtered;
+        }
+
+        public List<DeltaAction> BuildFilterScope()
+        {
+            var actions = this.Where(i => i.IsChecked).Select(i => i.CommandParameter).Cast<IList<DeltaAction>>()
+                .SelectMany(i => i).ToList();
+            return actions;
+        }
+
+        private MenuItemViewModel GetAllItem()
+        {
+            return this[0];
+        }
+
+        private void RefreshFilterState(IList<DeltaAction> changedFilter)
         {
             var allItem = this[0];
 
-            if (Equals(allItem.CommandParameter, filter))
+            if (Equals(allItem.CommandParameter, changedFilter))
             {
                 // check all
                 foreach (var item2 in this)
-                {
                     item2.IsChecked = allItem.IsChecked;
-                }
             }
             else
             {
@@ -80,19 +102,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 }
             }
 
-            FilterItemChanged?.Invoke(this, EventArgs.Empty);
-        }
-        
-        private MenuItemViewModel GetAllItem()
-        {
-            return this[0];
-        }
-
-        public List<DeltaAction> BuildFilterScope()
-        {
-            var actions = this.Where(i => i.IsChecked).Select(i => i.CommandParameter).Cast<IList<DeltaAction>>()
-                .SelectMany(i => i).ToList();
-            return actions;
+            FilterInvalidated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

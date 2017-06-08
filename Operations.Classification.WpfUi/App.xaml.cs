@@ -3,10 +3,12 @@ using System.Globalization;
 using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Threading;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
 using log4net.Layout;
+using log4net.Repository.Hierarchy;
 using Operations.Classification.WpfUi.Properties;
 
 namespace Operations.Classification.WpfUi
@@ -17,7 +19,7 @@ namespace Operations.Classification.WpfUi
     public partial class App
     {
         private readonly ILog _log = LogManager.GetLogger(typeof(App));
-        
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -26,28 +28,15 @@ namespace Operations.Classification.WpfUi
             SetupCulture();
         }
 
-        private static void SetupLogging()
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var hierarchy = (log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository();
-
-            PatternLayout patternLayout = new PatternLayout();
-            patternLayout.ConversionPattern = "%d [%t] %-5p %m%n";
-            patternLayout.ActivateOptions();
-
-            var debugAppender = new DebugAppender() { Layout = patternLayout };
-            debugAppender.ActivateOptions();
-
-            var root = hierarchy.Root;
-            root.AddAppender(debugAppender);
-            root.Level = Level.All;
-
-            hierarchy.Configured = true;
+            var exception = e.ExceptionObject as Exception;
+            _log.Error("CurrentDomain_UnhandledException", exception);
         }
 
-        private void SetupExceptionHandlers()
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            DispatcherUnhandledException += OnDispatcherUnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            _log.Error("OnDispatcherUnhandledException", e.Exception);
         }
 
         private static void SetupCulture()
@@ -61,20 +50,35 @@ namespace Operations.Classification.WpfUi
             {
                 CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Default.UiCulture);
             }
-            
-            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
-                XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void SetupExceptionHandlers()
         {
-            var exception = e.ExceptionObject as Exception;
-            _log.Error("CurrentDomain_UnhandledException", exception);
+            DispatcherUnhandledException += OnDispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
-        private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private static void SetupLogging()
         {
-            _log.Error("OnDispatcherUnhandledException", e.Exception);
+            var hierarchy = (Hierarchy)LogManager.GetRepository();
+
+            var patternLayout = new PatternLayout();
+            patternLayout.ConversionPattern = "%d [%t] %-5p %m%n";
+            patternLayout.ActivateOptions();
+
+            var debugAppender = new DebugAppender { Layout = patternLayout };
+            debugAppender.ActivateOptions();
+
+            var root = hierarchy.Root;
+            root.AddAppender(debugAppender);
+            root.Level = Level.All;
+
+            hierarchy.Configured = true;
         }
     }
 }

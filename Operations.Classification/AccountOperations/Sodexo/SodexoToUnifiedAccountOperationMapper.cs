@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
 
@@ -12,10 +11,10 @@ namespace Operations.Classification.AccountOperations.Sodexo
             var rawAmount = operation.Amount.Replace(" ", string.Empty);
 
             var culture = CultureInfo.GetCultureInfo("fr-BE");
-            var numberformat = (NumberFormatInfo) culture.NumberFormat.Clone();
+            var numberformat = (NumberFormatInfo)culture.NumberFormat.Clone();
             numberformat.CurrencyDecimalSeparator = ".";
-            
-            decimal amount = decimal.Parse(
+
+            var amount = decimal.Parse(
                 rawAmount,
                 NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint | NumberStyles.AllowCurrencySymbol,
                 numberformat);

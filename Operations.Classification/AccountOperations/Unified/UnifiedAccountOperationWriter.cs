@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
-
 using Operations.Classification.GererMesComptes;
 
 namespace Operations.Classification.AccountOperations.Unified

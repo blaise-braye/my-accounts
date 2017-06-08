@@ -33,6 +33,11 @@ namespace Operations.Classification.WpfUi.Technical.Input
             return jobEncapsulator;
         }
 
+        public bool IsBusySource(object source)
+        {
+            return _encapsulators.Any(j => j.Source == source);
+        }
+
         private void DecapsulateActiveJobDescription(ActiveJobDescription activeJobDescription)
         {
             _encapsulators.Remove(activeJobDescription);
@@ -44,11 +49,6 @@ namespace Operations.Classification.WpfUi.Technical.Input
             var activeJobDescription = _encapsulators.FirstOrDefault();
             IsBusy = activeJobDescription != null;
             Reason = activeJobDescription?.Reason ?? string.Empty;
-        }
-
-        public bool IsBusySource(object source)
-        {
-            return _encapsulators.Any(j => j.Source == source);
         }
 
         private class ActiveJobDescription : IDisposable

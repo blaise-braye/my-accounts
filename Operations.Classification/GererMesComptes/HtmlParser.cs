@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-
 using HtmlAgilityPack;
 
 namespace Operations.Classification.GererMesComptes
@@ -40,18 +38,22 @@ namespace Operations.Classification.GererMesComptes
                     break;
                 default:
                     foreach (var childNode in node.ChildNodes)
-                    {
                         AddFieldsValues(childNode, fields);
-                    }
 
                     break;
             }
         }
 
-        private static void AddTextAreaValueToFields(HtmlNode node, Dictionary<string, string> fields)
+        private static void AddInputValueToFields(HtmlNode node, Dictionary<string, string> fields)
         {
+            var inputType = node.GetAttributeValue("type", string.Empty).ToLower();
+            if (inputType.Equals("submit"))
+            {
+                return;
+            }
+
             var fieldName = node.GetAttributeValue("name", string.Empty);
-            var value = node.InnerHtml;
+            var value = node.GetAttributeValue("value", string.Empty);
             fields.Add(fieldName, value);
         }
 
@@ -72,16 +74,10 @@ namespace Operations.Classification.GererMesComptes
             fields.Add(fieldName, value);
         }
 
-        private static void AddInputValueToFields(HtmlNode node, Dictionary<string, string> fields)
+        private static void AddTextAreaValueToFields(HtmlNode node, Dictionary<string, string> fields)
         {
-            var inputType = node.GetAttributeValue("type", string.Empty).ToLower();
-            if (inputType.Equals("submit"))
-            {
-                return;
-            }
-
             var fieldName = node.GetAttributeValue("name", string.Empty);
-            var value = node.GetAttributeValue("value", string.Empty);
+            var value = node.InnerHtml;
             fields.Add(fieldName, value);
         }
     }

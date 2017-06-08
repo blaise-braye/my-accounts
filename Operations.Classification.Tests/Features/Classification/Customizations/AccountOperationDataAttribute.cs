@@ -12,8 +12,9 @@ namespace Operations.Classification.Tests.Features.Classification.Customizations
     public class AccountOperationDataAttribute : AutoDataAttribute
     {
         public AccountOperationDataAttribute(SourceKind sourceKind)
-            : base(new Fixture()
-                .Customize(new FortisOperationCustomization(sourceKind)))
+            : base(
+                new Fixture()
+                    .Customize(new FortisOperationCustomization(sourceKind)))
         {
         }
 
@@ -46,6 +47,7 @@ namespace Operations.Classification.Tests.Features.Classification.Customizations
                 return new NoSpecimen();
             }
         }
+
         public class AccountOperationBaseBuilder : ISpecimenBuilder
         {
             private readonly SourceKind _sourceKind;
@@ -59,7 +61,9 @@ namespace Operations.Classification.Tests.Features.Classification.Customizations
             {
                 var t = request as Type;
                 if (t == null || t != typeof(AccountOperationBase))
+                {
                     return new NoSpecimen();
+                }
                 AccountOperationBase instance;
 
                 switch (_sourceKind)
@@ -80,5 +84,4 @@ namespace Operations.Classification.Tests.Features.Classification.Customizations
             }
         }
     }
-
 }

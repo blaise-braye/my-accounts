@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
@@ -10,6 +11,11 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         public GmgManagerView()
         {
             InitializeComponent();
+        }
+
+        private void ShowPopup(object sender, RoutedEventArgs e)
+        {
+            Popup.IsOpen = true;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CsvHelper.Configuration;
-
 using Operations.Classification.AccountOperations.Contracts;
 
 namespace Operations.Classification.AccountOperations.Sodexo

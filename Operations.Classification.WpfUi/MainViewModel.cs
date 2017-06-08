@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations;
+using Operations.Classification.WpfUi.Caching;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
@@ -34,11 +36,12 @@ namespace Operations.Classification.WpfUi
 
             var accountsRepository = new AccountsRepository(workingCopy);
             var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager());
+            var cachedTransactionsRepository = new CachedTransactionsRepository(transactionsRepository);
             BusyIndicator = new BusyIndicatorViewModel();
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, transactionsRepository);
-            TransactionsManager = new TransactionsManager(BusyIndicator, transactionsRepository);
+            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, cachedTransactionsRepository);
+            TransactionsManager = new TransactionsManager(BusyIndicator, cachedTransactionsRepository);
             GmgManager = new GmgManager(BusyIndicator);
-
+            LoadCommand = new AsyncCommand(Load);
             if (IsInDesignMode)
             {
                 AccountsManager.Accounts.Add(
@@ -59,10 +62,21 @@ namespace Operations.Classification.WpfUi
 
         public BusyIndicatorViewModel BusyIndicator { get; }
 
+        public IAsyncCommand LoadCommand { get; }
+
         public AccountsManager AccountsManager { get; }
 
         public GmgManager GmgManager { get; }
 
         public TransactionsManager TransactionsManager { get; }
+
+        private async Task Load()
+        {
+            if (AccountsManager.LoadCommand.CanExecute(null))
+            {
+                await AccountsManager.LoadCommand.ExecuteAsync(null);
+                await GmgManager.InitializeAsync(AccountsManager.Accounts);
+            }
+        }
     }
 }

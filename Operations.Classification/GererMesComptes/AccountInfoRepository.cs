@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
 using HtmlAgilityPack;
-
 using Newtonsoft.Json.Linq;
-
 using Operations.Classification.Extensions;
 
 namespace Operations.Classification.GererMesComptes
@@ -25,17 +22,13 @@ namespace Operations.Classification.GererMesComptes
 
         private HttpClient Transport => _client.Transport;
 
-        public Task<AccountInfo> PrepareNew(object initialValues)
-        {
-            var rawMembersDictionary = initialValues.ToRawMembersDictionary();
-            return PrepareNew(rawMembersDictionary);
-        }
-
         public async Task<bool> Create(AccountInfo accountInfo)
         {
             var fields = accountInfo.ToDictionnary();
 
-            var postResponse = await Transport.PostAsync("/system/requests/user/parameters/accounts.html?action_form=saveAccount", new FormUrlEncodedContent(fields));
+            var postResponse = await Transport.PostAsync(
+                "/system/requests/user/parameters/accounts.html?action_form=saveAccount",
+                new FormUrlEncodedContent(fields));
             postResponse.EnsureSuccessStatusCode();
             var json = await postResponse.Content.ReadAsStringAsync();
             var succeeded = (bool)JObject.Parse(json)["response"];
@@ -54,28 +47,27 @@ namespace Operations.Classification.GererMesComptes
             return succeeded;
         }
 
-        public async Task<AccountInfo> GetByName(string accountName)
+        public async Task<bool> Delete(AccountInfo account)
         {
-            if (string.IsNullOrEmpty(accountName))
+            var input = new { id_account = account.Id }.ToRawMembersDictionary();
+            var postResponse = await Transport.PostAsync(
+                "/system/requests/user/parameters/accounts.html?action_form=deleteAccount",
+                new FormUrlEncodedContent(input));
+            postResponse.EnsureSuccessStatusCode();
+            var json = await postResponse.Content.ReadAsStringAsync();
+            var succeeded = (bool)JObject.Parse(json)["response"];
+            if (succeeded)
             {
-                throw new ArgumentNullException(nameof(accountName));
+                ClearCache();
             }
 
-            var accounts = await GetAll();
-            var info = accounts.FirstOrDefault(a => a.Name == accountName);
-            return info;
+            return succeeded;
         }
 
-        public async Task<AccountInfo> GetById(string accountId)
+        public async Task<bool> Delete(string accountName)
         {
-            if (string.IsNullOrEmpty(accountId))
-            {
-                throw new ArgumentNullException(nameof(accountId));
-            }
-
-            var accounts = await GetAll();
-            var info = accounts.FirstOrDefault(a => a.Id == accountId);
-            return info;
+            var account = await GetByName(accountName);
+            return await Delete(account);
         }
 
         public async Task<List<AccountInfo>> GetAll()
@@ -100,6 +92,30 @@ namespace Operations.Classification.GererMesComptes
             }
 
             return _cachedAccounts;
+        }
+
+        public async Task<AccountInfo> GetById(string accountId)
+        {
+            if (string.IsNullOrEmpty(accountId))
+            {
+                throw new ArgumentNullException(nameof(accountId));
+            }
+
+            var accounts = await GetAll();
+            var info = accounts.FirstOrDefault(a => a.Id == accountId);
+            return info;
+        }
+
+        public async Task<AccountInfo> GetByName(string accountName)
+        {
+            if (string.IsNullOrEmpty(accountName))
+            {
+                throw new ArgumentNullException(nameof(accountName));
+            }
+
+            var accounts = await GetAll();
+            var info = accounts.FirstOrDefault(a => a.Name == accountName);
+            return info;
         }
 
         public async Task<List<string>> GetIdentifiers()
@@ -130,25 +146,15 @@ namespace Operations.Classification.GererMesComptes
             return result;
         }
 
-        public async Task<bool> Delete(AccountInfo account)
+        public Task<AccountInfo> PrepareNew(object initialValues)
         {
-            var input = new { id_account = account.Id }.ToRawMembersDictionary();
-            var postResponse = await Transport.PostAsync("/system/requests/user/parameters/accounts.html?action_form=deleteAccount", new FormUrlEncodedContent(input));
-            postResponse.EnsureSuccessStatusCode();
-            var json = await postResponse.Content.ReadAsStringAsync();
-            var succeeded = (bool)JObject.Parse(json)["response"];
-            if (succeeded)
-            {
-                ClearCache();
-            }
-
-            return succeeded;
+            var rawMembersDictionary = initialValues.ToRawMembersDictionary();
+            return PrepareNew(rawMembersDictionary);
         }
 
-        public async Task<bool> Delete(string accountName)
+        private void ClearCache()
         {
-            var account = await GetByName(accountName);
-            return await Delete(account);
+            _cachedAccounts = null;
         }
 
         private async Task<AccountInfo> PrepareNew(IDictionary<string, string> initialValues)
@@ -163,16 +169,9 @@ namespace Operations.Classification.GererMesComptes
             var account = AccountInfo.Create(fields);
 
             foreach (var initialValue in initialValues)
-            {
                 account.SetValue(initialValue.Key, initialValue.Value);
-            }
 
             return account;
-        }
-
-        private void ClearCache()
-        {
-            _cachedAccounts = null;
         }
     }
 }

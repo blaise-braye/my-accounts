@@ -10,22 +10,19 @@ namespace Operations.Classification.Tests.Features.GererMesComptes
     [TestFixture]
     public class When_I_parse_qif_operations
     {
-        private CultureInfo _cultureBackup;
-        
-        [Test]
-        public void ThenDateParsingIsDoneWithGmgCulture()
+        [SetUp]
+        public void Setup()
         {
-            var qifData = @"
-!Type:Bank
-D09/28/2016
-^
-";
-            // When I parse the decimal data
-            var qifDom = QifMapper.ParseQifDom(qifData);
-
-            // Then decimal parsing happened as expected
-            qifDom.BankTransactions.First().Date.Should().Be(new DateTime(2016, 09, 28));
+            _cultureBackup = CultureInfo.CurrentCulture;
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            CultureInfo.CurrentCulture = _cultureBackup;
+        }
+
+        private CultureInfo _cultureBackup;
 
         [Test]
         public void ThenAmountParsingIsDoneWithGmgCulture()
@@ -45,16 +42,19 @@ T0.01
             qifDom.BankTransactions.First().Amount.Should().Be((decimal)0.01);
         }
 
-        [SetUp]
-        public void Setup()
+        [Test]
+        public void ThenDateParsingIsDoneWithGmgCulture()
         {
-            _cultureBackup = CultureInfo.CurrentCulture;
-        }
+            var qifData = @"
+!Type:Bank
+D09/28/2016
+^
+";
+            // When I parse the decimal data
+            var qifDom = QifMapper.ParseQifDom(qifData);
 
-        [TearDown]
-        public void TearDown()
-        {
-            CultureInfo.CurrentCulture = _cultureBackup;
+            // Then decimal parsing happened as expected
+            qifDom.BankTransactions.First().Date.Should().Be(new DateTime(2016, 09, 28));
         }
     }
 }

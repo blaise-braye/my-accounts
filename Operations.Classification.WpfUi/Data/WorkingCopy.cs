@@ -8,9 +8,9 @@ namespace Operations.Classification.WpfUi.Data
     {
         string Root { get; }
         string SettingsPath { get; }
+        string GetAccountAggregatedOperationsPath(string accountName, string extension);
         string GetAccountDirectory(string accountName);
         string GetAccountOperationsDirectory(string accountName);
-        string GetAccountAggregatedOperationsPath(string accountName, string extension);
         Task<bool> MakeFolderOrSkip(string workingCopyRoot);
     }
 
@@ -39,7 +39,9 @@ namespace Operations.Classification.WpfUi.Data
         public string GetAccountAggregatedOperationsPath(string accountName, string extension)
         {
             if (!extension.StartsWith("."))
+            {
                 extension = $".{extension}";
+            }
 
             return GetAbsolutePath(accountName, $"operations{extension}");
         }
@@ -60,7 +62,9 @@ namespace Operations.Classification.WpfUi.Data
                 (rootedPathStep, relativePath) =>
                 {
                     if (!relativePath.StartsWith("./"))
+                    {
                         relativePath = "./" + relativePath;
+                    }
 
                     return Path.Combine(rootedPathStep, relativePath);
                 });
