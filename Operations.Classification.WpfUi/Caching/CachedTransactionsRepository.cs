@@ -23,7 +23,7 @@ namespace Operations.Classification.WpfUi.Caching
             var result = await _repository.Import(accountName, importData, sourceKind);
             if (result)
             {
-                await CacheProvider.FlushAll();
+                await GetCacheEntry(accountName).DeleteAsync();
             }
 
             return result;
@@ -31,13 +31,15 @@ namespace Operations.Classification.WpfUi.Caching
 
         public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
         {
-            var cacheEntry
-                = CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountName));
-
-            var result = await cacheEntry.GetOrAddAsync(
+            var result = await GetCacheEntry(accountName).GetOrAddAsync(
                 () => _repository.GetTransformedUnifiedOperations(accountName));
 
             return result;
+        }
+
+        private static JSonCacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(string accountName)
+        {
+            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountName));
         }
     }
 }

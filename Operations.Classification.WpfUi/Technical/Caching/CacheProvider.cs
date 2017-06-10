@@ -26,13 +26,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching
         }
 
         private static ConnectionMultiplexer Connection => _instance._connection;
-
-        public static Task FlushAll()
-        {
-            var resetTasks = Connection.GetEndPoints().Select(endPoint => Connection.GetServer(endPoint).FlushAllDatabasesAsync());
-            return Task.WhenAll(resetTasks);
-        }
-
+        
         public static JSonCacheEntry<TValue> GetJSonCacheEntry<TValue>(string route)
         {
             return new JSonCacheEntry<TValue>(Connection, route);
