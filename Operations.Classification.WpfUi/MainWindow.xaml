@@ -10,6 +10,7 @@
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       xmlns:command="http://www.galasoft.ch/mvvmlight"
                       mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+                      Icon="Resources/app_icon.ico"
                       Title="Accounts Operations Manager" d:DesignWidth="900" d:DesignHeight="400">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
