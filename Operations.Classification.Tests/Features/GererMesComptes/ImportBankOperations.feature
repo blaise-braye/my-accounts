@@ -85,7 +85,7 @@ Scenario: Identify delta between imported qif data and new available qif data
 	"""
 !Type:Bank
 D09/27/2013
-T0.01
+T1.00
 MUnchanged
 ^
 !Type:Bank
@@ -104,7 +104,7 @@ MSome Memo
 	"""
 !Type:Bank
 D09/27/2013
-T0.01
+T1.00
 MUnchanged
 ^
 !Type:Bank
@@ -123,7 +123,7 @@ MAdded Memo
 
 	Then dry run import available qif data to account 'Automated Test Account' produces the following delta report
 	| DeltaKey        | Action     |
-	| 2013-09-27$0.01 | Nothing    |
+	| 2013-09-27$1.00 | Nothing    |
 	| 2013-09-29$0.02 | UpdateMemo |
 	| 2014-01-11$0.01 | Add        |
 	| 2013-09-28$0.01 | Remove     |

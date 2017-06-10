@@ -33,7 +33,7 @@ namespace Operations.Classification.GererMesComptes
             var exportedQifData = await ExportQif(accountId, minDate, maxDate);
             var exportedQifDom = QifMapper.ParseQifDom(exportedQifData);
             var exportedByKey = exportedQifDom.BankTransactions.ToLookup(s => s.GetBankTransactionLookupKey());
-
+            
             var delta = new TransactionDeltaSet();
 
             foreach (var availableBt in availableQifDom.BankTransactions)

@@ -6,7 +6,7 @@ namespace Operations.Classification.GererMesComptes
     {
         public static string GetBankTransactionLookupKey(this BasicTransaction t)
         {
-            return $"{t.Date:yyyy-MM-dd}${t.Amount}";
+            return $"{t.Date:yyyy-MM-dd}${t.Amount:N2}";
         }
     }
 }
