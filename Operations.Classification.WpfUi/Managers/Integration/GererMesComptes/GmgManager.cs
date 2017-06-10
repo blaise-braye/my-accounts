@@ -25,7 +25,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         private AccountViewModel _currentAccount;
         private bool _isDeltaAvailable;
         private bool _isFiltering;
-        private List<BasicTransactionModel> _lastComputedTransactions;
+        private List<BasicTransactionModel> _currentAccountBasicTransactions;
         private TransactionDeltaSet _transactionDelta;
 
         public GmgManager(BusyIndicatorViewModel busyIndicator)
@@ -142,7 +142,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                     var account = await accountsRepository.GetByName(CurrentAccount.GmgAccountName);
                     var repository = new OperationsRepository(client);
 
-                    var qifData = Transactions.Select(t => t.SourceItem).ToQifData();
+                    var qifData = _currentAccountBasicTransactions.Select(t => t.SourceItem).ToQifData();
 
                     delta = TransactionDelta = await repository.DryRunImport(account.Id, qifData);
                     _loadedDeltas[CurrentAccount.Id] = delta;
@@ -229,7 +229,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             }
             else
             {
-                var locals = _lastComputedTransactions;
+                var locals = _currentAccountBasicTransactions;
                 var filteredLocals = DateFilter.Apply(locals, l => l.Date);
                 Transactions.Reset(filteredLocals);
                 RemoteTransactions.Clear();
@@ -242,7 +242,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
             var operations = CurrentAccount?.Operations ?? new List<UnifiedAccountOperation>();
             var basicTransactions = operations.ToBasicTransactions();
-            _lastComputedTransactions = ProjectToViewModelCollection(basicTransactions).ToList();
+            _currentAccountBasicTransactions = ProjectToViewModelCollection(basicTransactions).ToList();
 
             RefreshTransactions();
         }
