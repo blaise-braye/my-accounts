@@ -1,7 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"
-              GeneratedClassNamespace="Operations.Classification.WpfUi.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Operations.Classification.WpfUi.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="WorkingFolder" Type="System.String" Scope="User">
@@ -21,6 +19,9 @@
     </Setting>
     <Setting Name="RedisConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)">localhost:32773</Value>
+    </Setting>
+    <Setting Name="HideAmounts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

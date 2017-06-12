@@ -15,9 +15,11 @@
 using AutoMapper;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
+using Operations.Classification.WpfUi.Managers.Transactions;
 using QifApi.Transactions;
 
 namespace Operations.Classification.WpfUi
@@ -39,6 +41,7 @@ namespace Operations.Classification.WpfUi
                     cfg.CreateMap<AccountViewModel, AccountEntity>();
                     cfg.CreateMap<AccountEntity, AccountViewModel>();
                     cfg.CreateMap<BasicTransaction, BasicTransactionModel>();
+                    cfg.CreateMap<UnifiedAccountOperation, UnifiedAccountOperationModel>();
                 });
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);

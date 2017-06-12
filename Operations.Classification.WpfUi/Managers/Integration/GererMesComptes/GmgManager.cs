@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Operations.Classification.AccountOperations.Unified;
@@ -12,6 +11,7 @@ using Operations.Classification.WpfUi.Properties;
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Collections;
 using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Projections;
 using QifApi.Transactions;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
@@ -193,16 +193,17 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         private static IEnumerable<BasicTransactionModel> ProjectToViewModelCollection(IEnumerable<BasicTransaction> basicTransactions)
         {
-            return basicTransactions.Select(
-                    transaction =>
+            var result = basicTransactions
+                .Project().To<BasicTransactionModel>(
+                    (sourceItem, targetItem) =>
                     {
-                        var vm = Mapper.Map<BasicTransaction, BasicTransactionModel>(transaction);
-                        vm.Memo = transaction.Memo;
-                        vm.SourceItem = transaction;
-                        return vm;
+                        targetItem.Memo = sourceItem.Memo;
+                        targetItem.SourceItem = sourceItem;
                     })
                 .OrderByDescending(d => d.Number)
                 .ThenByDescending(d => d.Date);
+
+            return result;
         }
 
         private void RefreshIsFilteringState()

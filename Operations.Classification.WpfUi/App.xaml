@@ -29,6 +29,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
             <converters:InvertBoolToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+            <converters:DefaultAmountValueConverter x:Key="AmountValueConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

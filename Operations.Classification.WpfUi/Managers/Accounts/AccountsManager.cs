@@ -7,7 +7,9 @@ using AutoMapper;
 using GalaSoft.MvvmLight;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Technical.Collections;
 using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts
 {
@@ -139,8 +141,9 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                 using (_busyIndicator.EncapsulateActiveJobDescription(this, "Committing pending changes"))
                 {
                     var account = CurrentAccount;
-
-                    var entity = Mapper.Map<AccountViewModel, AccountEntity>(account);
+                    
+                    var entity = account.Map().To<AccountEntity>();
+                    
                     if (account.IsNew)
                     {
                         entity.Id = Guid.NewGuid();
@@ -168,7 +171,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
                 foreach (var entity in await _repository.GetList())
                 {
-                    var vm = Mapper.Map<AccountEntity, AccountViewModel>(entity);
+                    var vm = entity.Map().To<AccountViewModel>();
                     var operations = await _transactionsRepository.GetTransformedUnifiedOperations(entity.Name);
                     vm.Operations = operations;
 

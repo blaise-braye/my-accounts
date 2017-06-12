@@ -45,7 +45,7 @@
                         <TextBlock Text="{Binding Path=Status.Operations,StringFormat='{}{0} operations'}" />
                         <TextBlock
                             Text="{Binding Path=Status.LastImportedOperation,StringFormat='last imported operation {0}'}" />
-                        <TextBlock Text="{Binding Path=Status.Balance,StringFormat='current balance {0} €'}" />
+                        <TextBlock Text="{Binding Path=Status.Balance,Converter={StaticResource AmountValueConverter},StringFormat='current balance {0} €'}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.Resources>

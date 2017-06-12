@@ -94,5 +94,17 @@ namespace Operations.Classification.WpfUi.Properties {
                 this["RedisConnectionString"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool HideAmounts {
+            get {
+                return ((bool)(this["HideAmounts"]));
+            }
+            set {
+                this["HideAmounts"] = value;
+            }
+        }
     }
 }

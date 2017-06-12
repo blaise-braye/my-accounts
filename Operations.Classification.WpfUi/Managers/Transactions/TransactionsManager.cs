@@ -9,11 +9,12 @@ using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Properties;
+using Operations.Classification.WpfUi.Technical.Collections;
 using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Transactions
 {
@@ -28,7 +29,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private string _filePaths;
         private bool _isImporting;
-        private List<UnifiedAccountOperation> _operations;
+        private List<UnifiedAccountOperationModel> _operations;
         private SourceKind? _sourceKind;
 
         public TransactionsManager(BusyIndicatorViewModel busyIndicator, ITransactionsRepository transactionsRepository)
@@ -52,7 +53,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         public RelayCommand BeginImportCommand { get; }
 
-        public List<UnifiedAccountOperation> Operations
+        public List<UnifiedAccountOperationModel> Operations
         {
             get { return _operations; }
             private set { Set(nameof(Operations), ref _operations, value); }
@@ -168,7 +169,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private void OnAccountViewModelReceived(AccountViewModel currentAccount)
         {
             CurrentAccount = currentAccount;
-            Operations = currentAccount?.Operations;
+            Operations = currentAccount?.Operations?.Project()?.To<UnifiedAccountOperationModel>()?.ToList();
         }
 
         private void SelectFilesToImport()
