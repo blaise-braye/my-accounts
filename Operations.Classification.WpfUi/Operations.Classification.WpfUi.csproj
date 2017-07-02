@@ -121,7 +121,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Caching\CachedTransactionsRepository.cs" />
-    <Compile Include="Managers\Integration\GererMesComptes\TextFilter.cs" />
+    <Compile Include="Technical\Collections\Filters\TextFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSet.cs" />
     <Compile Include="Managers\Reports\UnifiedOperationsReporter.cs" />
     <Compile Include="Managers\Settings\SettingsEditorView.xaml.cs">
@@ -135,9 +135,9 @@
     <Compile Include="Technical\Caching\JSonCacheEntryOfT.cs" />
     <Compile Include="Technical\Caching\JSonCacheEntry.cs" />
     <Compile Include="Data\ITransactionsRepository.cs" />
-    <Compile Include="Managers\Integration\GererMesComptes\CompositeFilter.cs" />
-    <Compile Include="Managers\Integration\GererMesComptes\DateRangeFilter.cs" />
-    <Compile Include="Managers\Integration\GererMesComptes\IFilter.cs" />
+    <Compile Include="Technical\Collections\Filters\CompositeFilter.cs" />
+    <Compile Include="Technical\Collections\Filters\DateRangeFilter.cs" />
+    <Compile Include="Technical\Collections\Filters\IFilter.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\TransactionDeltaFilter.cs" />
     <Compile Include="Technical\Localization\ApplicationCulture.cs" />
     <Compile Include="Technical\Projections\ItemProjectionBuilder.cs" />

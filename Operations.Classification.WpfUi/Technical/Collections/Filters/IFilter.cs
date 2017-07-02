@@ -1,6 +1,6 @@
 using System;
 
-namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
+namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 {
     public interface IFilter
     {

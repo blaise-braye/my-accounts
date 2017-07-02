@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Operations.Classification.GererMesComptes;
+using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Controls;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes

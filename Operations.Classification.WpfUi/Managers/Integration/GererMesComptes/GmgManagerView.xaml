@@ -37,7 +37,7 @@
             </Button>
             <ToggleButton Padding="12" Style="{DynamicResource MetroCircleToggleButtonStyle}"
                           Click="ShowPopup"
-                          x:Name="btnFilter"
+                          x:Name="BtnFilter"
                           IsChecked="{Binding IsFiltering, Mode=TwoWay}">
                 <Rectangle Width="24" Height="24">
                     <Rectangle.Fill>
@@ -45,15 +45,10 @@
                     </Rectangle.Fill>
                 </Rectangle>
             </ToggleButton>
-            <Popup x:Name="Popup" PlacementTarget="{Binding ElementName=btnFilter}"
+            <Popup x:Name="Popup" PlacementTarget="{Binding ElementName=BtnFilter}"
                    Placement="Top" StaysOpen="False">
                 <controls:PopupContent>
                     <StackPanel>
-                        <GroupBox Header="Memo">
-                            <StackPanel>
-                                <TextBox Text="{Binding MemoFilter.Text}"></TextBox>
-                            </StackPanel>
-                        </GroupBox>
                         <GroupBox Header="date range">
                             <StackPanel>
                                 <DatePicker SelectedDate="{Binding DateFilter.FromDate}"
@@ -73,6 +68,11 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
+                        </GroupBox>
+                        <GroupBox Header="Memo">
+                            <StackPanel>
+                                <TextBox Text="{Binding MemoFilter.Text}"></TextBox>
+                            </StackPanel>
                         </GroupBox>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="6,0,6,4">
                             <Button Command="{Binding ResetFilterCommad}" ToolTip="Clear filter">

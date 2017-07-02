@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using GalaSoft.MvvmLight;
 
-namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
+namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 {
     public class TextFilter : ObservableObject, IFilter
     {

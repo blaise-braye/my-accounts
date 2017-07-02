@@ -9,6 +9,7 @@ using Operations.Classification.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Collections;
+using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 using QifApi.Transactions;

@@ -11,6 +11,7 @@ using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -31,6 +32,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private bool _isImporting;
         private List<UnifiedAccountOperationModel> _operations;
         private SourceKind? _sourceKind;
+        private readonly CompositeFilter _anyFilter;
 
         public TransactionsManager(BusyIndicatorViewModel busyIndicator, ITransactionsRepository transactionsRepository)
         {
@@ -48,7 +50,25 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
             SelectFilesToImportCommand = new RelayCommand(SelectFilesToImport);
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
+            DateFilter = new DateRangeFilter();
+            NoteFilter = new TextFilter();
+            _anyFilter = new CompositeFilter(DateFilter, NoteFilter);
+            _anyFilter.FilterInvalidated += OnAnyFilterInvalidated;
+
+            ResetFilterCommad = new RelayCommand(() => _anyFilter.Reset());
         }
+
+        private void OnAnyFilterInvalidated(object sender, EventArgs e)
+        {
+            RefreshIsFilteringState();
+            RefreshOperations();
+        }
+
+        public TextFilter NoteFilter { get; }
+
+        public DateRangeFilter DateFilter { get; }
+
+        public RelayCommand ResetFilterCommad { get; }
 
         public RelayCommand CommitImportCommand { get; }
 
@@ -99,6 +119,25 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     if (value)
                         SourceKind = null;
             }
+        }
+
+        private bool _isFiltering;
+
+        public bool IsFiltering
+        {
+            get => _isFiltering;
+            set
+            {
+                if (Set(nameof(IsFiltering), ref _isFiltering, value))
+                {
+                    RefreshIsFilteringState();
+                }
+            }
+        }
+
+        private void RefreshIsFilteringState()
+        {
+            IsFiltering = _anyFilter.IsActive();
         }
 
         private async Task BeginDataQualityAnalysis()
@@ -223,7 +262,19 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private void OnAccountViewModelReceived(AccountViewModel currentAccount)
         {
             CurrentAccount = currentAccount;
-            Operations = currentAccount?.Operations?.Project()?.To<UnifiedAccountOperationModel>()?.ToList();
+            RefreshOperations();
+        }
+
+        private void RefreshOperations()
+        {
+            var operations = CurrentAccount?.Operations?.Project()?.To<UnifiedAccountOperationModel>();
+            if (operations != null)
+            {
+                operations = DateFilter.Apply(operations, op => op.ExecutionDate);
+                operations = NoteFilter.Apply(operations, op => op.Note);
+            }
+
+            Operations = operations?.ToList();
         }
 
         private void SelectFilesToImport()

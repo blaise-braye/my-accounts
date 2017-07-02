@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
+             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.TransactionsManager}"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -27,6 +28,46 @@
                     </Rectangle.Fill>
                 </Rectangle>
             </Button>
+            <ToggleButton Padding="12" Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                          Click="ShowPopup"
+                          x:Name="BtnFilter"
+                          IsChecked="{Binding IsFiltering, Mode=TwoWay}">
+                <Rectangle Width="24" Height="24">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_filter}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </ToggleButton>
+            <Popup x:Name="Popup" PlacementTarget="{Binding ElementName=BtnFilter}"
+                   Placement="Top" StaysOpen="False">
+                <controls:PopupContent>
+                    <StackPanel>
+                        <GroupBox Header="execution date range">
+                            <StackPanel>
+                                <DatePicker SelectedDate="{Binding DateFilter.FromDate}"
+                                            controls1:TextBoxHelper.Watermark="from" Margin="0,0,0,4" />
+                                <DatePicker SelectedDate="{Binding DateFilter.ToDate}"
+                                            controls1:TextBoxHelper.Watermark="to" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Note">
+                            <StackPanel>
+                                <TextBox Text="{Binding NoteFilter.Text}"></TextBox>
+                            </StackPanel>
+                        </GroupBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="6,0,6,4">
+                            <Button Command="{Binding ResetFilterCommad}" ToolTip="Clear filter">
+                                <Rectangle Width="24" Height="24">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Visual="{StaticResource appbar_close}" Stretch="Fill" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
+                </controls:PopupContent>
+            </Popup>
         </StackPanel>
         <DataGrid ItemsSource="{Binding Operations}" AutoGenerateColumns="True">
             <i:Interaction.Behaviors>
