@@ -16,7 +16,7 @@ namespace Operations.Classification.GererMesComptes
     {
         private static readonly CultureInfo _englishCulture = new CultureInfo("en-US");
 
-        private static readonly Regex _whiteSpaceRegex = new Regex(@"[ /_:\.]+", RegexOptions.Compiled);
+        private static readonly Regex _whiteSpaceRegex = new Regex(@"[ /_:\.&]+", RegexOptions.Compiled);
 
         public static Configuration QifConfiguration => new Configuration
         {
@@ -49,9 +49,10 @@ namespace Operations.Classification.GererMesComptes
                 var maxLength = 128 - patternNameLength;
 
                 var sb = new StringBuilder();
-                for (var i = 0; i < prioritizedParts.Length; i++)
+
+                foreach (string part in prioritizedParts)
                 {
-                    var toAdd = $"{prioritizedParts[i]} - ";
+                    var toAdd = $"{part} - ";
                     if (sb.Length + toAdd.Length <= maxLength)
                     {
                         sb.Append(toAdd);
@@ -61,10 +62,18 @@ namespace Operations.Classification.GererMesComptes
                 sb.Append(operation.PatternName);
 
                 label = sb.ToString();
-                label = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(label.ToLowerInvariant());
+                label = label.ToLowerInvariant();
+                label = SetAcronymsToUpperCase(label);
+                label = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(label);
+                label = SetAcronymsToUpperCase(label);
             }
 
             return label;
+        }
+
+        private static string SetAcronymsToUpperCase(string labelLowerInvarient)
+        {
+            return labelLowerInvarient.Replace("p2p", "P2P");
         }
 
         public static QifDom ParseQifDom(string qifData)
