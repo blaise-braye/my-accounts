@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Command;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;

@@ -46,7 +46,7 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding LoadCommand}">
+                <Button Command="{Binding RefreshCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="20"
                                    Height="20"

@@ -39,12 +39,12 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             _connection.Dispose();
         }
 
-        public static void ClearCache()
+        public static async Task ClearCache()
         {
             var servers = Connection.GetEndPoints(true).Select(e => Connection.GetServer(e));
             foreach (var server in servers)
             {
-                server.FlushDatabase();
+                await server.FlushAllDatabasesAsync();
             }
         }
     }

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;

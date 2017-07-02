@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Operations.Classification.WpfUi.Technical.Caching;
+using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Settings
@@ -21,7 +23,7 @@ namespace Operations.Classification.WpfUi.Managers.Settings
         {
             BeginEditCommand = new RelayCommand(BeginEdit, () => !IsEditing);
             CommitEditCommand = new RelayCommand(CommitEdit, () => IsEditing);
-            ResetDefaultCommand = new RelayCommand(ResetDefault, () => IsEditing);
+            ResetDefaultCommand = new AsyncCommand(ResetDefault, () => IsEditing);
             CancelEditCommand = new RelayCommand(CancelEdit, () => IsEditing);
 
             _fbd = new FolderBrowserDialog();
@@ -100,10 +102,10 @@ namespace Operations.Classification.WpfUi.Managers.Settings
             IsEditing = false;
         }
 
-        private void ResetDefault()
+        private async Task ResetDefault()
         {
             Properties.Settings.Default.Reset();
-            CacheProvider.ClearCache();
+            await CacheProvider.ClearCache();
             OnSettingsPersisted();
             Settings = Properties.Settings.Default.Map().To<SettingsModel>();
         }

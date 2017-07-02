@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Helpers;
 using log4net;
 
 namespace Operations.Classification.WpfUi.Technical.Input
 {
-    public interface IAsyncCommand<TArgType> : IAsyncCommand
+    public interface IAsyncCommand<in TArgType> : IAsyncCommand
     {
         Task ExecuteAsync(TArgType @object);
     }

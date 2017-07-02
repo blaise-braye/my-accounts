@@ -1,9 +1,6 @@
-using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Markup;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.WpfUi.Caching;
@@ -51,6 +48,7 @@ namespace Operations.Classification.WpfUi
             GmgManager = new GmgManager(BusyIndicator);
             SettingsManager = new SettingsManager();
             LoadCommand = new AsyncCommand(Load);
+            RefreshCommand = new AsyncCommand(Refresh);
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
 
             if (IsInDesignMode)
@@ -70,7 +68,7 @@ namespace Operations.Classification.WpfUi
                 AccountsManager.CurrentAccount = AccountsManager.Accounts.First();
             }
         }
-
+        
         private void OnSettingsUpdated(Settings obj)
         {
             ApplicationCulture.ResetCulture();
@@ -81,6 +79,8 @@ namespace Operations.Classification.WpfUi
         public BusyIndicatorViewModel BusyIndicator { get; }
 
         public IAsyncCommand LoadCommand { get; }
+
+        public IAsyncCommand RefreshCommand { get; }
 
         public AccountsManager AccountsManager { get; }
 
@@ -97,6 +97,12 @@ namespace Operations.Classification.WpfUi
                 await AccountsManager.LoadCommand.ExecuteAsync(null);
                 await GmgManager.InitializeAsync(AccountsManager.Accounts);
             }
+        }
+
+        private async Task Refresh()
+        {
+            await CacheProvider.ClearCache();
+            await Load();
         }
     }
 }
