@@ -108,7 +108,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 var lastItem = operations[operations.Count - 1];
                 var maxDay = lastItem.Day.AddDays(15);
                 dateTimeAxis.Maximum = DateTimeAxis.ToDouble(maxDay);
-                dateTimeAxis.Minimum = DateTimeAxis.ToDouble(maxDay.AddMonths(-7));
+                dateTimeAxis.Minimum = DateTimeAxis.ToDouble(maxDay.AddMonths(-13));
             }
 
             operationsModel.Axes.Add(dateTimeAxis);
