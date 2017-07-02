@@ -16,6 +16,7 @@ namespace Operations.Classification.AccountOperations
             _mappers[SourceKind.FortisCsvArchive] = new FortisToUnifiedAccountOperationMapper();
             _mappers[SourceKind.FortisCsvExport] = _mappers[SourceKind.FortisCsvArchive];
             _mappers[SourceKind.SodexoCsvExport] = new SodexoToUnifiedAccountOperationMapper();
+            _mappers[SourceKind.InternalExport] = new UnifiedAccountOperationToUnifiedAccountOperationMapper();
         }
 
         public UnifiedAccountOperation Map(AccountOperationBase operationBase)

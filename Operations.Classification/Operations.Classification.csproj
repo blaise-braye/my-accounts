@@ -85,6 +85,7 @@
     <Compile Include="AccountOperations\Contracts\AccountToUnifiedOperationMapperBase.cs" />
     <Compile Include="AccountOperations\Contracts\AccountToUnifiedOperationMapperBaseOfT.cs" />
     <Compile Include="AccountOperations\Sodexo\SodexoToUnifiedAccountOperationMapper.cs" />
+    <Compile Include="AccountOperations\Unified\UnifiedAccountOperationToUnifiedAccountOperationMapper.cs" />
     <Compile Include="AccountOperations\Unified\ObjectExpression.cs" />
     <Compile Include="AccountOperations\Unified\ObjectMatch.cs" />
     <Compile Include="AccountOperations\Unified\UnifiedAccountOperationCsvMap.cs" />

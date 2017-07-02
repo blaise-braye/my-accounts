@@ -9,6 +9,7 @@ using CsvHelper.Configuration;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
 using Operations.Classification.AccountOperations.Sodexo;
+using Operations.Classification.AccountOperations.Unified;
 
 namespace Operations.Classification.AccountOperations
 {
@@ -162,15 +163,13 @@ namespace Operations.Classification.AccountOperations
                         case SourceKind.SodexoCsvExport:
                             record = reader.GetRecord<SodexoOperation>();
                             break;
+                        case SourceKind.InternalExport:
+                            record = reader.GetRecord<UnifiedAccountOperation>();
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(sourceKind));
                     }
-
-                    var forisop = record as FortisOperation;
-                    if (forisop != null && string.IsNullOrEmpty(forisop.Reference))
-                    {
-                    }
-
+                    
                     record.SourceKind = sourceKind;
 
                     yield return record;

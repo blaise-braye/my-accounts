@@ -35,7 +35,9 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             var operations = await Task.Run(
                 () =>
                 {
-                    var mixedAccountOperationOperations = selection.SelectMany(account => ComputeOperationsPerDay(account.InitialBalance, account.Operations))
+                    var mixedAccountOperationOperations = selection
+                        .Where(a => a.Operations?.Any() == true)
+                        .SelectMany(account => ComputeOperationsPerDay(account.InitialBalance, account.Operations))
                         .OrderBy(op => op.Day).ToList();
 
                     var aggregattedDailyOperations = GroupDailyOperations(mixedAccountOperationOperations);
