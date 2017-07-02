@@ -8,7 +8,7 @@ namespace Operations.Classification.WpfUi.Data
 
         public string Name { get; set; }
 
-        public string GmgAccountName { get; set; }
+        public string GmcAccountName { get; set; }
 
         public decimal InitialBalance { get; set; }
     }

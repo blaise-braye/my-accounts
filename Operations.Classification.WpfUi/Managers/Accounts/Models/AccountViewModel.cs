@@ -9,7 +9,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 {
     public class AccountViewModel : ViewModelBase
     {
-        private string _gmgAccountName;
+        private string _gmcAccountName;
 
         private Guid _id;
 
@@ -38,10 +38,10 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
             set => Set(nameof(Name), ref _name, value);
         }
 
-        public string GmgAccountName
+        public string GmcAccountName
         {
-            get => _gmgAccountName;
-            set => Set(nameof(GmgAccountName), ref _gmgAccountName, value);
+            get => _gmcAccountName;
+            set => Set(nameof(GmcAccountName), ref _gmcAccountName, value);
         }
 
         public decimal InitialBalance

@@ -16,7 +16,7 @@ using QifApi.Transactions;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
-    public class GmgManager : ViewModelBase
+    public class GmcManager : ViewModelBase
     {
         private readonly CompositeFilter _anyFilter;
         private readonly BusyIndicatorViewModel _busyIndicator;
@@ -28,7 +28,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         private List<BasicTransactionModel> _currentAccountBasicTransactions;
         private TransactionDeltaSet _transactionDelta;
 
-        public GmgManager(BusyIndicatorViewModel busyIndicator)
+        public GmcManager(BusyIndicatorViewModel busyIndicator)
         {
             _busyIndicator = busyIndicator;
 
@@ -105,7 +105,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public async Task InitializeAsync(IEnumerable<AccountViewModel> accounts)
         {
-            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Loading account gmg transactions"))
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Loading account gmc transactions"))
             {
                 var cachedDeltas = new Dictionary<Guid, TransactionDeltaSet>();
                 foreach (var account in accounts)
@@ -139,10 +139,10 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Computing delta with remote"))
             using (var client = new GererMesComptesClient())
             {
-                if (await client.Connect(Properties.Settings.Default.GmgUserName, Properties.Settings.Default.GmgPassword))
+                if (await client.Connect(Properties.Settings.Default.GmcUserName, Properties.Settings.Default.GmcPassword))
                 {
                     var accountsRepository = new AccountInfoRepository(client);
-                    var account = await accountsRepository.GetByName(CurrentAccount.GmgAccountName);
+                    var account = await accountsRepository.GetByName(CurrentAccount.GmcAccountName);
                     var repository = new OperationsRepository(client);
 
                     var qifData = _currentAccountBasicTransactions.Select(t => t.SourceItem).ToQifData();
@@ -265,10 +265,10 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Synchronizing data"))
             using (var client = new GererMesComptesClient())
             {
-                if (await client.Connect(Properties.Settings.Default.GmgUserName, Properties.Settings.Default.GmgPassword))
+                if (await client.Connect(Properties.Settings.Default.GmcUserName, Properties.Settings.Default.GmcPassword))
                 {
                     var accountsRepository = new AccountInfoRepository(client);
-                    var account = await accountsRepository.GetByName(CurrentAccount.GmgAccountName);
+                    var account = await accountsRepository.GetByName(CurrentAccount.GmcAccountName);
                     var repository = new OperationsRepository(client);
 
                     var runImportResult = await repository.RunImport(account.Id, delta.ToList());

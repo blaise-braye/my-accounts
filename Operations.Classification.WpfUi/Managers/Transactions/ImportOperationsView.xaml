@@ -26,14 +26,14 @@
                      controls:TextBoxHelper.ButtonCommand="{Binding SelectFilesToImportCommand}"
                      Text="{Binding FilePaths}" />
 
-            <Label Target="{Binding ElementName=TxtGmgAccountName}">
+            <Label Target="{Binding ElementName=TxtGmcAccountName}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Source kind : ( " />
                     <CheckBox IsChecked="{Binding AutoDetectSourceKind, Mode=TwoWay}" Content="Auto detect" />
                     <TextBlock Text=" )" />
                 </StackPanel>
             </Label>
-            <ComboBox Name="TxtGmgAccountName"
+            <ComboBox Name="TxtGmcAccountName"
                       IsEnabled="{Binding AutoDetectSourceKind, Converter={StaticResource InvertBooleanConverter}, Mode=TwoWay}"
                       controls:TextBoxHelper.Watermark="select the source kind"
                       SelectedValue="{Binding SourceKind}"

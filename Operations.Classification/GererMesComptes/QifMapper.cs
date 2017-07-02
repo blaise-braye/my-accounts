@@ -50,13 +50,11 @@ namespace Operations.Classification.GererMesComptes
 
                 var sb = new StringBuilder();
 
-                foreach (string part in prioritizedParts)
+                foreach (var part in prioritizedParts)
                 {
                     var toAdd = $"{part} - ";
                     if (sb.Length + toAdd.Length <= maxLength)
-                    {
                         sb.Append(toAdd);
-                    }
                 }
 
                 sb.Append(operation.PatternName);
@@ -69,11 +67,6 @@ namespace Operations.Classification.GererMesComptes
             }
 
             return label;
-        }
-
-        private static string SetAcronymsToUpperCase(string labelLowerInvarient)
-        {
-            return labelLowerInvarient.Replace("p2p", "P2P");
         }
 
         public static QifDom ParseQifDom(string qifData)
@@ -119,7 +112,6 @@ namespace Operations.Classification.GererMesComptes
             finally
             {
                 if (File.Exists(tempFileName))
-                {
                     try
                     {
                         File.Delete(tempFileName);
@@ -128,7 +120,6 @@ namespace Operations.Classification.GererMesComptes
                     {
                         /* ignored */
                     }
-                }
             }
         }
 
@@ -137,6 +128,11 @@ namespace Operations.Classification.GererMesComptes
             var transactions = operations.ToBasicTransactions();
             var qifData = transactions.ToQifData();
             return qifData;
+        }
+
+        private static string SetAcronymsToUpperCase(string labelLowerInvarient)
+        {
+            return labelLowerInvarient.Replace("p2p", "P2P");
         }
 
         public class TemporaryCulture : IDisposable

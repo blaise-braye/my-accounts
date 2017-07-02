@@ -4,11 +4,11 @@ using System.Windows.Controls;
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
     /// <summary>
-    ///     Interaction logic for GmgManagerView.xaml
+    ///     Interaction logic for GmcManagerView.xaml
     /// </summary>
-    public partial class GmgManagerView : UserControl
+    public partial class GmcManagerView : UserControl
     {
-        public GmgManagerView()
+        public GmcManagerView()
         {
             InitializeComponent();
         }

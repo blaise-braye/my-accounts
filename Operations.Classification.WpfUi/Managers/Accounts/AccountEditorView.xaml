@@ -16,10 +16,10 @@
         <TextBox Name="TxtInitialBalance"
                  controls:TextBoxHelper.Watermark="enter the initial balance of the account here"
                  Text="{Binding CurrentAccount.InitialBalance}" />
-        <Label Content="Gmg account name :" Target="{Binding ElementName=TxtGmgAccountName}" />
-        <TextBox Name="TxtGmgAccountName"
-                 controls:TextBoxHelper.Watermark="enter the equivalent account name on Gmg"
-                 Text="{Binding CurrentAccount.GmgAccountName}" />
+        <Label Content="Gmc account name :" Target="{Binding ElementName=TxtGmcAccountName}" />
+        <TextBox Name="TxtGmcAccountName"
+                 controls:TextBoxHelper.Watermark="enter the equivalent account name on Gmc"
+                 Text="{Binding CurrentAccount.GmcAccountName}" />
     </StackPanel>
 
 </UserControl>

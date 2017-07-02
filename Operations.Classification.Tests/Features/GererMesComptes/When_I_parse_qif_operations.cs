@@ -25,14 +25,14 @@ namespace Operations.Classification.Tests.Features.GererMesComptes
         private CultureInfo _cultureBackup;
 
         [Test]
-        public void ThenAmountParsingIsDoneWithGmgCulture()
+        public void ThenAmountParsingIsDoneWithGmcCulture()
         {
             var qifData = @"
 !Type:Bank
 T0.01
 ^
 ";
-            // Given I use a culture different than es-US (which is the one to use for serialization of GMG data)
+            // Given I use a culture different than es-US (which is the one to use for serialization of GMC data)
             CultureInfo.CurrentCulture = new CultureInfo("fr-BE");
 
             // When I parse the decimal data
@@ -43,7 +43,7 @@ T0.01
         }
 
         [Test]
-        public void ThenDateParsingIsDoneWithGmgCulture()
+        public void ThenDateParsingIsDoneWithGmcCulture()
         {
             var qifData = @"
 !Type:Bank

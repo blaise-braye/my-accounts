@@ -5,10 +5,10 @@
     <Setting Name="WorkingFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\BBraye\OneDrive\Gestion\Data2\</Value>
     </Setting>
-    <Setting Name="GmgUserName" Type="System.String" Scope="User">
+    <Setting Name="GmcUserName" Type="System.String" Scope="User">
       <Value Profile="(Default)">blaisemail@gmail.com</Value>
     </Setting>
-    <Setting Name="GmgPassword" Type="System.String" Scope="User">
+    <Setting Name="GmcPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">kT5XeI!I9AI9</Value>
     </Setting>
     <Setting Name="Culture" Type="System.String" Scope="User">

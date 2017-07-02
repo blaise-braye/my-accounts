@@ -166,7 +166,7 @@
     </Compile>
     <Compile Include="Managers\Accounts\Models\AccountViewModel.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\BasicTransactionModel.cs" />
-    <Compile Include="Managers\Integration\GererMesComptes\GmgManager.cs" />
+    <Compile Include="Managers\Integration\GererMesComptes\GmcManager.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Managers\Transactions\ImportOperationsView.xaml.cs">
       <DependentUpon>ImportOperationsView.xaml</DependentUpon>
@@ -177,8 +177,8 @@
     <Compile Include="Managers\Accounts\AccountEditorView.xaml.cs">
       <DependentUpon>AccountEditorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Integration\GererMesComptes\GmgManagerView.xaml.cs">
-      <DependentUpon>GmgManagerView.xaml</DependentUpon>
+    <Compile Include="Managers\Integration\GererMesComptes\GmcManagerView.xaml.cs">
+      <DependentUpon>GmcManagerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Managers\Transactions\TransactionsFileManagerView.xaml.cs">
       <DependentUpon>TransactionsFileManagerView.xaml</DependentUpon>
@@ -203,7 +203,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Managers\Integration\GererMesComptes\GmgManagerView.xaml">
+    <Page Include="Managers\Integration\GererMesComptes\GmcManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

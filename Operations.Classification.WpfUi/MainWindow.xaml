@@ -30,9 +30,9 @@
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <transactions:TransactionsFileManagerView DataContext="{Binding TransactionsManager}" />
             </TabItem>
-            <TabItem Header="gmg"
+            <TabItem Header="gmc"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <gererMesComptes:GmgManagerView DataContext="{Binding GmgManager}" />
+                <gererMesComptes:GmcManagerView DataContext="{Binding GmcManager}" />
             </TabItem>
         </TabControl>
         <Grid Visibility="{Binding BusyIndicator.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"

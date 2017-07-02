@@ -45,7 +45,7 @@ namespace Operations.Classification.WpfUi
             BusyIndicator = new BusyIndicatorViewModel();
             AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, cachedTransactionsRepository);
             TransactionsManager = new TransactionsManager(BusyIndicator, cachedTransactionsRepository);
-            GmgManager = new GmgManager(BusyIndicator);
+            GmcManager = new GmcManager(BusyIndicator);
             SettingsManager = new SettingsManager();
             LoadCommand = new AsyncCommand(Load);
             RefreshCommand = new AsyncCommand(Refresh);
@@ -84,7 +84,7 @@ namespace Operations.Classification.WpfUi
 
         public AccountsManager AccountsManager { get; }
 
-        public GmgManager GmgManager { get; }
+        public GmcManager GmcManager { get; }
 
         public TransactionsManager TransactionsManager { get; }
 
@@ -95,7 +95,7 @@ namespace Operations.Classification.WpfUi
             if (AccountsManager.LoadCommand.CanExecute(null))
             {
                 await AccountsManager.LoadCommand.ExecuteAsync(null);
-                await GmgManager.InitializeAsync(AccountsManager.Accounts);
+                await GmcManager.InitializeAsync(AccountsManager.Accounts);
             }
         }
 

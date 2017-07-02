@@ -12,7 +12,7 @@ namespace Operations.Classification.WpfUi.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -38,24 +38,24 @@ namespace Operations.Classification.WpfUi.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("blaisemail@gmail.com")]
-        public string GmgUserName {
+        public string GmcUserName {
             get {
-                return ((string)(this["GmgUserName"]));
+                return ((string)(this["GmcUserName"]));
             }
             set {
-                this["GmgUserName"] = value;
+                this["GmcUserName"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("kT5XeI!I9AI9")]
-        public string GmgPassword {
+        public string GmcPassword {
             get {
-                return ((string)(this["GmgPassword"]));
+                return ((string)(this["GmcPassword"]));
             }
             set {
-                this["GmgPassword"] = value;
+                this["GmcPassword"] = value;
             }
         }
         
