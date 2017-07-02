@@ -11,20 +11,20 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 
         public string LastImportedOperation
         {
-            get { return _lastImportedOperation; }
-            set { Set(nameof(LastImportedOperation), ref _lastImportedOperation, value); }
+            get => _lastImportedOperation;
+            set => Set(nameof(LastImportedOperation), ref _lastImportedOperation, value);
         }
 
         public int Operations
         {
-            get { return _operations; }
-            set { Set(nameof(Operations), ref _operations, value); }
+            get => _operations;
+            set => Set(nameof(Operations), ref _operations, value);
         }
 
         public decimal Balance
         {
-            get { return _balance; }
-            set { Set(nameof(Balance), ref _balance, value); }
+            get => _balance;
+            set => Set(nameof(Balance), ref _balance, value);
         }
     }
 }

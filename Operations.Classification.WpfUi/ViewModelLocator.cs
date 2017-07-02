@@ -19,6 +19,7 @@ using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
+using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
 using QifApi.Transactions;
 
@@ -42,6 +43,8 @@ namespace Operations.Classification.WpfUi
                     cfg.CreateMap<AccountEntity, AccountViewModel>();
                     cfg.CreateMap<BasicTransaction, BasicTransactionModel>();
                     cfg.CreateMap<UnifiedAccountOperation, UnifiedAccountOperationModel>();
+                    cfg.CreateMap<Properties.Settings, SettingsModel>();
+                    cfg.CreateMap<SettingsModel, Properties.Settings>();
                 });
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
@@ -11,8 +10,6 @@ using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Properties;
-using Operations.Classification.WpfUi.Technical.Collections;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -37,14 +34,15 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             _busyIndicator = busyIndicator;
             _transactionsRepository = transactionsRepository;
             BeginImportCommand = new RelayCommand(BeginImport);
+            BeginDataQualityAnalysisCommand = new AsyncCommand(BeginDataQualityAnalysis);
             CommitImportCommand = new AsyncCommand(CommitImport);
 
             _ofd = new OpenFileDialog
             {
                 Multiselect = true,
-                Filter = "csv files (*.csv)|*.csv|All Files (*.*)|*.*",
-                InitialDirectory = Settings.Default.WorkingFolder
+                Filter = "csv files (*.csv)|*.csv|All Files (*.*)|*.*"
             };
+
             SelectFilesToImportCommand = new RelayCommand(SelectFilesToImport);
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
         }
@@ -55,51 +53,67 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         public List<UnifiedAccountOperationModel> Operations
         {
-            get { return _operations; }
-            private set { Set(nameof(Operations), ref _operations, value); }
+            get => _operations;
+            private set => Set(nameof(Operations), ref _operations, value);
         }
 
         public bool IsImporting
         {
-            get { return _isImporting; }
-            set { Set(nameof(IsImporting), ref _isImporting, value); }
+            get => _isImporting;
+            set => Set(nameof(IsImporting), ref _isImporting, value);
         }
 
         public string FilePaths
         {
-            get { return _filePaths; }
-            set { Set(nameof(FilePaths), ref _filePaths, value); }
+            get => _filePaths;
+            set => Set(nameof(FilePaths), ref _filePaths, value);
         }
 
         public SourceKind? SourceKind
         {
-            get { return _sourceKind; }
-            set { Set(nameof(SourceKind), ref _sourceKind, value); }
+            get => _sourceKind;
+            set => Set(nameof(SourceKind), ref _sourceKind, value);
         }
 
         public IEnumerable<SourceKind> SourceKinds => Enum.GetValues(typeof(SourceKind)).Cast<SourceKind>();
 
         public AccountViewModel CurrentAccount
         {
-            get { return _currentAccount; }
-            set { Set(nameof(CurrentAccount), ref _currentAccount, value); }
+            get => _currentAccount;
+            set => Set(nameof(CurrentAccount), ref _currentAccount, value);
         }
 
-        public ICommand SelectFilesToImportCommand { get; }
+        public RelayCommand SelectFilesToImportCommand { get; }
+
+        public RelayCommand BeginDataQualityAnalysisCommand { get; }
 
         public bool AutoDetectSourceKind
         {
-            get { return _autoDetectSourceKind; }
+            get => _autoDetectSourceKind;
             set
             {
                 if (Set(nameof(AutoDetectSourceKind), ref _autoDetectSourceKind, value))
-                {
                     if (value)
-                    {
                         SourceKind = null;
-                    }
-                }
             }
+        }
+
+        private async Task BeginDataQualityAnalysis()
+        {
+            var operations = await _transactionsRepository.GetTransformedUnifiedOperations(CurrentAccount.Name);
+
+            var doublonsByOperationId = operations.GroupBy(d => d.OperationId).Where(g => g.Count() > 1).SelectMany(g => g);
+
+            var doublonsByDataAndValue = operations.GroupBy(d => $"{d.ValueDate}-{d.Income}-{d.Outcome}").Where(g => g.Count() > 1).SelectMany(g => g);
+            
+            var result = doublonsByOperationId.Union(doublonsByDataAndValue)
+                .OrderByDescending(d => d.OperationId)
+                .ThenByDescending(d => d.ValueDate)
+                .ThenByDescending(d => d.Income)
+                .ThenByDescending(d => d.Outcome)
+                .ToList();
+
+            Operations = result.Project()?.To<UnifiedAccountOperationModel>()?.ToList();
         }
 
         private void BeginImport()
@@ -130,29 +144,21 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     var account = CurrentAccount;
                     var someImportSucceeded = false;
                     if (account != null)
-                    {
                         foreach (var file in files)
                         {
                             var sourceKind = AccountOperations.Contracts.SourceKind.Unknwon;
 
                             if (AutoDetectSourceKind)
-                            {
                                 sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(file);
-                            }
                             else if (SourceKind.HasValue)
-                            {
                                 sourceKind = SourceKind.Value;
-                            }
 
                             using (var fs = File.OpenRead(file))
                             {
                                 if (await _transactionsRepository.Import(account.Name, fs, sourceKind))
-                                {
                                     someImportSucceeded = true;
-                                }
                             }
                         }
-                    }
 
                     if (someImportSucceeded)
                     {
@@ -174,10 +180,11 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private void SelectFilesToImport()
         {
+            if (string.IsNullOrEmpty(_ofd.InitialDirectory))
+                _ofd.InitialDirectory = Properties.Settings.Default.WorkingFolder;
+
             if (_ofd.ShowDialog() == true)
-            {
                 FilePaths = string.Join(",", _ofd.FileNames);
-            }
         }
     }
 }

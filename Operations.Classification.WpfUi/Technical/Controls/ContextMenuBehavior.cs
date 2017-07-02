@@ -15,8 +15,8 @@ namespace Operations.Classification.WpfUi.Technical.Controls
 
         public bool DisplayOnClick
         {
-            get { return (bool)GetValue(DisplayOnClickProperty); }
-            set { SetValue(DisplayOnClickProperty, value); }
+            get => (bool)GetValue(DisplayOnClickProperty);
+            set => SetValue(DisplayOnClickProperty, value);
         }
 
         protected override void OnAttached()

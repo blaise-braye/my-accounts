@@ -9,6 +9,7 @@
                       xmlns:gererMesComptes="clr-namespace:Operations.Classification.WpfUi.Managers.Integration.GererMesComptes"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       xmlns:command="http://www.galasoft.ch/mvvmlight"
+                      xmlns:settings="clr-namespace:Operations.Classification.WpfUi.Managers.Settings"
                       mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
                       Icon="Resources/app_icon.ico"
                       Title="Accounts Operations Manager" d:DesignWidth="900" d:DesignHeight="400">
@@ -60,12 +61,12 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-            <Button Command="{Binding AccountsManager.BeginEditCommand}">
+            <Button Command="{Binding SettingsManager.BeginEditCommand}">
                 <Rectangle Width="20"
                            Height="20"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                     <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_edit}" />
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
@@ -92,6 +93,12 @@
                              IsModal="True"
                              IsOpen="{Binding TransactionsManager.IsImporting, Mode=TwoWay}">
                 <transactions:ImportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
+            </controls:Flyout>
+            <controls:Flyout Header="App settings editor" Position="Right"
+                             IsModal="True"
+                             CloseCommand="{Binding SettingsManager.CommitEditCommand}"
+                             IsOpen="{Binding SettingsManager.IsEditing, Mode=OneWay}">
+                <settings:SettingsEditorView Width="350" DataContext="{Binding SettingsManager}" />
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>

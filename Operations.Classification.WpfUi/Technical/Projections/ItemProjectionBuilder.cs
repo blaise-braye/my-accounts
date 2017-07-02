@@ -21,5 +21,15 @@ namespace Operations.Classification.WpfUi.Technical.Projections
         {
             return To<TTarget>((sourceItem, targetItem) => { });
         }
+
+        public TTarget To<TTarget>(TTarget target)
+        {
+            return To(target, (sourceItem, targetItem) => { });
+        }
+
+        public TTarget To<TTarget>(TTarget target, Action<TSource, TTarget> onMappedItem)
+        {
+            return Mapper.Map(_source, target, opts => opts.AfterMap(onMappedItem));
+        }
     }
 }

@@ -21,6 +21,7 @@
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
 
                 <!-- My resource dictionaries. -->
+                <ResourceDictionary Source="/Styles/Controls.Label.xaml" />
                 <ResourceDictionary Source="/Styles/Controls.TextBox.xaml" />
                 <ResourceDictionary Source="/Styles/Controls.ContextMenu.xaml" />
 

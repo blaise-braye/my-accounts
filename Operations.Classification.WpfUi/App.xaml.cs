@@ -10,6 +10,7 @@ using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using Operations.Classification.WpfUi.Properties;
+using Operations.Classification.WpfUi.Technical.Localization;
 
 namespace Operations.Classification.WpfUi
 {
@@ -25,7 +26,12 @@ namespace Operations.Classification.WpfUi
             base.OnStartup(e);
             SetupLogging();
             SetupExceptionHandlers();
-            SetupCulture();
+            ApplicationCulture.ResetCulture();
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -39,23 +45,6 @@ namespace Operations.Classification.WpfUi
             _log.Error("OnDispatcherUnhandledException", e.Exception);
         }
 
-        private static void SetupCulture()
-        {
-            if (!string.IsNullOrEmpty(Settings.Default.Culture))
-            {
-                CultureInfo.DefaultThreadCurrentCulture = Thread.CurrentThread.CurrentCulture = new CultureInfo(Settings.Default.Culture);
-            }
-
-            if (!string.IsNullOrEmpty(Settings.Default.UiCulture))
-            {
-                CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Default.UiCulture);
-            }
-
-            FrameworkElement.LanguageProperty.OverrideMetadata(
-                typeof(FrameworkElement),
-                new FrameworkPropertyMetadata(
-                    XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
-        }
 
         private void SetupExceptionHandlers()
         {

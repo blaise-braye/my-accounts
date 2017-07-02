@@ -15,14 +15,14 @@ namespace Operations.Classification.WpfUi.Technical.Input
 
         public bool IsBusy
         {
-            get { return _isBusy; }
-            private set { Set(nameof(IsBusy), ref _isBusy, value); }
+            get => _isBusy;
+            private set => Set(nameof(IsBusy), ref _isBusy, value);
         }
 
         public string Reason
         {
-            get { return _reason; }
-            private set { Set(nameof(Reason), ref _reason, value); }
+            get => _reason;
+            private set => Set(nameof(Reason), ref _reason, value);
         }
 
         public IDisposable EncapsulateActiveJobDescription(object source, string reason)

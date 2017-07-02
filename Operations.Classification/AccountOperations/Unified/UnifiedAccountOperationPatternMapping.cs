@@ -14,10 +14,7 @@ namespace Operations.Classification.AccountOperations.Unified
 
         public JObject Expression
         {
-            get
-            {
-                return _expression;
-            }
+            get => _expression;
 
             set
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.WpfUi.Technical.Collections;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 {
@@ -17,35 +18,35 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
         private string _name;
 
         private List<UnifiedAccountOperation> _operations;
-
+        
         public AccountViewModel()
         {
             Status = new AccountStatusViewModel();
         }
-
+        
         public bool IsNew => Id == default(Guid);
 
         public Guid Id
         {
-            get { return _id; }
-            set { Set(nameof(Id), ref _id, value); }
+            get => _id;
+            set => Set(nameof(Id), ref _id, value);
         }
 
         public string Name
         {
-            get { return _name; }
-            set { Set(nameof(Name), ref _name, value); }
+            get => _name;
+            set => Set(nameof(Name), ref _name, value);
         }
 
         public string GmgAccountName
         {
-            get { return _gmgAccountName; }
-            set { Set(nameof(GmgAccountName), ref _gmgAccountName, value); }
+            get => _gmgAccountName;
+            set => Set(nameof(GmgAccountName), ref _gmgAccountName, value);
         }
 
         public decimal InitialBalance
         {
-            get { return _initialBalance; }
+            get => _initialBalance;
             set
             {
                 if (Set(nameof(InitialBalance), ref _initialBalance, value))
@@ -57,7 +58,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 
         public List<UnifiedAccountOperation> Operations
         {
-            get { return _operations; }
+            get => _operations;
             set
             {
                 if (Set(nameof(Operations), ref _operations, value))

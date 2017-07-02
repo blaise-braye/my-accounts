@@ -1,5 +1,9 @@
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Markup;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.WpfUi.Caching;
@@ -7,9 +11,13 @@ using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
+using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Properties;
+using Operations.Classification.WpfUi.Technical.Caching;
+using Operations.Classification.WpfUi.Technical.Controls;
 using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Localization;
 
 namespace Operations.Classification.WpfUi
 {
@@ -41,7 +49,10 @@ namespace Operations.Classification.WpfUi
             AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, cachedTransactionsRepository);
             TransactionsManager = new TransactionsManager(BusyIndicator, cachedTransactionsRepository);
             GmgManager = new GmgManager(BusyIndicator);
+            SettingsManager = new SettingsManager();
             LoadCommand = new AsyncCommand(Load);
+            MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
+
             if (IsInDesignMode)
             {
                 AccountsManager.Accounts.Add(
@@ -60,6 +71,13 @@ namespace Operations.Classification.WpfUi
             }
         }
 
+        private void OnSettingsUpdated(Settings obj)
+        {
+            ApplicationCulture.ResetCulture();
+            AccountsManager.UnifiedOperationsReporter.OnSettingsUpdated();
+            Application.Current.UpdateBindingTargets();
+        }
+
         public BusyIndicatorViewModel BusyIndicator { get; }
 
         public IAsyncCommand LoadCommand { get; }
@@ -69,6 +87,8 @@ namespace Operations.Classification.WpfUi
         public GmgManager GmgManager { get; }
 
         public TransactionsManager TransactionsManager { get; }
+
+        public SettingsManager SettingsManager { get; }
 
         private async Task Load()
         {

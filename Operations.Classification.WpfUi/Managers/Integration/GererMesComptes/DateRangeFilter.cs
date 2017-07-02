@@ -12,7 +12,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public DateTime? FromDate
         {
-            get { return _fromDate; }
+            get => _fromDate;
             set
             {
                 if (Set(nameof(FromDate), ref _fromDate, value))
@@ -24,7 +24,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public DateTime? ToDate
         {
-            get { return _toDate; }
+            get => _toDate;
             set
             {
                 if (Set(nameof(ToDate), ref _toDate, value))

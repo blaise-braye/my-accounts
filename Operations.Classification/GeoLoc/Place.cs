@@ -12,16 +12,16 @@ namespace Operations.Classification.GeoLoc
 
         public string[] Abbrevs
         {
-            get { return _abbrev ?? (_abbrev = Array.Empty<string>()); }
+            get => _abbrev ?? (_abbrev = Array.Empty<string>());
 
-            set { _abbrev = value; }
+            set => _abbrev = value;
         }
 
         public string[] Streets
         {
-            get { return _streets ?? (_streets = Array.Empty<string>()); }
+            get => _streets ?? (_streets = Array.Empty<string>());
 
-            set { _streets = value; }
+            set => _streets = value;
         }
     }
 }

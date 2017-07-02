@@ -7,7 +7,6 @@ using GalaSoft.MvvmLight.CommandWpf;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Properties;
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Collections;
 using Operations.Classification.WpfUi.Technical.Input;
@@ -64,7 +63,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public TransactionDeltaSet TransactionDelta
         {
-            get { return _transactionDelta ?? (_transactionDelta = new TransactionDeltaSet()); }
+            get => _transactionDelta ?? (_transactionDelta = new TransactionDeltaSet());
             private set
             {
                 if (Set(nameof(TransactionDelta), ref _transactionDelta, value))
@@ -76,13 +75,13 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public bool IsDeltaAvailable
         {
-            get { return _isDeltaAvailable; }
-            private set { Set(nameof(IsDeltaAvailable), ref _isDeltaAvailable, value); }
+            get => _isDeltaAvailable;
+            private set => Set(nameof(IsDeltaAvailable), ref _isDeltaAvailable, value);
         }
 
         public bool IsFiltering
         {
-            get { return _isFiltering; }
+            get => _isFiltering;
             set
             {
                 if (Set(nameof(IsFiltering), ref _isFiltering, value))
@@ -136,7 +135,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Computing delta with remote"))
             using (var client = new GererMesComptesClient())
             {
-                if (await client.Connect(Settings.Default.GmgUserName, Settings.Default.GmgPassword))
+                if (await client.Connect(Properties.Settings.Default.GmgUserName, Properties.Settings.Default.GmgPassword))
                 {
                     var accountsRepository = new AccountInfoRepository(client);
                     var account = await accountsRepository.GetByName(CurrentAccount.GmgAccountName);
@@ -176,9 +175,9 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             {
                 TransactionDeltaSet delta = null;
 
-                if (_loadedDeltas.ContainsKey(CurrentAccount.Id))
+                if (currentAccount!=null && _loadedDeltas.ContainsKey(currentAccount.Id))
                 {
-                    delta = _loadedDeltas[CurrentAccount.Id];
+                    delta = _loadedDeltas[currentAccount.Id];
                 }
 
                 Reset(delta);
@@ -259,7 +258,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Synchronizing data"))
             using (var client = new GererMesComptesClient())
             {
-                if (await client.Connect(Settings.Default.GmgUserName, Settings.Default.GmgPassword))
+                if (await client.Connect(Properties.Settings.Default.GmgUserName, Properties.Settings.Default.GmgPassword))
                 {
                     var accountsRepository = new AccountInfoRepository(client);
                     var account = await accountsRepository.GetByName(CurrentAccount.GmgAccountName);

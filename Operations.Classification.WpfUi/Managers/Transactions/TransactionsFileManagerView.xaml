@@ -18,6 +18,15 @@
                     </Rectangle.Fill>
                 </Rectangle>
             </Button>
+            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                    Command="{Binding BeginDataQualityAnalysisCommand}"
+                    ToolTip="Data quality analysis">
+                <Rectangle Width="24" Height="24">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_list_check}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
         </StackPanel>
         <DataGrid ItemsSource="{Binding Operations}" AutoGenerateColumns="True">
             <i:Interaction.Behaviors>

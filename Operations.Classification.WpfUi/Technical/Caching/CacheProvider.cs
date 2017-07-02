@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Operations.Classification.WpfUi.Properties;
@@ -16,6 +17,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             var options = ConfigurationOptions.Parse(Settings.Default.RedisConnectionString);
             options.AbortOnConnectFail = false;
             options.ClientName = Assembly.GetEntryAssembly().GetName().Name;
+            options.AllowAdmin = true;
             var connection = ConnectionMultiplexer.Connect(options);
             _instance = new CacheProvider(connection);
         }
@@ -35,6 +37,15 @@ namespace Operations.Classification.WpfUi.Technical.Caching
         ~CacheProvider()
         {
             _connection.Dispose();
+        }
+
+        public static void ClearCache()
+        {
+            var servers = Connection.GetEndPoints(true).Select(e => Connection.GetServer(e));
+            foreach (var server in servers)
+            {
+                server.FlushDatabase();
+            }
         }
     }
 }
