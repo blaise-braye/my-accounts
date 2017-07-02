@@ -11,6 +11,8 @@ namespace Operations.Classification.AccountOperations.Unified
 
         public string PatternName { get; set; }
 
+        public DateTime ExecutionDate { get; set; }
+
         public DateTime ValueDate { get; set; }
 
         public string Currency { get; set; }

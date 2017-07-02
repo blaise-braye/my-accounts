@@ -121,7 +121,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Caching\CachedTransactionsRepository.cs" />
-    <Compile Include="Managers\Reports\Models\OperationSetBalance.cs" />
+    <Compile Include="Managers\Reports\Models\OperationSet.cs" />
     <Compile Include="Managers\Reports\UnifiedOperationsReporter.cs" />
     <Compile Include="Managers\Settings\SettingsEditorView.xaml.cs">
       <DependentUpon>SettingsEditorView.xaml</DependentUpon>

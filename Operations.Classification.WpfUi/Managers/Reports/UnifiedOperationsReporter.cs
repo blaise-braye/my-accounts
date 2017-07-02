@@ -14,117 +14,127 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 {
     public class UnifiedOperationsReporter : ViewModelBase
     {
-        private PlotModel _dailyBalancesModel;
+        private PlotModel _dailyOperationsModel;
 
-        private PlotModel _monthyBalancesModel;
+        private PlotModel _monthyOperationsModel;
 
-        public PlotModel DailyBalancesModel
+        public PlotModel DailyOperationsModel
         {
-            get => _dailyBalancesModel;
-            set => Set(nameof(DailyBalancesModel), ref _dailyBalancesModel, value);
+            get => _dailyOperationsModel;
+            set => Set(nameof(DailyOperationsModel), ref _dailyOperationsModel, value);
         }
 
-        public PlotModel MonthyBalancesModel
+        public PlotModel MonthyOperationsModel
         {
-            get => _monthyBalancesModel;
-            private set => Set(nameof(MonthyBalancesModel), ref _monthyBalancesModel, value);
+            get => _monthyOperationsModel;
+            private set => Set(nameof(MonthyOperationsModel), ref _monthyOperationsModel, value);
         }
 
         public async Task UpdateAccountSelection(List<AccountViewModel> selection)
         {
-            var balances = await Task.Run(
+            var operations = await Task.Run(
                 () =>
                 {
-                    var mixedAccountOperationBalances = selection.SelectMany(account => ComputeBalancesPerDay(account.InitialBalance, account.Operations))
+                    var mixedAccountOperationOperations = selection.SelectMany(account => ComputeOperationsPerDay(account.InitialBalance, account.Operations))
                         .OrderBy(op => op.Day).ToList();
 
-                    var aggregattedDailyBalances = GroupDailyBalances(mixedAccountOperationBalances);
-                    var aggregattedMonthlyBalances = ComputeMonthlyBalances(aggregattedDailyBalances);
+                    var aggregattedDailyOperations = GroupDailyOperations(mixedAccountOperationOperations);
+                    var aggregattedMonthlyOperations = ComputeMonthlyOperations(aggregattedDailyOperations);
 
                     return new
                     {
-                        dailyBalances = aggregattedDailyBalances,
-                        monthlyBalances = aggregattedMonthlyBalances
+                        dailyOperations = aggregattedDailyOperations,
+                        monthlyOperations = aggregattedMonthlyOperations
                     };
                 });
 
-            var dailyBalances = balances.dailyBalances;
-            var monthlyBalances = balances.monthlyBalances;
+            var dailyOperations = operations.dailyOperations;
+            var monthlyOperations = operations.monthlyOperations;
 
-            DailyBalancesModel = CreateDailyBalancesModel(dailyBalances);
-            MonthyBalancesModel = CreateMonthlyBalancesModel(monthlyBalances);
+            DailyOperationsModel = CreateDailyOperationsModel(dailyOperations);
+            MonthyOperationsModel = CreateMonthlyOperationsModel(monthlyOperations);
         }
 
-        private static PlotModel CreateDailyBalancesModel(List<OperationSetBalance> balances)
+        private static PlotModel CreateDailyOperationsModel(List<OperationSet> operations)
         {
-            var balancesModel = new PlotModel();
+            var operationsModel = new PlotModel();
+            operationsModel.Title = "Daily operations";
 
             var dateTimeAxis = new DateTimeAxis
             {
                 IntervalType = DateTimeIntervalType.Auto
             };
 
-            if (balances.Count > 0)
+            if (operations.Count > 0)
             {
-                var lastItem = balances[balances.Count - 1];
+                var lastItem = operations[operations.Count - 1];
                 dateTimeAxis.Maximum = DateTimeAxis.ToDouble(lastItem.Day);
                 dateTimeAxis.Minimum = DateTimeAxis.ToDouble(lastItem.Day.AddMonths(-2));
             }
 
-            balancesModel.Axes.Add(dateTimeAxis);
+            operationsModel.Axes.Add(dateTimeAxis);
 
-            var trackerFormatString = GetMonthTrackerFormatString();
+            var trackerFormatString = GetDailyTrackerFormatString();
 
-            balancesModel.Series.Add(
-                CreateLineSeries(balances, "Balance", OxyColors.Blue, nameof(OperationSetBalance.Balance), trackerFormatString)
+            operationsModel.Series.Add(
+                CreateLineSeries(operations, "Balance", OxyColors.Blue, nameof(OperationSet.Balance), trackerFormatString)
             );
 
-            return balancesModel;
+            operationsModel.Series.Add(
+                CreateLineSeries(operations, "Outcome", OxyColors.Red, nameof(OperationSet.Outcome), trackerFormatString)
+            );
+
+            operationsModel.Series.Add(
+                CreateLineSeries(operations, "Income", OxyColors.Green, nameof(OperationSet.Income), trackerFormatString)
+            );
+
+            return operationsModel;
         }
 
-        private static PlotModel CreateMonthlyBalancesModel(List<OperationSetBalance> balances)
+        private static PlotModel CreateMonthlyOperationsModel(List<OperationSet> operations)
         {
-            var balancesModel = new PlotModel();
-
+            var operationsModel = new PlotModel();
+            operationsModel.Title = "Monthly operations";
+            
             var dateTimeAxis = new DateTimeAxis
             {
                 IntervalType = DateTimeIntervalType.Months
             };
 
-            if (balances.Count > 0)
+            if (operations.Count > 0)
             {
-                var lastItem = balances[balances.Count - 1];
+                var lastItem = operations[operations.Count - 1];
                 var maxDay = lastItem.Day.AddDays(15);
                 dateTimeAxis.Maximum = DateTimeAxis.ToDouble(maxDay);
                 dateTimeAxis.Minimum = DateTimeAxis.ToDouble(maxDay.AddMonths(-7));
             }
 
-            balancesModel.Axes.Add(dateTimeAxis);
+            operationsModel.Axes.Add(dateTimeAxis);
 
             var gridLines = new LinearAxis { Position = AxisPosition.Left, ExtraGridlines = new double[] { 0 }, ExtraGridlineStyle = LineStyle.Dot };
-            balancesModel.Axes.Add(gridLines);
+            operationsModel.Axes.Add(gridLines);
 
-            var trackerFormatString = GetDailyTrackerFormatString();
+            var trackerFormatString = GetMonthTrackerFormatString();
 
-            balancesModel.Series.Add(
-                CreateLinearBarSeries(balances, "Income", OxyColors.LightGreen, nameof(OperationSetBalance.Income), trackerFormatString)
+            operationsModel.Series.Add(
+                CreateLinearBarSeries(operations, "Income", OxyColors.LightGreen, nameof(OperationSet.Income), trackerFormatString)
             );
 
-            balancesModel.Series.Add(
-                CreateLinearBarSeries(balances, "Outcome", OxyColors.OrangeRed, nameof(OperationSetBalance.NegativeOutcome), trackerFormatString)
+            operationsModel.Series.Add(
+                CreateLinearBarSeries(operations, "Outcome", OxyColors.OrangeRed, nameof(OperationSet.NegativeOutcome), trackerFormatString)
             );
 
-            balancesModel.Series.Add(
-                CreateLineSeries(balances, "Balance", OxyColors.Orange, nameof(OperationSetBalance.Balance), trackerFormatString)
+            operationsModel.Series.Add(
+                CreateLineSeries(operations, "Balance", OxyColors.Orange, nameof(OperationSet.Balance), trackerFormatString)
             );
 
-            var netRevenueSeries = CreateLineSeries(balances, "Net revenue", OxyColors.Black, nameof(OperationSetBalance.NetRevenue), trackerFormatString);
+            var netRevenueSeries = CreateLineSeries(operations, "Net revenue", OxyColors.Black, nameof(OperationSet.NetRevenue), trackerFormatString);
 
             netRevenueSeries.LabelFormatString = GetNetRevenueLabelFormatString();
 
-            balancesModel.Series.Add(netRevenueSeries);
+            operationsModel.Series.Add(netRevenueSeries);
 
-            return balancesModel;
+            return operationsModel;
         }
 
         private static string GetNetRevenueLabelFormatString()
@@ -145,31 +155,32 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         }
 
         private static LineSeries CreateLineSeries(
-            IEnumerable<OperationSetBalance> balances,
+            IEnumerable<OperationSet> operations,
             string title,
             OxyColor color,
             string yPropertyName,
             string trackerFormatString)
         {
-            var series = CreateDataPointSeries<LineSeries>(balances, title, yPropertyName, trackerFormatString);
+            var series = CreateDataPointSeries<LineSeries>(operations, title, yPropertyName, trackerFormatString);
             series.Color = color;
             series.StrokeThickness = 2;
             series.MarkerSize = 4;
             series.MarkerStroke = color;
             series.MarkerType = MarkerType.Diamond;
             series.MarkerFill = OxyColors.WhiteSmoke;
+            
             return series;
         }
 
 
         private static LinearBarSeries CreateLinearBarSeries(
-            IEnumerable<OperationSetBalance> balances,
+            IEnumerable<OperationSet> operations,
             string title,
             OxyColor fillColor,
             string yPropertyName,
             string trackerFormatString)
         {
-            var series = CreateDataPointSeries<LinearBarSeries>(balances, title, yPropertyName, trackerFormatString);
+            var series = CreateDataPointSeries<LinearBarSeries>(operations, title, yPropertyName, trackerFormatString);
 
             series.FillColor = fillColor;
             series.BarWidth = 30;
@@ -177,54 +188,60 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             return series;
         }
 
-        private static T CreateDataPointSeries<T>(IEnumerable<OperationSetBalance> balances, string title, string yPropertyName, string trackerFormatString)
+        private static T CreateDataPointSeries<T>(IEnumerable<OperationSet> operations, string title, string yPropertyName, string trackerFormatString)
             where T : DataPointSeries, new()
         {
             var series = new T
             {
-                ItemsSource = balances,
+                ItemsSource = operations,
                 TrackerFormatString = trackerFormatString,
                 Title = title,
-                DataFieldX = nameof(OperationSetBalance.Day),
+                DataFieldX = nameof(OperationSet.Day),
                 DataFieldY = yPropertyName
             };
 
             return series;
         }
 
-        private List<OperationSetBalance> GroupDailyBalances(List<OperationSetBalance> balances)
+        private List<OperationSet> GroupDailyOperations(List<OperationSet> operations)
         {
-            var groupedByDay = balances.GroupBy(op => op.Day);
+            var groupedByDay = operations.GroupBy(op => op.Day);
 
-            var flattifiedDailyBalances = groupedByDay.Select(OperationSetBalance.Flattify)
-                .Where(b => b.InitialBalance != b.Balance).ToList();
+            var flattifiedDailyOperations = groupedByDay.Select(
+                    grp =>
+                    {
+                        var bpd = new OperationSet(grp.Key, grp.Sum(pd => pd.InitialBalance));
+                        var grpOperations = grp.SelectMany(p => p.Operations);
+                        bpd.AddRange(grpOperations);
+                        return bpd;
+                    }).ToList();
 
-            return flattifiedDailyBalances;
+            return flattifiedDailyOperations;
         }
 
-        private List<OperationSetBalance> ComputeMonthlyBalances(List<OperationSetBalance> dailyBalances)
+        private List<OperationSet> ComputeMonthlyOperations(List<OperationSet> dailyOperations)
         {
-            var result = new List<OperationSetBalance>();
+            var result = new List<OperationSet>();
 
-            var groupedByMonth = dailyBalances.OrderBy(db => db.Day).GroupBy(db => new DateTime(db.Day.Year, db.Day.Month, 1));
+            var groupedByMonth = dailyOperations.OrderBy(db => db.Day).GroupBy(db => new DateTime(db.Day.Year, db.Day.Month, 1));
             foreach (var grp in groupedByMonth)
             {
-                var initialBalance = grp.Min(b => b.InitialBalance);
+                var initialBalance = grp.First().InitialBalance;
                 var operations = grp.SelectMany(b => b.Operations);
-                var osb = new OperationSetBalance(grp.Key, initialBalance).AddRange(operations);
+                var osb = new OperationSet(grp.Key, initialBalance).AddRange(operations);
                 result.Add(osb);
             }
 
             return result;
         }
 
-        private static List<OperationSetBalance> ComputeBalancesPerDay(decimal initialBalance, List<UnifiedAccountOperation> operations)
+        private static List<OperationSet> ComputeOperationsPerDay(decimal initialBalance, List<UnifiedAccountOperation> operations)
         {
-            operations = operations.OrderBy(o => o.ValueDate).ToList();
+            operations = operations.OrderBy(o => o.ExecutionDate).ToList();
 
-            var seedBpd = new OperationSetBalance(operations[0].ValueDate, initialBalance);
+            var seedBpd = new OperationSet(operations[0].ExecutionDate, initialBalance);
 
-            var result = new List<OperationSetBalance> { seedBpd };
+            var result = new List<OperationSet> { seedBpd };
 
             if (operations.Any())
                 operations
@@ -232,24 +249,24 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                         seedBpd,
                         (currentBpd, operation) =>
                         {
-                            var operationDay = operation.ValueDate;
+                            var operationDay = operation.ExecutionDate;
 
                             while (currentBpd.Day < operationDay.AddDays(-1))
                             {
-                                currentBpd = OperationSetBalance.CreateForNextDay(currentBpd);
+                                currentBpd = OperationSet.CreateForNextDay(currentBpd);
                                 result.Add(currentBpd);
                             }
 
-                            OperationSetBalance nextBpd;
+                            OperationSet nextBpd;
 
-                            if (currentBpd.Day.Equals(operation.ValueDate))
+                            if (currentBpd.Day.Equals(operation.ExecutionDate))
                             {
                                 nextBpd = currentBpd;
                                 currentBpd.Add(operation);
                             }
                             else
                             {
-                                nextBpd = OperationSetBalance.CreateForNextDay(currentBpd);
+                                nextBpd = OperationSet.CreateForNextDay(currentBpd);
                                 nextBpd.Add(operation);
                                 result.Add(nextBpd);
                             }
@@ -262,31 +279,31 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
         public void OnSettingsUpdated()
         {
-            var dailyBalancesModel = DailyBalancesModel;
-            var monthyBalancesModel = MonthyBalancesModel;
-            DailyBalancesModel = null;
-            MonthyBalancesModel = null;
+            var dailyOperationsModel = DailyOperationsModel;
+            var monthyOperationsModel = MonthyOperationsModel;
+            DailyOperationsModel = null;
+            MonthyOperationsModel = null;
 
-            if (dailyBalancesModel != null)
+            if (dailyOperationsModel != null)
             {
                 
-                foreach (var series in dailyBalancesModel.Series)
+                foreach (var series in dailyOperationsModel.Series)
                     series.TrackerFormatString = GetDailyTrackerFormatString();
-                DailyBalancesModel = dailyBalancesModel;
+                DailyOperationsModel = dailyOperationsModel;
             }
 
-            if (monthyBalancesModel != null)
+            if (monthyOperationsModel != null)
             {
-                foreach (var series in monthyBalancesModel.Series)
+                foreach (var series in monthyOperationsModel.Series)
                     series.TrackerFormatString = GetMonthTrackerFormatString();
 
-                foreach (var netRevenueSerie in monthyBalancesModel.Series.OfType<LineSeries>()
-                    .Where(s => s.DataFieldY == nameof(OperationSetBalance.NetRevenue)))
+                foreach (var netRevenueSerie in monthyOperationsModel.Series.OfType<LineSeries>()
+                    .Where(s => s.DataFieldY == nameof(OperationSet.NetRevenue)))
                 {
                     netRevenueSerie.LabelFormatString = GetNetRevenueLabelFormatString();
                 }
 
-                MonthyBalancesModel = monthyBalancesModel;
+                MonthyOperationsModel = monthyOperationsModel;
             }
         }
     }

@@ -11,6 +11,9 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         public string PatternName { get; set; }
 
         [DisplayFormat(DataFormatString = "d")]
+        public DateTime ExecutionDate { get; set; }
+
+        [DisplayFormat(DataFormatString = "d")]
         public DateTime ValueDate { get; set; }
 
         [Display(AutoGenerateField = false)]

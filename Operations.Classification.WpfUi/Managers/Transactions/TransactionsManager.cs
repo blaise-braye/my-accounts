@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using log4net;
 using Microsoft.Win32;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
@@ -17,6 +18,8 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 {
     public class TransactionsManager : ViewModelBase
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(TransactionsManager));
+
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly OpenFileDialog _ofd;
         private readonly ITransactionsRepository _transactionsRepository;
@@ -112,6 +115,51 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 .ThenByDescending(d => d.Income)
                 .ThenByDescending(d => d.Outcome)
                 .ToList();
+            
+            // validate fortis operations sequence number (detect missing operations)
+            var fortisOperations = operations.Where(
+                op => op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvArchive
+                      || op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvExport)
+                      .OrderBy(op=>op.OperationId);
+            int[] previousOperationId = null;
+            foreach (var fortisOperation in fortisOperations)
+            {
+                var operationIdParts = fortisOperation.OperationId.Split('-');
+                var operationYear = int.Parse(operationIdParts[0]);
+                var operationYearNumber = int.Parse(operationIdParts[1]);
+
+                if (previousOperationId!=null)
+                {
+                    var prevOpYear = previousOperationId[0];
+                    var prevOpYearNumber = previousOperationId[1];
+                    bool sequenceAsExpectated = true;
+                    if (operationYear == prevOpYear + 1)
+                    {
+                        if (operationYearNumber != 1)
+                        {
+                            sequenceAsExpectated = false;
+                        }
+                    }
+                    else if (operationYear == prevOpYear)
+                    {
+                        if (operationYearNumber != prevOpYearNumber + 1)
+                        {
+                            sequenceAsExpectated = false;
+                        }
+                    }
+                    else
+                    {
+                        sequenceAsExpectated = false;
+                    }
+
+                    if (!sequenceAsExpectated)
+                    {
+                        _log.Error($"operation id sequence mismatch (previous {string.Join("-", previousOperationId)}, current {string.Join("-", operationIdParts)}");
+                    }
+                }
+                
+                previousOperationId = new[] { operationYear, operationYearNumber };
+            }
 
             Operations = result.Project()?.To<UnifiedAccountOperationModel>()?.ToList();
         }

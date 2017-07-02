@@ -5,9 +5,9 @@ using Operations.Classification.AccountOperations.Unified;
 
 namespace Operations.Classification.WpfUi.Managers.Reports.Models
 {
-    public class OperationSetBalance
+    public class OperationSet
     {
-        public OperationSetBalance(DateTime day, decimal initialBalance)
+        public OperationSet(DateTime day, decimal initialBalance)
         {
             Day = day;
             InitialBalance = initialBalance;
@@ -39,7 +39,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
             Balance = Balance + operation.Income - operation.Outcome;
         }
 
-        public OperationSetBalance AddRange(IEnumerable<UnifiedAccountOperation> operations)
+        public OperationSet AddRange(IEnumerable<UnifiedAccountOperation> operations)
         {
             foreach (var operation in operations)
             {
@@ -49,21 +49,12 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
             return this;
         }
 
-        public static OperationSetBalance CreateForNextDay(OperationSetBalance currentBpd)
+        public static OperationSet CreateForNextDay(OperationSet currentBpd)
         {
-            return new OperationSetBalance(currentBpd.Day.AddDays(1), currentBpd.Balance)
+            return new OperationSet(currentBpd.Day.AddDays(1), currentBpd.Balance)
             {
                 Balance = currentBpd.Balance
             };
-        }
-
-        public static OperationSetBalance Flattify(IGrouping<DateTime, OperationSetBalance> grp)
-        {
-            var bpd = new OperationSetBalance(grp.Key, grp.Sum(pd=>pd.InitialBalance));
-            var operations = grp.SelectMany(p=>p.Operations);
-            bpd.AddRange(operations);
-            
-            return bpd;
         }
     }
 }

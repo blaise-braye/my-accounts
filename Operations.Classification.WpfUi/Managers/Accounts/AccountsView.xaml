@@ -69,8 +69,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <oxy:PlotView  Grid.Row="0" Model="{Binding UnifiedOperationsReporter.MonthyBalancesModel}" />
-            <oxy:PlotView  Grid.Row="1" Model="{Binding UnifiedOperationsReporter.DailyBalancesModel}" />
+            <oxy:PlotView  Grid.Row="0" Model="{Binding UnifiedOperationsReporter.MonthyOperationsModel}" />
+            <oxy:PlotView  Grid.Row="1" Model="{Binding UnifiedOperationsReporter.DailyOperationsModel}" />
 
         </Grid>
 

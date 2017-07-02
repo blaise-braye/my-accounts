@@ -32,6 +32,7 @@ namespace Operations.Classification.AccountOperations.Sodexo
             var trx = new UnifiedAccountOperation
             {
                 ValueDate = operation.Date,
+                ExecutionDate = operation.Date,
                 Income = income,
                 Outcome = outcome,
                 Currency = "EUR",

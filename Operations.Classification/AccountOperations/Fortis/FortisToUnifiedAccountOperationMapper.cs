@@ -31,6 +31,7 @@ namespace Operations.Classification.AccountOperations.Fortis
                 Account = fortisOperation.Account,
                 OperationId = fortisOperation.Reference,
                 ValueDate = fortisOperation.ValueDate,
+                ExecutionDate = fortisOperation.ExecutionDate,
                 Income = income,
                 Outcome = outcome,
                 Currency = fortisOperation.Currency,
