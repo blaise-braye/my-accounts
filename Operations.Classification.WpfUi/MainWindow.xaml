@@ -83,6 +83,12 @@
     </controls:MetroWindow.RightWindowCommands>
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
+            <controls:Flyout Header="App settings editor" Position="Right"
+                             IsModal="True"
+                             CloseCommand="{Binding SettingsManager.CommitEditCommand}"
+                             IsOpen="{Binding SettingsManager.IsEditing, Mode=OneWay}">
+                <settings:SettingsEditorView Width="350" DataContext="{Binding SettingsManager}" />
+            </controls:Flyout>
             <controls:Flyout Header="Account editor" Position="Right"
                              IsModal="True"
                              CloseCommand="{Binding AccountsManager.CommitEditCommand}"
@@ -94,11 +100,10 @@
                              IsOpen="{Binding TransactionsManager.IsImporting, Mode=TwoWay}">
                 <transactions:ImportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
             </controls:Flyout>
-            <controls:Flyout Header="App settings editor" Position="Right"
+            <controls:Flyout Header="Export command parameters" Position="Right"
                              IsModal="True"
-                             CloseCommand="{Binding SettingsManager.CommitEditCommand}"
-                             IsOpen="{Binding SettingsManager.IsEditing, Mode=OneWay}">
-                <settings:SettingsEditorView Width="350" DataContext="{Binding SettingsManager}" />
+                             IsOpen="{Binding TransactionsManager.IsExporting, Mode=TwoWay}">
+                <transactions:ExportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>

@@ -5,6 +5,7 @@ namespace Operations.Classification.AccountOperations.Contracts
         Unknwon,
         FortisCsvArchive,
         FortisCsvExport,
-        SodexoCsvExport
+        SodexoCsvExport,
+        InternalExport
     }
 }

@@ -29,6 +29,11 @@ namespace Operations.Classification.WpfUi.Caching
             return result;
         }
 
+        public Task Export(string filePath, IList<AccountOperationBase> operations)
+        {
+            return _repository.Export(filePath, operations);
+        }
+
         public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
         {
             var result = await GetCacheEntry(accountName).GetOrAddAsync(

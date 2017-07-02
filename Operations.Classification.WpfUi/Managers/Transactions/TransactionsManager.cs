@@ -7,8 +7,10 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using log4net;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
+using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Collections.Filters;
@@ -20,27 +22,36 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
     public class TransactionsManager : ViewModelBase
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(TransactionsManager));
+        private readonly CompositeFilter _anyFilter;
 
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly OpenFileDialog _ofd;
+        private readonly SaveFileDialog _sfd;
         private readonly ITransactionsRepository _transactionsRepository;
 
         private bool _autoDetectSourceKind;
         private AccountViewModel _currentAccount;
 
         private string _filePaths;
+
+        private string _exportFilePath;
+
+        private bool _isExporting;
+
+        private bool _isFiltering;
         private bool _isImporting;
         private List<UnifiedAccountOperationModel> _operations;
         private SourceKind? _sourceKind;
-        private readonly CompositeFilter _anyFilter;
 
         public TransactionsManager(BusyIndicatorViewModel busyIndicator, ITransactionsRepository transactionsRepository)
         {
             _busyIndicator = busyIndicator;
             _transactionsRepository = transactionsRepository;
             BeginImportCommand = new RelayCommand(BeginImport);
+            BeginExportCommand = new RelayCommand(BeginExport);
             BeginDataQualityAnalysisCommand = new AsyncCommand(BeginDataQualityAnalysis);
             CommitImportCommand = new AsyncCommand(CommitImport);
+            CommitExportCommand = new AsyncCommand(CommitExport);
 
             _ofd = new OpenFileDialog
             {
@@ -48,7 +59,14 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 Filter = "csv files (*.csv)|*.csv|All Files (*.*)|*.*"
             };
 
+            _sfd = new SaveFileDialog()
+            {
+                OverwritePrompt = true,
+                Filter = "csv files (*.csv)|*.csv|All Files (*.*)|*.*"
+            };
+
             SelectFilesToImportCommand = new RelayCommand(SelectFilesToImport);
+            SelectTargetFileToExportCommand = new RelayCommand(SelectTargetFileToExport);
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
             DateFilter = new DateRangeFilter();
             NoteFilter = new TextFilter();
@@ -58,11 +76,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             ResetFilterCommad = new RelayCommand(() => _anyFilter.Reset());
         }
 
-        private void OnAnyFilterInvalidated(object sender, EventArgs e)
-        {
-            RefreshIsFilteringState();
-            RefreshOperations();
-        }
+        public AsyncCommand CommitExportCommand { get; }
 
         public TextFilter NoteFilter { get; }
 
@@ -73,6 +87,8 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         public RelayCommand CommitImportCommand { get; }
 
         public RelayCommand BeginImportCommand { get; }
+
+        public RelayCommand BeginExportCommand { get; }
 
         public List<UnifiedAccountOperationModel> Operations
         {
@@ -86,10 +102,22 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             set => Set(nameof(IsImporting), ref _isImporting, value);
         }
 
+        public bool IsExporting
+        {
+            get => _isExporting;
+            set => Set(nameof(IsExporting), ref _isExporting, value);
+        }
+
         public string FilePaths
         {
             get => _filePaths;
             set => Set(nameof(FilePaths), ref _filePaths, value);
+        }
+
+        public string ExportFilePath
+        {
+            get => _exportFilePath;
+            set => Set(nameof(ExportFilePath), ref _exportFilePath, value);
         }
 
         public SourceKind? SourceKind
@@ -108,6 +136,8 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         public RelayCommand SelectFilesToImportCommand { get; }
 
+        public RelayCommand SelectTargetFileToExportCommand { get; }
+
         public RelayCommand BeginDataQualityAnalysisCommand { get; }
 
         public bool AutoDetectSourceKind
@@ -121,18 +151,20 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             }
         }
 
-        private bool _isFiltering;
-
         public bool IsFiltering
         {
             get => _isFiltering;
             set
             {
                 if (Set(nameof(IsFiltering), ref _isFiltering, value))
-                {
                     RefreshIsFilteringState();
-                }
             }
+        }
+
+        private void OnAnyFilterInvalidated(object sender, EventArgs e)
+        {
+            RefreshIsFilteringState();
+            RefreshOperations();
         }
 
         private void RefreshIsFilteringState()
@@ -147,19 +179,19 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             var doublonsByOperationId = operations.GroupBy(d => d.OperationId).Where(g => g.Count() > 1).SelectMany(g => g);
 
             var doublonsByDataAndValue = operations.GroupBy(d => $"{d.ValueDate}-{d.Income}-{d.Outcome}").Where(g => g.Count() > 1).SelectMany(g => g);
-            
+
             var result = doublonsByOperationId.Union(doublonsByDataAndValue)
                 .OrderByDescending(d => d.OperationId)
                 .ThenByDescending(d => d.ValueDate)
                 .ThenByDescending(d => d.Income)
                 .ThenByDescending(d => d.Outcome)
                 .ToList();
-            
+
             // validate fortis operations sequence number (detect missing operations)
             var fortisOperations = operations.Where(
-                op => op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvArchive
-                      || op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvExport)
-                      .OrderBy(op=>op.OperationId);
+                    op => op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvArchive
+                          || op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvExport)
+                .OrderBy(op => op.OperationId);
             int[] previousOperationId = null;
             foreach (var fortisOperation in fortisOperations)
             {
@@ -167,24 +199,20 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 var operationYear = int.Parse(operationIdParts[0]);
                 var operationYearNumber = int.Parse(operationIdParts[1]);
 
-                if (previousOperationId!=null)
+                if (previousOperationId != null)
                 {
                     var prevOpYear = previousOperationId[0];
                     var prevOpYearNumber = previousOperationId[1];
-                    bool sequenceAsExpectated = true;
+                    var sequenceAsExpectated = true;
                     if (operationYear == prevOpYear + 1)
                     {
                         if (operationYearNumber != 1)
-                        {
                             sequenceAsExpectated = false;
-                        }
                     }
                     else if (operationYear == prevOpYear)
                     {
                         if (operationYearNumber != prevOpYearNumber + 1)
-                        {
                             sequenceAsExpectated = false;
-                        }
                     }
                     else
                     {
@@ -192,11 +220,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     }
 
                     if (!sequenceAsExpectated)
-                    {
-                        _log.Error($"operation id sequence mismatch (previous {string.Join("-", previousOperationId)}, current {string.Join("-", operationIdParts)}");
-                    }
+                        _log.Error(
+                            $"operation id sequence mismatch (previous {string.Join("-", previousOperationId)}, current {string.Join("-", operationIdParts)}");
                 }
-                
+
                 previousOperationId = new[] { operationYear, operationYearNumber };
             }
 
@@ -207,6 +234,36 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         {
             IsImporting = true;
         }
+        
+        private void BeginExport()
+        {
+            IsExporting = true;
+        }
+        
+        private async Task CommitExport()
+        {
+            if (IsExporting)
+            {
+                using (_busyIndicator.EncapsulateActiveJobDescription(this, "exporting active selection"))
+                {
+                    if (!string.IsNullOrEmpty(ExportFilePath))
+                    {
+                        var operations = GetFilteredAccountOperations();
+                        var clonedOperations =
+                            JsonConvert.DeserializeObject<List<UnifiedAccountOperation>>(JsonConvert.SerializeObject(operations));
+                        foreach (var clonedOperation in clonedOperations)
+                        {
+                            clonedOperation.SourceKind = AccountOperations.Contracts.SourceKind.InternalExport;
+                        }
+
+                        await _transactionsRepository.Export(ExportFilePath, clonedOperations.Cast<AccountOperationBase>().ToList());
+                    }
+                }
+
+                IsExporting = false;
+            }
+        }
+
 
         private async Task CommitImport()
         {
@@ -267,14 +324,17 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private void RefreshOperations()
         {
-            var operations = CurrentAccount?.Operations?.Project()?.To<UnifiedAccountOperationModel>();
-            if (operations != null)
-            {
-                operations = DateFilter.Apply(operations, op => op.ExecutionDate);
-                operations = NoteFilter.Apply(operations, op => op.Note);
-            }
+            IEnumerable<UnifiedAccountOperation> operations = GetFilteredAccountOperations();
 
-            Operations = operations?.ToList();
+            Operations = operations.Project().To<UnifiedAccountOperationModel>().ToList();
+        }
+
+        private IEnumerable<UnifiedAccountOperation> GetFilteredAccountOperations()
+        {
+            var operations = CurrentAccount?.Operations?.AsEnumerable() ?? new List<UnifiedAccountOperation>();
+            operations = DateFilter.Apply(operations, op => op.ExecutionDate);
+            operations = NoteFilter.Apply(operations, op => op.Note);
+            return operations;
         }
 
         private void SelectFilesToImport()
@@ -285,5 +345,14 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             if (_ofd.ShowDialog() == true)
                 FilePaths = string.Join(",", _ofd.FileNames);
         }
+        
+        private void SelectTargetFileToExport()
+        {
+            if (_sfd.ShowDialog() == true)
+            {
+                ExportFilePath = _sfd.FileName;
+            }
+        }
+
     }
 }

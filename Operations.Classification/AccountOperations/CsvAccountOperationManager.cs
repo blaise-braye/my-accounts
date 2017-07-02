@@ -208,11 +208,21 @@ namespace Operations.Classification.AccountOperations
             sodexoExport.TrimHeaders = true;
             sodexoExport.WillThrowOnMissingField = false;
 
+            var internalExport = new CsvConfiguration();
+            sodexoExport.Encoding = Encoding.UTF8;
+            internalExport.Encoding = ansiEncoding;
+            internalExport.Delimiter = ";";
+            internalExport.QuoteAllFields = false;
+            internalExport.TrimFields = true;
+            internalExport.TrimHeaders = true;
+            internalExport.WillThrowOnMissingField = false;
+
             return new Dictionary<SourceKind, CsvConfiguration>
             {
                 { SourceKind.FortisCsvExport, export },
                 { SourceKind.FortisCsvArchive, archive },
-                { SourceKind.SodexoCsvExport, sodexoExport }
+                { SourceKind.SodexoCsvExport, sodexoExport },
+                { SourceKind.InternalExport, internalExport }
             };
         }
     }

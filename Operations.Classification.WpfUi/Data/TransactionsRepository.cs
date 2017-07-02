@@ -44,6 +44,11 @@ namespace Operations.Classification.WpfUi.Data
             return true;
         }
 
+        public Task Export(string filePath, IList<AccountOperationBase> operations)
+        {
+            return _csvAccountOperationManager.WriteAsync(filePath, operations);
+        }
+
         public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
         {
             var operationsBases = await GetAllOperations(accountName);

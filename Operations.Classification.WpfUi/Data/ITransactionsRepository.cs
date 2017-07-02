@@ -9,6 +9,9 @@ namespace Operations.Classification.WpfUi.Data
     public interface ITransactionsRepository
     {
         Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName);
+
         Task<bool> Import(string accountName, Stream importData, SourceKind sourceKind);
+
+        Task Export(string filePath, IList<AccountOperationBase> operations);
     }
 }

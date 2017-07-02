@@ -121,6 +121,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Caching\CachedTransactionsRepository.cs" />
+    <Compile Include="Managers\Transactions\ExportOperationsView.xaml.cs">
+      <DependentUpon>ExportOperationsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Technical\Collections\Filters\TextFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSet.cs" />
     <Compile Include="Managers\Reports\UnifiedOperationsReporter.cs" />
@@ -208,6 +211,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Managers\Settings\SettingsEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Managers\Transactions\ExportOperationsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

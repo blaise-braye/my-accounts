@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Operations.Classification.WpfUi.Managers.Transactions.ExportOperationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.TransactionsManager}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                    Command="{Binding CommitExportCommand}">
+                <Rectangle Width="24" Height="24">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_disk_download}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+        </StackPanel>
+        <StackPanel>
+            <Label Content="File path :" Target="{Binding ElementName=TxtFilePath}" />
+            <TextBox Name="TxtFilePath"
+                     Style="{StaticResource OpenFileMetroTextBox}"
+                     controls:TextBoxHelper.Watermark="enter the path of the target file here"
+                     controls:TextBoxHelper.ButtonCommand="{Binding SelectTargetFileToExportCommand}"
+                     Text="{Binding ExportFilePath}" />
+        </StackPanel>
+    </DockPanel>
+</UserControl>
