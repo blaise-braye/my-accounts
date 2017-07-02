@@ -49,6 +49,11 @@
                    Placement="Top" StaysOpen="False">
                 <controls:PopupContent>
                     <StackPanel>
+                        <GroupBox Header="Memo">
+                            <StackPanel>
+                                <TextBox Text="{Binding MemoFilter.Text}"></TextBox>
+                            </StackPanel>
+                        </GroupBox>
                         <GroupBox Header="date range">
                             <StackPanel>
                                 <DatePicker SelectedDate="{Binding DateFilter.FromDate}"

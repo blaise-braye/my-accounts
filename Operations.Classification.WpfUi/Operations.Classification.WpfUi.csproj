@@ -121,6 +121,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Caching\CachedTransactionsRepository.cs" />
+    <Compile Include="Managers\Integration\GererMesComptes\TextFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSet.cs" />
     <Compile Include="Managers\Reports\UnifiedOperationsReporter.cs" />
     <Compile Include="Managers\Settings\SettingsEditorView.xaml.cs">

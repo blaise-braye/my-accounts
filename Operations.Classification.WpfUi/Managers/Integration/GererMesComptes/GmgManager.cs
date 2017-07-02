@@ -40,7 +40,8 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
             DeltaFilter = new TransactionDeltaFilter();
             DateFilter = new DateRangeFilter();
-            _anyFilter = new CompositeFilter(DeltaFilter, DateFilter);
+            MemoFilter = new TextFilter();
+            _anyFilter = new CompositeFilter(DeltaFilter, DateFilter, MemoFilter);
             _anyFilter.FilterInvalidated += OnAnyFilterInvalidated;
 
             ResetFilterCommad = new RelayCommand(() => _anyFilter.Reset());
@@ -94,6 +95,8 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         public TransactionDeltaFilter DeltaFilter { get; }
 
         public DateRangeFilter DateFilter { get; }
+
+        public TextFilter MemoFilter { get; }
 
         public RelayCommand<BasicTransactionModel> FilterOnItemDateCommand { get; }
 
@@ -219,18 +222,21 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
                 var locals = deltas.Where(d => d.Source != null).Select(d => d.Source);
                 locals = DateFilter.Apply(locals, l => l.Date);
+                locals = MemoFilter.Apply(locals, l => l.Memo);
                 var vmLocals = ProjectToViewModelCollection(locals);
                 Transactions.Reset(vmLocals);
 
                 var remotes = deltas.Where(d => d.Target != null).Select(d => d.Target);
                 var vmRemotes = ProjectToViewModelCollection(remotes);
                 vmRemotes = DateFilter.Apply(vmRemotes, l => l.Date);
+                vmRemotes = MemoFilter.Apply(vmRemotes, l => l.Memo);
                 RemoteTransactions.Reset(vmRemotes);
             }
             else
             {
                 var locals = _currentAccountBasicTransactions;
                 var filteredLocals = DateFilter.Apply(locals, l => l.Date);
+                filteredLocals = MemoFilter.Apply(filteredLocals, l => l.Memo);
                 Transactions.Reset(filteredLocals);
                 RemoteTransactions.Clear();
             }
