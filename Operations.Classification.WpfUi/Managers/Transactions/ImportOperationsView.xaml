@@ -19,21 +19,21 @@
             </Button>
         </StackPanel>
         <StackPanel>
-            <Label Content="File path :" Target="{Binding ElementName=txtFilePath}" />
-            <TextBox Name="txtFilePath"
+            <Label Content="File path :" Target="{Binding ElementName=TxtFilePath}" />
+            <TextBox Name="TxtFilePath"
                      Style="{StaticResource OpenFileMetroTextBox}"
                      controls:TextBoxHelper.Watermark="enter the path of the file(s) to import here"
                      controls:TextBoxHelper.ButtonCommand="{Binding SelectFilesToImportCommand}"
                      Text="{Binding FilePaths}" />
 
-            <Label Target="{Binding ElementName=txtGmgAccountName}">
+            <Label Target="{Binding ElementName=TxtGmgAccountName}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Source kind : ( " />
                     <CheckBox IsChecked="{Binding AutoDetectSourceKind, Mode=TwoWay}" Content="Auto detect" />
                     <TextBlock Text=" )" />
                 </StackPanel>
             </Label>
-            <ComboBox Name="txtGmgAccountName"
+            <ComboBox Name="TxtGmgAccountName"
                       IsEnabled="{Binding AutoDetectSourceKind, Converter={StaticResource InvertBooleanConverter}, Mode=TwoWay}"
                       controls:TextBoxHelper.Watermark="select the source kind"
                       SelectedValue="{Binding SourceKind}"

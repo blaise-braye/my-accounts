@@ -8,16 +8,16 @@
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.AccountsManager}"
              d:DesignHeight="300" d:DesignWidth="500">
     <StackPanel>
-        <Label Content="Name :" Target="{Binding ElementName=txtName}" />
-        <TextBox Name="txtName"
+        <Label Content="Name :" Target="{Binding ElementName=TxtName}" />
+        <TextBox Name="TxtName"
                  controls:TextBoxHelper.Watermark="enter the display name of the account here"
                  Text="{Binding CurrentAccount.Name}" />
-        <Label Content="Initial balance :" Target="{Binding ElementName=txtInitialBalance}" />
-        <TextBox Name="txtInitialBalance"
+        <Label Content="Initial balance :" Target="{Binding ElementName=TxtInitialBalance}" />
+        <TextBox Name="TxtInitialBalance"
                  controls:TextBoxHelper.Watermark="enter the initial balance of the account here"
                  Text="{Binding CurrentAccount.InitialBalance}" />
-        <Label Content="Gmg account name :" Target="{Binding ElementName=txtGmgAccountName}" />
-        <TextBox Name="txtGmgAccountName"
+        <Label Content="Gmg account name :" Target="{Binding ElementName=TxtGmgAccountName}" />
+        <TextBox Name="TxtGmgAccountName"
                  controls:TextBoxHelper.Watermark="enter the equivalent account name on Gmg"
                  Text="{Binding CurrentAccount.GmgAccountName}" />
     </StackPanel>
