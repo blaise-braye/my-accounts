@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using StackExchange.Redis;
 
 namespace Operations.Classification.WpfUi.Technical.Caching
 {
-    public class JSonCacheEntry<TValue> : JSonCacheEntry
+    public class JSonCacheEntry<TValue> : JSonCacheEntry, ICacheEntry<TValue>
     {
-        public JSonCacheEntry(ConnectionMultiplexer connection, string cacheKey) : base(connection, cacheKey, typeof(TValue))
+        public JSonCacheEntry(IRawCacheRepository repository, string cacheKey) : base(repository, cacheKey, typeof(TValue))
         {
         }
 

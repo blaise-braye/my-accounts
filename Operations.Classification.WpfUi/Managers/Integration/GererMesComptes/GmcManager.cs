@@ -168,7 +168,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 });
         }
 
-        private JSonCacheEntry<List<TransactionDelta>> GetDeltaCacheEntry(AccountViewModel account)
+        private ICacheEntry<List<TransactionDelta>> GetDeltaCacheEntry(AccountViewModel account)
         {
             return CacheProvider.GetJSonCacheEntry<List<TransactionDelta>>($"TransactionDeltas/{account.Name}");
         }

@@ -11,19 +11,20 @@ namespace Operations.Classification.WpfUi.Technical.Caching
         private static readonly ILog _log = LogManager.GetLogger(typeof(JSonCacheEntry));
         private readonly string _cacheKey;
 
-        private readonly ConnectionMultiplexer _connection;
         private readonly Type _valueType;
 
-        public JSonCacheEntry(ConnectionMultiplexer connection, string cacheKey, Type valueType)
+        public JSonCacheEntry(IRawCacheRepository repository, string cacheKey, Type valueType)
         {
-            _connection = connection;
+            Repository = repository;
             _cacheKey = cacheKey;
             _valueType = valueType;
         }
 
+        private IRawCacheRepository Repository { get; }
+
         public async Task<object> GetOrSetAsync(Func<Task<object>> valueLoader)
         {
-            var connected = GetDatabase().IsConnected(_cacheKey);
+            var connected = Repository.IsConnected(_cacheKey);
 
             object result;
 
@@ -34,7 +35,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             }
             else
             {
-                var keyExist = GetDatabase().KeyExists(_cacheKey);
+                var keyExist = await Repository.KeyExistsAsync(_cacheKey);
 
                 if (!keyExist)
                 {
@@ -42,13 +43,9 @@ namespace Operations.Classification.WpfUi.Technical.Caching
                     result = await valueLoader();
 
                     if (result != null && result.GetType() != _valueType)
-                    {
                         _log.Warn($"Won't cache computed value. Reason : invalid result type (expected : {_valueType}, actual {result.GetType()}");
-                    }
                     else
-                    {
                         await SetAsync(result);
-                    }
                 }
                 else
                 {
@@ -61,14 +58,14 @@ namespace Operations.Classification.WpfUi.Technical.Caching
 
         public Task<bool> DeleteAsync()
         {
-            var connected = GetDatabase().IsConnected(_cacheKey);
+            var connected = Repository.IsConnected(_cacheKey);
             if (!connected)
             {
                 _log.Debug($"Cache unavailable, delete request ignored ({_cacheKey})");
                 return Task.FromResult(false);
             }
 
-            return GetDatabase().KeyDeleteAsync(_cacheKey);
+            return Repository.KeyDeleteAsync(_cacheKey);
         }
 
         public async Task<bool> SetAsync(object value)
@@ -79,18 +76,16 @@ namespace Operations.Classification.WpfUi.Technical.Caching
                 return false;
             }
 
-            var connected = GetDatabase().IsConnected(_cacheKey);
+            var connected = Repository.IsConnected(_cacheKey);
             bool isSet;
             if (connected)
             {
                 _log.Debug($"Storing cache value ({_cacheKey})");
                 var rawResult = JsonConvert.SerializeObject(value);
 
-                isSet = await GetDatabase().StringSetAsync(_cacheKey, rawResult);
+                isSet = await Repository.StringSetAsync(_cacheKey, rawResult);
                 if (!isSet)
-                {
                     _log.Warn($"failed to cache data ({_cacheKey})");
-                }
             }
             else
             {
@@ -101,9 +96,9 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             return isSet;
         }
 
-        protected async Task<object> GetAsync()
+        public async Task<object> GetAsync()
         {
-            var connected = GetDatabase().IsConnected(_cacheKey);
+            var connected = Repository.IsConnected(_cacheKey);
             object result = null;
 
             if (!connected)
@@ -113,7 +108,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             else
             {
                 _log.Debug($"Fetching cache value ({_cacheKey})");
-                var cachedRawResult = await GetDatabase().StringGetAsync(_cacheKey);
+                var cachedRawResult = await Repository.StringGetAsync(_cacheKey);
                 _log.Debug($"Fetched cache value ({_cacheKey})");
                 result = Deserialize(cachedRawResult);
             }
@@ -126,24 +121,17 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             object result = null;
 
             if (cachedRawResult.HasValue)
-            {
                 try
                 {
                     result = JsonConvert.DeserializeObject(cachedRawResult, _valueType);
                 }
                 catch (Exception exn)
                 {
-                    exn.Data["RawCache"] = (string)cachedRawResult;
+                    exn.Data["RawCache"] = (string) cachedRawResult;
                     _log.Error($"failed to deserialize cache raw value with key {_cacheKey}", exn);
                 }
-            }
 
             return result;
-        }
-
-        private IDatabase GetDatabase()
-        {
-            return _connection.GetDatabase();
         }
     }
 }
