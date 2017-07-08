@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Reports;
+using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -19,7 +20,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private readonly IAsyncCommand[] _commands;
 
         private readonly AccountsRepository _repository;
-        private readonly ITransactionsRepository _transactionsRepository;
+        private readonly ITransactionsManager _transactionsManager;
 
         private ObservableCollection<AccountViewModel> _accounts;
 
@@ -30,15 +31,12 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private bool _isEditing;
 
         private bool _isLoading;
-
-        public AccountsManager(
-            BusyIndicatorViewModel busyIndicatorViewModel,
-            AccountsRepository repository,
-            ITransactionsRepository transactionsRepository)
+        
+        public AccountsManager(BusyIndicatorViewModel busyIndicatorViewModel, AccountsRepository repository, ITransactionsManager transactionsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
             _repository = repository;
-            _transactionsRepository = transactionsRepository;
+            _transactionsManager = transactionsManager;
             LoadCommand = new AsyncCommand(LoadAsync, () => !IsEditing);
             BeginNewCommand = new AsyncCommand(BeginNew, () => !IsEditing);
             BeginEditCommand = new AsyncCommand(BeginEdit, () => !IsEditing && CurrentAccount != null);
@@ -176,7 +174,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                 foreach (var entity in await _repository.GetList())
                 {
                     var vm = entity.Map().To<AccountViewModel>();
-                    var operations = await _transactionsRepository.GetTransformedUnifiedOperations(entity.Name);
+                    var operations = await _transactionsManager.GetTransformedUnifiedOperations(entity.Name);
                     vm.Operations = operations;
 
                     result.Add(vm);

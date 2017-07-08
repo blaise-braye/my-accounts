@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations;
-using Operations.Classification.WpfUi.Caching;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
@@ -41,10 +40,10 @@ namespace Operations.Classification.WpfUi
 
             var accountsRepository = new AccountsRepository(workingCopy);
             var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager());
-            var cachedTransactionsRepository = new CachedTransactionsRepository(transactionsRepository);
             BusyIndicator = new BusyIndicatorViewModel();
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, cachedTransactionsRepository);
-            TransactionsManager = new TransactionsManager(BusyIndicator, cachedTransactionsRepository);
+            TransactionsManager = new TransactionsManager(BusyIndicator, transactionsRepository);
+            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, TransactionsManager);
+            
             GmcManager = new GmcManager(BusyIndicator);
             SettingsManager = new SettingsManager();
             LoadCommand = new AsyncCommand(Load);

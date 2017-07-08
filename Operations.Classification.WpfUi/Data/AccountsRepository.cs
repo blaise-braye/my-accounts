@@ -39,8 +39,8 @@ namespace Operations.Classification.WpfUi.Data
             {
                 try
                 {
-                    using (var DestinationStream = File.OpenRead(_workingCopy.SettingsPath))
-                    using (var sw = new StreamReader(DestinationStream))
+                    using (var destinationStream = File.OpenRead(_workingCopy.SettingsPath))
+                    using (var sw = new StreamReader(destinationStream))
                     {
                         var rawSettings = await sw.ReadToEndAsync();
                         list = JsonConvert.DeserializeObject<List<AccountEntity>>(rawSettings);
@@ -101,8 +101,8 @@ namespace Operations.Classification.WpfUi.Data
             try
             {
                 Monitor.Enter(_writeLock);
-                using (var DestinationStream = File.Create(_workingCopy.SettingsPath))
-                using (var sw = new StreamWriter(DestinationStream))
+                using (var destinationStream = File.Create(_workingCopy.SettingsPath))
+                using (var sw = new StreamWriter(destinationStream))
                 {
                     await sw.WriteAsync(rawJson);
                 }

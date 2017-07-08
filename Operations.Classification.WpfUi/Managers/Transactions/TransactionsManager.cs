@@ -13,14 +13,16 @@ using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Transactions
 {
-    public class TransactionsManager : ViewModelBase
+    public class TransactionsManager : ViewModelBase, ITransactionsManager
     {
+        private const string UnifiedAccountOperationsByNameRoute = "/UnifiedAccountOperations/{0}";
         private static readonly ILog _log = LogManager.GetLogger(typeof(TransactionsManager));
         private readonly CompositeFilter _anyFilter;
 
@@ -32,9 +34,9 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private bool _autoDetectSourceKind;
         private AccountViewModel _currentAccount;
 
-        private string _filePaths;
-
         private string _exportFilePath;
+
+        private string _filePaths;
 
         private bool _isExporting;
 
@@ -59,7 +61,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 Filter = "csv files (*.csv)|*.csv|All Files (*.*)|*.*"
             };
 
-            _sfd = new SaveFileDialog()
+            _sfd = new SaveFileDialog
             {
                 OverwritePrompt = true,
                 Filter = "csv files (*.csv)|*.csv|All Files (*.*)|*.*"
@@ -161,6 +163,13 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             }
         }
 
+        public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
+        {
+            var result = await GetCacheEntry(accountName).GetOrAddAsync(
+                () => _transactionsRepository.GetTransformedUnifiedOperations(accountName));
+            return result;
+        }
+
         private void OnAnyFilterInvalidated(object sender, EventArgs e)
         {
             RefreshIsFilteringState();
@@ -174,7 +183,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private async Task BeginDataQualityAnalysis()
         {
-            var operations = await _transactionsRepository.GetTransformedUnifiedOperations(CurrentAccount.Name);
+            var operations = await GetTransformedUnifiedOperations(CurrentAccount.Name);
 
             var doublonsByOperationId = operations.GroupBy(d => d.OperationId).Where(g => g.Count() > 1).SelectMany(g => g);
 
@@ -234,12 +243,12 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         {
             IsImporting = true;
         }
-        
+
         private void BeginExport()
         {
             IsExporting = true;
         }
-        
+
         private async Task CommitExport()
         {
             if (IsExporting)
@@ -252,9 +261,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                         var clonedOperations =
                             JsonConvert.DeserializeObject<List<UnifiedAccountOperation>>(JsonConvert.SerializeObject(operations));
                         foreach (var clonedOperation in clonedOperations)
-                        {
                             clonedOperation.SourceKind = AccountOperations.Contracts.SourceKind.InternalExport;
-                        }
 
                         await _transactionsRepository.Export(ExportFilePath, clonedOperations.Cast<AccountOperationBase>().ToList());
                     }
@@ -263,8 +270,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 IsExporting = false;
             }
         }
-
-
+        
         private async Task CommitImport()
         {
             if (IsImporting)
@@ -300,13 +306,16 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                             using (var fs = File.OpenRead(file))
                             {
                                 if (await _transactionsRepository.Import(account.Name, fs, sourceKind))
+                                {
+                                    await GetCacheEntry(account.Name).DeleteAsync();
                                     someImportSucceeded = true;
+                                }
                             }
                         }
 
                     if (someImportSucceeded)
                     {
-                        var operations = await _transactionsRepository.GetTransformedUnifiedOperations(CurrentAccount.Name);
+                        var operations = await GetTransformedUnifiedOperations(CurrentAccount.Name);
                         CurrentAccount.Operations = operations;
                         OnAccountViewModelReceived(CurrentAccount);
                     }
@@ -324,7 +333,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private void RefreshOperations()
         {
-            IEnumerable<UnifiedAccountOperation> operations = GetFilteredAccountOperations();
+            var operations = GetFilteredAccountOperations();
 
             Operations = operations.Project().To<UnifiedAccountOperationModel>().ToList();
         }
@@ -345,14 +354,16 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             if (_ofd.ShowDialog() == true)
                 FilePaths = string.Join(",", _ofd.FileNames);
         }
-        
+
         private void SelectTargetFileToExport()
         {
             if (_sfd.ShowDialog() == true)
-            {
                 ExportFilePath = _sfd.FileName;
-            }
         }
 
+        private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(string accountName)
+        {
+            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountName));
+        }
     }
 }

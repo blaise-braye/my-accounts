@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operations.Classification", "Operations.Classification\Operations.Classification.csproj", "{ADFFC68B-0F84-4832-984B-0CD0F463D17E}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Business", "02 Business", "{5D6CCCEF-6E1E-4D40-B117-C7F1D26384D0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "09 Tests", "09 Tests", "{132F170B-0A03-4B93-A0D6-FE2A7598247F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Deployment", "00 Deployment", "{FD9F345F-8E5E-40BF-8DAC-ECF81ECDC097}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
