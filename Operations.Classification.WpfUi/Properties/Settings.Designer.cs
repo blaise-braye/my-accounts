@@ -25,7 +25,7 @@ namespace Operations.Classification.WpfUi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data2\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string WorkingFolder {
             get {
                 return ((string)(this["WorkingFolder"]));
@@ -61,7 +61,7 @@ namespace Operations.Classification.WpfUi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fr-BE")]
+        [global::System.Configuration.DefaultSettingValueAttribute("en-US")]
         public string Culture {
             get {
                 return ((string)(this["Culture"]));
@@ -73,7 +73,7 @@ namespace Operations.Classification.WpfUi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fr-BE")]
+        [global::System.Configuration.DefaultSettingValueAttribute("en-US")]
         public string UiCulture {
             get {
                 return ((string)(this["UiCulture"]));
