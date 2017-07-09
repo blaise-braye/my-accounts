@@ -5,11 +5,11 @@ using FluentAssertions;
 using NUnit.Framework;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.Tests.Features.Classification.Customizations;
+using Operations.Classification.Tests.Features.Customizations;
 
-namespace Operations.Classification.Tests.Features.Classification
+namespace Operations.Classification.Tests.Features
 {
-    [TestFixture]
+    [TestFixture(Category = "UnitTest")]
     public class When_I_serialize_operations_to_csv_fie
     {
         [SetUp]

@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QifApi.Transactions;
 
 namespace Operations.Classification.GererMesComptes
 {
-    public class TransactionDeltaSet
+    public class TransactionDeltaSet : IEnumerable<TransactionDelta>
     {
         private readonly int[] _counters = new int[Enum.GetValues(typeof(DeltaAction)).Length];
         private readonly List<TransactionDelta> _deltas = new List<TransactionDelta>();
@@ -91,6 +92,16 @@ namespace Operations.Classification.GererMesComptes
         public List<TransactionDelta> ToList()
         {
             return _deltas.OrderByDescending(t => t.Source?.Date ?? t.Target?.Date).ToList();
+        }
+        
+        public IEnumerator<TransactionDelta> GetEnumerator()
+        {
+            return ToList().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         private void AddDelta(TransactionDelta transactionDelta)

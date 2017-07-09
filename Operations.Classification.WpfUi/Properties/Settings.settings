@@ -6,10 +6,10 @@
       <Value Profile="(Default)">C:\Users\BBraye\OneDrive\Gestion\Data2\</Value>
     </Setting>
     <Setting Name="GmcUserName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">blaisemail@gmail.com</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="GmcPassword" Type="System.String" Scope="User">
-      <Value Profile="(Default)">kT5XeI!I9AI9</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Culture" Type="System.String" Scope="User">
       <Value Profile="(Default)">fr-BE</Value>

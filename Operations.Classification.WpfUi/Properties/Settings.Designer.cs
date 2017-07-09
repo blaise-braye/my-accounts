@@ -37,7 +37,7 @@ namespace Operations.Classification.WpfUi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("blaisemail@gmail.com")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string GmcUserName {
             get {
                 return ((string)(this["GmcUserName"]));
@@ -49,7 +49,7 @@ namespace Operations.Classification.WpfUi.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("kT5XeI!I9AI9")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string GmcPassword {
             get {
                 return ((string)(this["GmcPassword"]));

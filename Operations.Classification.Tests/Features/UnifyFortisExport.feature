@@ -1,4 +1,5 @@
-﻿Feature: Unify Fortis Operations Export details
+﻿@UnitTest
+Feature: Unify Fortis Operations Export details
 	In order to classify my personal operations,
 	I want a more structure operation detail for my fortis transaction exports
 

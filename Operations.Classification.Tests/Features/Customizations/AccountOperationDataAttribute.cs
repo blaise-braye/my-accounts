@@ -7,7 +7,7 @@ using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.Kernel;
 using Ploeh.AutoFixture.NUnit3;
 
-namespace Operations.Classification.Tests.Features.Classification.Customizations
+namespace Operations.Classification.Tests.Features.Customizations
 {
     public class AccountOperationDataAttribute : AutoDataAttribute
     {

@@ -1,8 +1,9 @@
-﻿Feature: ManageBankAccounts
+﻿@IntegrationTest
+Feature: ManageBankAccounts
 	User must be able to manage its bank accounts in order to manage its bank operations
 
 Background: the user is connected
-	Given I connect on GererMesComptes with email 'blaisemail@gmail.com' and password 'kT5XeI!I9AI9'
+	Given I connect on GererMesComptes with email 'Settings:GmcUserName' and password 'Settings:GmcPassword'
 
 Scenario:Create an account
 	When I create the bank account 'Automated Test Account'

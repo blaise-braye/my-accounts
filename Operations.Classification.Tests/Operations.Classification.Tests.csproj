@@ -42,13 +42,11 @@
       <HintPath>..\packages\CsvHelper.2.16.3.0\lib\net45\CsvHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FluentAssertions, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="FluentAssertions, Version=4.19.3.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.19.3\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions.Core, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="FluentAssertions.Core, Version=4.19.3.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.19.3\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="ImpromptuInterface, Version=6.2.2.0, Culture=neutral, PublicKeyToken=0b1781c923b2975b, processorArchitecture=MSIL">
       <HintPath>..\packages\ImpromptuInterface.6.2.2\lib\net40\ImpromptuInterface.dll</HintPath>
@@ -56,20 +54,17 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=3.50.2.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoFixture.3.50.2\lib\net40\Ploeh.AutoFixture.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Ploeh.AutoFixture, Version=3.50.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.3.50.3\lib\net40\Ploeh.AutoFixture.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture.NUnit3, Version=3.50.2.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoFixture.NUnit3.3.50.2\lib\net40\Ploeh.AutoFixture.NUnit3.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Ploeh.AutoFixture.NUnit3, Version=3.50.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.NUnit3.3.50.3\lib\net40\Ploeh.AutoFixture.NUnit3.dll</HintPath>
     </Reference>
     <Reference Include="QifApi, Version=1.0.6014.6272, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\QifApi.1.0.6014.6272\lib\net45\QifApi.dll</HintPath>
@@ -93,8 +88,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="TechTalk.SpecFlow, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpecFlow.2.2.0-preview20161020\lib\net45\TechTalk.SpecFlow.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\SpecFlow.2.2.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
@@ -106,87 +100,57 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Features\Classification\Customizations\AccountOperationDataAttribute.cs" />
-    <Compile Include="Features\Classification\ReadFortisExport.feature.cs">
+    <Compile Include="Features\Customizations\AccountOperationDataAttribute.cs" />
+    <Compile Include="Features\ReadFortisExport.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReadFortisExport.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\GererMesComptes\Connexion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Connexion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Features\GererMesComptes\ImportBankOperations.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImportBankOperations.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Features\GererMesComptes\ManageBankAccounts.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ManageBankAccounts.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Features\Classification\UnifyFortisArchive.feature.cs">
+    <Compile Include="Features\UnifyFortisArchive.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UnifyFortisArchive.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\Classification\UnifyFortisExport.feature.cs">
+    <Compile Include="Features\UnifyFortisExport.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UnifyFortisExport.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\Classification\ParseAndUnifyOperations.feature.cs">
+    <Compile Include="Features\ParseAndUnifyOperations.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ParseAndUnifyOperations.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\Classification\UnifySodexoExport.feature.cs">
+    <Compile Include="Features\UnifySodexoExport.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UnifySodexoExport.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\GererMesComptes\When_I_parse_qif_operations.cs" />
-    <Compile Include="Features\Classification\When_I_serialize_operations_to_csv_fie.cs" />
+    <Compile Include="Features\When_I_serialize_operations_to_csv_fie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Steps\GererMesCompteSteps.cs" />
     <Compile Include="Steps\ClassificationSteps.cs" />
-    <Compile Include="Steps\PostScenarioCleaner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Features\Classification\ReadFortisExport.feature">
+    <None Include="Features\ReadFortisExport.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ReadFortisExport.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\GererMesComptes\Connexion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Connexion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\GererMesComptes\ImportBankOperations.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ImportBankOperations.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\GererMesComptes\ManageBankAccounts.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ManageBankAccounts.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\Classification\UnifyFortisArchive.feature">
+    <None Include="Features\UnifyFortisArchive.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UnifyFortisArchive.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\Classification\UnifyFortisExport.feature">
+    <None Include="Features\UnifyFortisExport.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UnifyFortisExport.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\Classification\ParseAndUnifyOperations.feature">
+    <None Include="Features\ParseAndUnifyOperations.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ParseAndUnifyOperations.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\Classification\UnifySodexoExport.feature">
+    <None Include="Features\UnifySodexoExport.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UnifySodexoExport.feature.cs</LastGenOutput>
     </None>
@@ -202,6 +166,7 @@
       <Name>Operations.Classification</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

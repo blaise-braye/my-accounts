@@ -11,7 +11,7 @@ using QifApi;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-namespace Operations.Classification.Tests.Steps
+namespace Operations.Classification.Gmc.IntegrationTests.Steps
 {
     [Binding]
     public class GererMesCompteSteps
@@ -148,7 +148,7 @@ namespace Operations.Classification.Tests.Steps
 
         [When(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
         [Given(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
-        public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(string userName, string password)
+        public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(Wrapper<string> userName, Wrapper<string> password)
         {
             await _client.Connect(userName, password);
         }
@@ -183,16 +183,11 @@ namespace Operations.Classification.Tests.Steps
         {
             var account = await _accounts.GetByName(accountName);
             var operationsDelta = await _operations.DryRunImport(account.Id, _toImportQifData);
-            var lastQifImportResult = await _operations.RunImport(account.Id, operationsDelta.ToList());
+            var newTransactions = operationsDelta.Where(d=>d.Action == DeltaAction.Add).ToList();
+            var lastQifImportResult = await _operations.RunImport(account.Id, newTransactions);
             _lastQifImportResult = lastQifImportResult;
         }
-
-        [When(@"I search for the last synchronised operation id")]
-        public void WhenISearchForTheLastSynchronisedOperationId()
-        {
-            ScenarioContext.Current.Pending();
-        }
-
+        
         [Given(@"I wait that last imported qifdata in account '(.*)' is available in export")]
         [When(@"I wait that last imported qifdata in account '(.*)' is available in export")]
         public async Task WhenIWaitThatLastImportedQifdataIsAvailableInExport(string accountName)

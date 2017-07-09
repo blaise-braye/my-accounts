@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 using Newtonsoft.Json.Linq;
 using Operations.Classification.Extensions;
 using QifApi.Transactions;
@@ -15,6 +16,8 @@ namespace Operations.Classification.GererMesComptes
 {
     public class OperationsRepository
     {
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(OperationsRepository));
+
         private readonly GererMesComptesClient _client;
 
         public OperationsRepository(GererMesComptesClient client)
@@ -225,7 +228,7 @@ namespace Operations.Classification.GererMesComptes
             return result;
         }
 
-        public async Task<string> WaitExportAvailability(string accountId, string lastImportedQifData)
+        public async Task<string> WaitExportAvailability(string accountId, string lastImportedQifData, int secondsToWait = 5)
         {
             var sw = Stopwatch.StartNew();
             bool available;
@@ -246,7 +249,7 @@ namespace Operations.Classification.GererMesComptes
                 available = exportedbyKey.Select(s => s.Key).Where(importedKeys.Contains).Union(importedKeys).Count() == importedKeys.Count;
                 if (!available)
                 {
-                    Trace.WriteLine("number of imported items do not match number exported items yet");
+                    _logger.Warn("number of imported items do not match number exported items yet");
                 }
                 else
                 {
@@ -259,7 +262,7 @@ namespace Operations.Classification.GererMesComptes
 
                             if (!available)
                             {
-                                Trace.WriteLine($"item not available in export yet :{importedKeyItem.Number} - {importedKeyItem.Memo}");
+                                _logger.Warn($"item not available in export yet :{importedKeyItem.Number} - {importedKeyItem.Memo}");
                                 break;
                             }
                         }
@@ -276,11 +279,11 @@ namespace Operations.Classification.GererMesComptes
                     }
                 }
             }
-            while (sw.Elapsed.TotalSeconds < 60 && !available);
+            while (sw.Elapsed.TotalSeconds < secondsToWait && !available);
 
             if (!available)
             {
-                throw new Exception("Timeout, could not detect export availability during 60 seconds");
+                throw new Exception($"Timeout, could not detect export availability during {secondsToWait} seconds");
             }
 
             return exportedQifData;

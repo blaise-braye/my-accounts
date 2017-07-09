@@ -1,4 +1,5 @@
-﻿Feature: Unify Sodexo Export details
+﻿@UnitTest
+Feature: Unify Sodexo Export details
 	In order to classify my personal operations,
 	I want a more structured operation detail for my sodexo transaction exports
 

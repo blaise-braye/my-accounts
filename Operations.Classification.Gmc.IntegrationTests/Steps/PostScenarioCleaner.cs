@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using TechTalk.SpecFlow;
 
-namespace Operations.Classification.Tests.Steps
+namespace Operations.Classification.Gmc.IntegrationTests.Steps
 {
     [Binding]
     public class PostScenarioCleaner
     {
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(PostScenarioCleaner));
+
         private readonly List<Func<Task>> _tasks = new List<Func<Task>>();
 
         public void Add(Action task)
@@ -36,15 +38,18 @@ namespace Operations.Classification.Tests.Steps
             }
 
             tasks.Reverse();
-            foreach (var task in tasks)
+            for (var index = 0; index < tasks.Count; index++)
+            {
+                var task = tasks[index];
                 try
                 {
                     await task();
                 }
                 catch (Exception exn)
                 {
-                    Trace.TraceError(exn.Message);
+                    _logger.Error($"cleanup task [{index}] failed", exn);
                 }
+            }
         }
     }
 }

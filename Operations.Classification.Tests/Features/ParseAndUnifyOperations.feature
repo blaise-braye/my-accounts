@@ -1,4 +1,6 @@
-﻿Feature: ParseTransactionFiles
+﻿@IntegrationTest
+@Ignore
+Feature: ParseTransactionFiles
 	In order to classify my personal operations,
 	I want a more structure operation detail for any transactions coming for any csv file kind
 

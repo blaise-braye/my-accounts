@@ -1,4 +1,5 @@
-﻿Feature: Unify Fortis Operations Archive details
+﻿@UnitTest
+Feature: Unify Fortis Operations Archive details
 	In order to classify my personal operations,
 	I want a more structure operation detail for my fortis transaction archives
 

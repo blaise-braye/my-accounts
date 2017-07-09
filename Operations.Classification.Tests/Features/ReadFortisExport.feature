@@ -1,4 +1,5 @@
-﻿Feature: ReadFortisExport
+﻿@UnitTest
+Feature: ReadFortisExport
 	Trust in the way I parse the csv files is required,
 	Those files are the gold source of the entire claissification tool,
 	The trust in the way they are read is key in the success of this classification

@@ -2,12 +2,13 @@ using System;
 using System.Globalization;
 using System.Linq;
 using FluentAssertions;
+using log4net;
 using NUnit.Framework;
 using Operations.Classification.GererMesComptes;
 
-namespace Operations.Classification.Tests.Features.GererMesComptes
+namespace Operations.Classification.Gmc.IntegrationTests.Features
 {
-    [TestFixture]
+    [TestFixture(Category = "UnitTest")]
     public class When_I_parse_qif_operations
     {
         [SetUp]

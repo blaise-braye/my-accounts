@@ -1,8 +1,9 @@
-﻿Feature: ImportBankOperations
+﻿@IntegrationTest
+Feature: ImportBankOperations
 	User must be able to import bank operations manually
 
 Background: Ensure a bank account is created
-	Given I connect on GererMesComptes with email 'blaisemail@gmail.com' and password 'kT5XeI!I9AI9'
+	Given I connect on GererMesComptes with email 'Settings:GmcUserName' and password 'Settings:GmcPassword'
 	And I create the bank account 'Automated Test Account'
 
 Scenario: Import an operation
@@ -41,7 +42,7 @@ N2017-0148
 	|        | 2016-09-28T00:00:00 | 0.02   | Dates Must Be Formatted In Mm Dd Yyyy                                                                                            |
 
 Scenario:Execute two successive Imports
-	- latest version overwrites initial version
+	- latest version does not overwrite initial version
 	- new operations are added
 	Given I import the qif data on account 'Automated Test Account'
 	"""
@@ -53,13 +54,13 @@ N2017-0148
 ^
 	"""
 	And I wait that last imported qifdata in account 'Automated Test Account' is available in export
-
+	
 	When I import the qif data on account 'Automated Test Account'
 	"""
 !Type:Bank
 D09/28/2016
 T0.01
-MSome Updated Memo
+MSome Memo
 N2017-0148
 ^
 !Type:Bank
@@ -74,11 +75,11 @@ N2017-0149
 	
 	Then the last qif data import succeeded
 	And the last exported qif data are the following operations
-	| Number | Date                | Amount | Memo              |
+	| Number | Date                | Amount | Memo            |
 	# latest version overwrites initial version
-	|        | 2016-09-28T00:00:00 | 0.01   | Some Updated Memo |
+	|        | 2016-09-28T00:00:00 | 0.01   | Some Memo       |
 	# extra item is imported
-	|        | 2016-04-01T00:00:00 | 0.02   | Some Added Memo   |
+	|        | 2016-04-01T00:00:00 | 0.02   | Some Added Memo |
 	
 Scenario: Identify delta between imported qif data and new available qif data
 	Given I import the qif data on account 'Automated Test Account'
