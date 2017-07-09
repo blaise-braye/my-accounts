@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Business", "02 Business"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "09 Tests", "09 Tests", "{132F170B-0A03-4B93-A0D6-FE2A7598247F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Deployment", "00 Deployment", "{FD9F345F-8E5E-40BF-8DAC-ECF81ECDC097}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operations.Classification.Gmc.Tests", "Operations.Classification.Gmc.IntegrationTests\Operations.Classification.Gmc.Tests.csproj", "{079A59FF-71A3-4E6B-827F-BE6A6D548D71}"
 EndProject
 Global

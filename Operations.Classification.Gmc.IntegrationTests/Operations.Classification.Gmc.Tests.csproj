@@ -113,13 +113,16 @@
     <Compile Include="Steps\GererMesCompteSteps.cs" />
     <Compile Include="Steps\PostScenarioCleaner.cs" />
     <Compile Include="Steps\SettingsTransforms.cs" />
-    <Compile Include="TestLogs.cs" />
+    <Compile Include="TestsRoot.cs" />
     <Compile Include="Steps\Wrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="EnvironmentSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Features\Connexion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Connexion.feature.cs</LastGenOutput>

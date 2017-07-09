@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="GmcUserName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">blaisemail@gmail.com</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="GmcPassword" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">kT5XeI!I9AI9</Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
