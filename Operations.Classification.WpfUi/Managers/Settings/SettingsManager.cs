@@ -1,17 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Settings
 {
-    public class SettingsManager : ViewModelBase
+    public class SettingsManager : ViewModelBase, IDisposable
     {
         private readonly RelayCommand[] _commands;
         private readonly FolderBrowserDialog _fbd;
@@ -67,6 +70,20 @@ namespace Operations.Classification.WpfUi.Managers.Settings
 
         public RelayCommand SelectWorkingFolderCommand { get; }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _fbd.Dispose();
+            }
+        }
+
         private void SelectWorkingFolder()
         {
             _fbd.SelectedPath = Settings.WorkingFolder;
@@ -79,7 +96,9 @@ namespace Operations.Classification.WpfUi.Managers.Settings
         private void InvalidateCommands()
         {
             foreach (var command in _commands)
+            {
                 command.RaiseCanExecuteChanged();
+            }
         }
 
         private void BeginEdit()

@@ -12,7 +12,9 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
         {
             _filters = filters;
             foreach (var filter in filters)
+            {
                 filter.FilterInvalidated += OnNestedFilterChanged;
+            }
         }
 
         public event EventHandler FilterInvalidated;
@@ -28,7 +30,9 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 () =>
                 {
                     foreach (var filter in _filters)
+                    {
                         filter.Reset();
+                    }
                 });
         }
 

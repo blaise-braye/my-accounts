@@ -54,7 +54,9 @@ namespace Operations.Classification.GererMesComptes
                 {
                     var toAdd = $"{part} - ";
                     if (sb.Length + toAdd.Length <= maxLength)
+                    {
                         sb.Append(toAdd);
+                    }
                 }
 
                 sb.Append(operation.PatternName);
@@ -112,6 +114,7 @@ namespace Operations.Classification.GererMesComptes
             finally
             {
                 if (File.Exists(tempFileName))
+                {
                     try
                     {
                         File.Delete(tempFileName);
@@ -120,6 +123,7 @@ namespace Operations.Classification.GererMesComptes
                     {
                         /* ignored */
                     }
+                }
             }
         }
 
@@ -147,7 +151,16 @@ namespace Operations.Classification.GererMesComptes
 
             public void Dispose()
             {
-                CultureInfo.CurrentCulture = _previousCulture;
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    CultureInfo.CurrentCulture = _previousCulture;
+                }
             }
         }
     }

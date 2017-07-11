@@ -53,11 +53,11 @@ namespace Operations.Classification.WpfUi.Technical.Input
 
         private class ActiveJobDescription : IDisposable
         {
-            private readonly Action<ActiveJobDescription> _onDisposeAction;
+            private readonly Action<ActiveJobDescription> _disposeActionCallback;
 
-            public ActiveJobDescription(object source, string reason, Action<ActiveJobDescription> onDisposeAction)
+            public ActiveJobDescription(object source, string reason, Action<ActiveJobDescription> disposeActionCallback)
             {
-                _onDisposeAction = onDisposeAction;
+                _disposeActionCallback = disposeActionCallback;
                 Source = source;
                 Reason = reason;
             }
@@ -68,7 +68,7 @@ namespace Operations.Classification.WpfUi.Technical.Input
 
             public void Dispose()
             {
-                _onDisposeAction(this);
+                _disposeActionCallback(this);
                 GC.SuppressFinalize(this);
             }
         }

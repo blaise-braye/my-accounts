@@ -8,13 +8,18 @@ namespace Operations.Classification.WpfUi.Technical.Controls
 {
     public static class MyVisualTreeHelper
     {
-        public static T GetVisualParent<T>(object childObject) where T : Visual
+        public static T GetVisualParent<T>(object childObject)
+            where T : Visual
         {
             var child = childObject as DependencyObject;
             while (child != null && !(child is T))
+            {
                 child = VisualTreeHelper.GetParent(child);
+            }
+
             return child as T;
         }
+
         public static IEnumerable<DependencyObject> EnumerateVisualChildren(this DependencyObject dependencyObject)
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dependencyObject); i++)
@@ -22,9 +27,6 @@ namespace Operations.Classification.WpfUi.Technical.Controls
                 yield return VisualTreeHelper.GetChild(dependencyObject, i);
             }
         }
-
-
-
 
         public static IEnumerable<DependencyObject> EnumerateVisualDescendents(this DependencyObject dependencyObject)
         {

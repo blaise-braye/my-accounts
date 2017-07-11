@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.WpfUi.Technical.Collections;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 {
@@ -18,12 +17,12 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
         private string _name;
 
         private List<UnifiedAccountOperation> _operations;
-        
+
         public AccountViewModel()
         {
             Status = new AccountStatusViewModel();
         }
-        
+
         public bool IsNew => Id == default(Guid);
 
         public Guid Id

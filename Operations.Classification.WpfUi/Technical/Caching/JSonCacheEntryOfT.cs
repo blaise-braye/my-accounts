@@ -5,7 +5,8 @@ namespace Operations.Classification.WpfUi.Technical.Caching
 {
     public class JSonCacheEntry<TValue> : JSonCacheEntry, ICacheEntry<TValue>
     {
-        public JSonCacheEntry(IRawCacheRepository repository, string cacheKey) : base(repository, cacheKey, typeof(TValue))
+        public JSonCacheEntry(IRawCacheRepository repository, string cacheKey)
+            : base(repository, cacheKey, typeof(TValue))
         {
         }
 

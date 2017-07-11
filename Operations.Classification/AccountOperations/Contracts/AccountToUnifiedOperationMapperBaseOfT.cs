@@ -2,7 +2,8 @@
 
 namespace Operations.Classification.AccountOperations.Contracts
 {
-    public abstract class AccountToUnifiedOperationMapperBase<T> : AccountToUnifiedOperationMapperBase where T : AccountOperationBase
+    public abstract class AccountToUnifiedOperationMapperBase<T> : AccountToUnifiedOperationMapperBase
+        where T : AccountOperationBase
     {
         public override UnifiedAccountOperation Map(AccountOperationBase operationBase)
         {

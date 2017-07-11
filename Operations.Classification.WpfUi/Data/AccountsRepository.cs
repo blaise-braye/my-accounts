@@ -11,7 +11,9 @@ namespace Operations.Classification.WpfUi.Data
     public interface IAccountsRepository
     {
         Task<bool> AddOrUpdate(AccountEntity entity);
+
         Task<AccountEntity> Find(Guid entityId);
+
         Task<List<AccountEntity>> GetList();
     }
 

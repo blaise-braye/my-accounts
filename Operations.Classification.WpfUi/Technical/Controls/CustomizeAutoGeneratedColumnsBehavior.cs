@@ -12,16 +12,16 @@ namespace Operations.Classification.WpfUi.Technical.Controls
         protected override void OnAttached()
         {
             base.OnAttached();
-            AssociatedObject.AutoGeneratingColumn += AssociatedObject_AutoGeneratingColumn;
+            AssociatedObject.AutoGeneratingColumn += AssociatedObjectAutoGeneratingColumn;
         }
 
         protected override void OnDetaching()
         {
-            AssociatedObject.AutoGeneratingColumn -= AssociatedObject_AutoGeneratingColumn;
+            AssociatedObject.AutoGeneratingColumn -= AssociatedObjectAutoGeneratingColumn;
             base.OnDetaching();
         }
 
-        private void AssociatedObject_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        private void AssociatedObjectAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             var desc = e.PropertyDescriptor as PropertyDescriptor;
             var displayAttribute = desc?.Attributes[typeof(DisplayAttribute)] as DisplayAttribute;
@@ -34,8 +34,7 @@ namespace Operations.Classification.WpfUi.Technical.Controls
             var boundColumn = e.Column as DataGridBoundColumn;
             var dtc = boundColumn as DataGridTextColumn;
 
-            var displayFormatAttribute = desc?.Attributes[typeof(DisplayFormatAttribute)] as DisplayFormatAttribute;
-            if (displayFormatAttribute != null)
+            if (desc?.Attributes[typeof(DisplayFormatAttribute)] is DisplayFormatAttribute displayFormatAttribute)
             {
                 if (dtc != null)
                 {
@@ -44,8 +43,8 @@ namespace Operations.Classification.WpfUi.Technical.Controls
                     if (!string.IsNullOrEmpty(displayFormatAttribute.DataFormatString))
                     {
                         bindingBase.StringFormat = displayFormatAttribute.DataFormatString;
-                        const string currencyFormat = ":C";
-                        if (dtc.Binding.StringFormat.Contains(currencyFormat))
+                        const string CurrencyFormat = ":C";
+                        if (dtc.Binding.StringFormat.Contains(CurrencyFormat))
                         {
                             if (binding != null && binding.Converter == null)
                             {
@@ -53,6 +52,7 @@ namespace Operations.Classification.WpfUi.Technical.Controls
                             }
                         }
                     }
+
                     if (!string.IsNullOrEmpty(displayFormatAttribute.NullDisplayText))
                     {
                         bindingBase.TargetNullValue = displayFormatAttribute.NullDisplayText;

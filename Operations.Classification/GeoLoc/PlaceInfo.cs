@@ -28,7 +28,9 @@ namespace Operations.Classification.GeoLoc
         {
             var flagTable = new bool[FreeTextInput.Length];
             foreach (var nottogoInOutput in _notPlaceInfoRelatedInFreeText.SelectMany(t => Enumerable.Range(t.Item1, t.Item2)))
+            {
                 flagTable[nottogoInOutput] = true;
+            }
 
             var result = string.Concat(FreeTextInput.Where((c, idx) => !flagTable[idx]));
 

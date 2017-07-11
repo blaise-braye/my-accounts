@@ -18,7 +18,7 @@ namespace Operations.Classification.WpfUi.Technical.Input
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(AsyncCommand));
 
-        private static readonly Action _doNothing = () => { };
+        private static readonly Action _emptyAction = () => { };
 
         private readonly WeakFunc<Task> _taskBuilder;
 
@@ -28,7 +28,7 @@ namespace Operations.Classification.WpfUi.Technical.Input
         }
 
         public AsyncCommand(Func<Task> taskBuilder, Func<bool> canExecute)
-            : base(_doNothing, canExecute)
+            : base(_emptyAction, canExecute)
         {
             if (taskBuilder == null)
             {
@@ -52,7 +52,7 @@ namespace Operations.Classification.WpfUi.Technical.Input
 
         public virtual Task ExecuteAsync(object input)
         {
-            if (!CanExecute(input) || _taskBuilder == null || !_taskBuilder.IsStatic && !_taskBuilder.IsAlive)
+            if (!CanExecute(input) || _taskBuilder == null || (!_taskBuilder.IsStatic && !_taskBuilder.IsAlive))
             {
                 return Task.CompletedTask;
             }

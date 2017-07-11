@@ -6,11 +6,13 @@ namespace Operations.Classification.GererMesComptes
 {
     public class AccountInfo : ObjectFields
     {
-        public AccountInfo() : this(GetAccountInfoFields())
+        public AccountInfo()
+            : this(GetAccountInfoFields())
         {
         }
 
-        private AccountInfo(Dictionary<string, string> fields) : base(fields)
+        private AccountInfo(Dictionary<string, string> fields)
+            : base(fields)
         {
         }
 
@@ -25,6 +27,7 @@ namespace Operations.Classification.GererMesComptes
             {
                 var readableProperties = typeof(AccountInfo).GetProperties().Where(p => p.CanRead);
                 foreach (var readableProperty in readableProperties)
+                {
                     try
                     {
                         readableProperty.GetValue(info);
@@ -33,6 +36,7 @@ namespace Operations.Classification.GererMesComptes
                     {
                         throw new InvalidOperationException("signature missmatch, could not read property " + readableProperty.Name, exn);
                     }
+                }
             }
 
             return info;

@@ -36,7 +36,7 @@ namespace Operations.Classification.GererMesComptes
             var exportedQifData = await ExportQif(accountId, minDate, maxDate);
             var exportedQifDom = QifMapper.ParseQifDom(exportedQifData);
             var exportedByKey = exportedQifDom.BankTransactions.ToLookup(s => s.GetBankTransactionLookupKey());
-            
+
             var delta = new TransactionDeltaSet();
 
             foreach (var availableBt in availableQifDom.BankTransactions)
@@ -81,7 +81,9 @@ namespace Operations.Classification.GererMesComptes
 
             var toRemoveItems = exportedQifDom.BankTransactions.Where(t => !delta.IsTargetProcessed(t));
             foreach (var exportedItem in toRemoveItems)
+            {
                 delta.SetRemoveAction(exportedItem);
+            }
 
             return delta;
         }
@@ -93,19 +95,20 @@ namespace Operations.Classification.GererMesComptes
 
         public async Task<string> ExportQif(string accountId, DateTime startDate, DateTime endData)
         {
-            var dico = new Dictionary<string, string>();
-
-            dico["id_account"] = accountId;
-            dico["export"] = "dates";
-            dico["interval_start"] = ToUnixTime(startDate.Date).ToString();
-            dico["interval_end"] = ToUnixTime(endData.Date).ToString();
-            dico["format"] = "qif";
-            dico["date_format"] = "mm-dd-aaaa";
-            dico["amount_format"] = "auto";
-            dico["csv_separator"] = "semi-colon";
-            dico["csv_column"] = "yes";
-            dico["category_separator"] = "%3A%3A";
-            dico["encoding"] = "utf-8";
+            var dico = new Dictionary<string, string>
+                           {
+                               ["id_account"] = accountId,
+                               ["export"] = "dates",
+                               ["interval_start"] = ToUnixTime(startDate.Date).ToString(),
+                               ["interval_end"] = ToUnixTime(endData.Date).ToString(),
+                               ["format"] = "qif",
+                               ["date_format"] = "mm-dd-aaaa",
+                               ["amount_format"] = "auto",
+                               ["csv_separator"] = "semi-colon",
+                               ["csv_column"] = "yes",
+                               ["category_separator"] = "%3A%3A",
+                               ["encoding"] = "utf-8"
+                           };
 
             string qifData;
 
@@ -144,17 +147,20 @@ namespace Operations.Classification.GererMesComptes
                 var fileId = (string)uploadResponseModel["tmp_name"];
 
                 //2 request processing of file
-                var fields = new Dictionary<string, string>();
-                fields["id_account"] = accountId;
-                fields["format"] = "QIF";
-                fields["file"] = fileId;
-                fields["i_account_import"] = "0";
-                fields["account_iban"] = "no";
-                fields["date_format"] = "m-d-Y";
-                fields["number_format"] = "fr";
-                fields["qif_import_third_party"] = "yes";
-                fields["check_duplicates"] = "yes";
-                fields["auto_categorization"] = "yes";
+                var fields =
+                    new Dictionary<string, string>
+                        {
+                            ["id_account"] = accountId,
+                            ["format"] = "QIF",
+                            ["file"] = fileId,
+                            ["i_account_import"] = "0",
+                            ["account_iban"] = "no",
+                            ["date_format"] = "m-d-Y",
+                            ["number_format"] = "fr",
+                            ["qif_import_third_party"] = "yes",
+                            ["check_duplicates"] = "yes",
+                            ["auto_categorization"] = "yes"
+                        };
 
                 var processResponse = await Transport.PostAsync(
                     "/system/requests/user/finances/account/account.import.html?action_form=askImportManual",
@@ -331,7 +337,9 @@ namespace Operations.Classification.GererMesComptes
                 if (suggestedResolution.Count == toImportKeyItems.Count())
                 {
                     foreach (var tuple in suggestedResolution)
+                    {
                         delta.SetUpdateMemoAction(tuple.Item1, tuple.Item2);
+                    }
                 }
             }
         }

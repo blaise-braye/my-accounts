@@ -33,7 +33,7 @@ namespace Operations.Classification.GererMesComptes
 
         public HttpClient Transport { get; }
 
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -49,12 +49,14 @@ namespace Operations.Classification.GererMesComptes
             var getResponse = await Transport.GetAsync("/fr/connexion.html");
             getResponse.EnsureSuccessStatusCode();
 
-            var dico = new Dictionary<string, string>();
-            dico["action_form"] = "connect";
-            dico["goto"] = string.Empty;
-            dico["email"] = userName;
-            dico["pass"] = password;
-            dico["connection"] = "Se connecter >";
+            var dico = new Dictionary<string, string>
+                           {
+                               ["action_form"] = "connect",
+                               ["goto"] = string.Empty,
+                               ["email"] = userName,
+                               ["pass"] = password,
+                               ["connection"] = "Se connecter >"
+                           };
 
             var response = await Transport.PostAsync("/fr/connexion.html", new FormUrlEncodedContent(dico));
             response.EnsureSuccessStatusCode();
@@ -66,7 +68,7 @@ namespace Operations.Classification.GererMesComptes
         {
             var getResponse = await Transport.GetAsync("/fr/deconnexion.html");
             getResponse.EnsureSuccessStatusCode();
-            var location = getResponse.RequestMessage.RequestUri.AbsolutePath;
+            var unused = getResponse.RequestMessage.RequestUri.AbsolutePath;
 
             var isConnected = await IsConnected();
             return !isConnected;

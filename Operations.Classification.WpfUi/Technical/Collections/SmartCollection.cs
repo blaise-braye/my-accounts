@@ -24,7 +24,9 @@ namespace Operations.Classification.WpfUi.Technical.Collections
         public void AddRange(IEnumerable<T> range)
         {
             foreach (var item in range)
+            {
                 Items.Add(item);
+            }
 
             OnPropertyChanged(new PropertyChangedEventArgs("Count"));
             OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));

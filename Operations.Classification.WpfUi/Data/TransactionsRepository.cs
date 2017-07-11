@@ -36,7 +36,9 @@ namespace Operations.Classification.WpfUi.Data
 
                 var counter = 1;
                 while (File.Exists(filePath))
+                {
                     filePath = $"{filePrefixPath}.{counter}.csv";
+                }
 
                 await _csvAccountOperationManager.WriteAsync(filePath, filteredData.Operations);
             }

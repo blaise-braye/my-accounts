@@ -121,6 +121,21 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             }
         }
 
+        private static IEnumerable<BasicTransactionModel> ProjectToViewModelCollection(IEnumerable<BasicTransaction> basicTransactions)
+        {
+            var result = basicTransactions
+                .Project().To<BasicTransactionModel>(
+                    (sourceItem, targetItem) =>
+                        {
+                            targetItem.Memo = sourceItem.Memo;
+                            targetItem.SourceItem = sourceItem;
+                        })
+                .OrderByDescending(d => d.Number)
+                .ThenByDescending(d => d.Date);
+
+            return result;
+        }
+
         private async Task ClearCurrentAccountCacheAndReset()
         {
             if (CurrentAccount != null && _loadedDeltas.ContainsKey(CurrentAccount.Id))
@@ -179,7 +194,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             {
                 TransactionDeltaSet delta = null;
 
-                if (currentAccount!=null && _loadedDeltas.ContainsKey(currentAccount.Id))
+                if (currentAccount != null && _loadedDeltas.ContainsKey(currentAccount.Id))
                 {
                     delta = _loadedDeltas[currentAccount.Id];
                 }
@@ -192,21 +207,6 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         {
             RefreshIsFilteringState();
             RefreshTransactions();
-        }
-
-        private static IEnumerable<BasicTransactionModel> ProjectToViewModelCollection(IEnumerable<BasicTransaction> basicTransactions)
-        {
-            var result = basicTransactions
-                .Project().To<BasicTransactionModel>(
-                    (sourceItem, targetItem) =>
-                    {
-                        targetItem.Memo = sourceItem.Memo;
-                        targetItem.SourceItem = sourceItem;
-                    })
-                .OrderByDescending(d => d.Number)
-                .ThenByDescending(d => d.Date);
-
-            return result;
         }
 
         private void RefreshIsFilteringState()
@@ -224,14 +224,14 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 var locals = deltas.Where(d => d.Source != null).Select(d => d.Source);
                 locals = DateFilter.Apply(locals, l => l.Date);
                 locals = MemoFilter.Apply(locals, l => l.Memo);
-                var vmLocals = ProjectToViewModelCollection(locals);
-                Transactions.Reset(vmLocals);
+                var localViewModels = ProjectToViewModelCollection(locals);
+                Transactions.Reset(localViewModels);
 
                 var remotes = deltas.Where(d => d.Target != null).Select(d => d.Target);
-                var vmRemotes = ProjectToViewModelCollection(remotes);
-                vmRemotes = DateFilter.Apply(vmRemotes, l => l.Date);
-                vmRemotes = MemoFilter.Apply(vmRemotes, l => l.Memo);
-                RemoteTransactions.Reset(vmRemotes);
+                var remoteViewModels = ProjectToViewModelCollection(remotes);
+                remoteViewModels = DateFilter.Apply(remoteViewModels, l => l.Date);
+                remoteViewModels = MemoFilter.Apply(remoteViewModels, l => l.Memo);
+                RemoteTransactions.Reset(remoteViewModels);
             }
             else
             {

@@ -44,7 +44,9 @@ namespace Operations.Classification.Collections
         public void InsertRange(IEnumerable<string> items)
         {
             foreach (var item in items)
+            {
                 Insert(item);
+            }
         }
 
         public Node Prefix(string s)
@@ -93,19 +95,23 @@ namespace Operations.Classification.Collections
             public void DeleteChildNode(char c)
             {
                 for (var i = 0; i < Children.Count; i++)
+                {
                     if (Children[i].Value == c)
                     {
                         Children.RemoveAt(i);
                     }
+                }
             }
 
             public Node FindChildNode(char c)
             {
                 foreach (var child in Children)
+                {
                     if (child.Value == c)
                     {
                         return child;
                     }
+                }
 
                 return null;
             }

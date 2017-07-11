@@ -10,17 +10,19 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
     {
         private string _text;
 
+        public event EventHandler FilterInvalidated;
+
         public string Text
         {
             get => _text;
             set
             {
                 if (Set(nameof(Text), ref _text, value))
+                {
                     OnFilterChanged();
+                }
             }
         }
-
-        public event EventHandler FilterInvalidated;
 
         public bool IsActive()
         {
@@ -37,7 +39,9 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             var filtered = locals;
 
             if (IsActive())
+            {
                 filtered = filtered.Where(d => CultureInfo.CurrentCulture.CompareInfo.IndexOf(selector(d), Text, CompareOptions.IgnoreCase) >= 0);
+            }
 
             return filtered;
         }

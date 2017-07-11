@@ -127,7 +127,9 @@ namespace Operations.Classification.AccountOperations.Unified
             var sourceProps = source.GetType().GetProperties().Where(p => p.CanRead);
             var sourcePropAccessor = ObjectAccessor.Create(source);
             foreach (var sourceProp in sourceProps)
+            {
                 symbols[sourceProp.Name] = sourcePropAccessor[sourceProp.Name];
+            }
         }
 
         private static List<UnifiedAccountOperationPatternMapping> LoadPatterns()
@@ -142,10 +144,10 @@ namespace Operations.Classification.AccountOperations.Unified
             object result = null;
             var steps = binding.Split('|');
             foreach (var step in steps.Select(s => s.Trim()))
+            {
                 if (step.StartsWith("format "))
                 {
-                    var formattable = result as IFormattable;
-                    if (formattable != null)
+                    if (result is IFormattable formattable)
                     {
                         result = formattable.ToString(step.Substring("format ".Length), CultureInfo.CurrentCulture);
                     }
@@ -154,6 +156,7 @@ namespace Operations.Classification.AccountOperations.Unified
                 {
                     result = symbols[step];
                 }
+            }
 
             return result;
         }

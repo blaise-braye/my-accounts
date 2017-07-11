@@ -31,8 +31,24 @@ namespace Operations.Classification.WpfUi
 
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement),
-                new FrameworkPropertyMetadata(
-                    XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+                new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+        }
+
+        private static void SetupLogging()
+        {
+            var hierarchy = (Hierarchy)LogManager.GetRepository();
+
+            var patternLayout = new PatternLayout { ConversionPattern = "%d [%t] %-5p %m%n" };
+            patternLayout.ActivateOptions();
+
+            var debugAppender = new DebugAppender { Layout = patternLayout };
+            debugAppender.ActivateOptions();
+
+            var root = hierarchy.Root;
+            root.AddAppender(debugAppender);
+            root.Level = Level.All;
+
+            hierarchy.Configured = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -46,29 +62,10 @@ namespace Operations.Classification.WpfUi
             _log.Error("OnDispatcherUnhandledException", e.Exception);
         }
 
-
         private void SetupExceptionHandlers()
         {
             DispatcherUnhandledException += OnDispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-        }
-
-        private static void SetupLogging()
-        {
-            var hierarchy = (Hierarchy)LogManager.GetRepository();
-
-            var patternLayout = new PatternLayout();
-            patternLayout.ConversionPattern = "%d [%t] %-5p %m%n";
-            patternLayout.ActivateOptions();
-
-            var debugAppender = new DebugAppender { Layout = patternLayout };
-            debugAppender.ActivateOptions();
-
-            var root = hierarchy.Root;
-            root.AddAppender(debugAppender);
-            root.Level = Level.All;
-
-            hierarchy.Configured = true;
         }
     }
 }

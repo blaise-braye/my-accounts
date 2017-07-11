@@ -13,16 +13,25 @@ namespace Operations.Classification.AccountOperations.Unified
         public void WriteCsv(string targetFile, IEnumerable<UnifiedAccountOperation> operations)
         {
             var csvConfiguration = GetCsvConfiguration();
-            using (var fs = File.Open(targetFile, FileMode.Create))
+            FileStream fs = null;
+            StreamWriter sw = null;
+
+            try
             {
-                using (var sw = new StreamWriter(fs))
+                fs = File.Open(targetFile, FileMode.Create);
+                sw = new StreamWriter(fs);
+                fs = null;
+                using (var cw = new CsvWriter(sw, csvConfiguration))
                 {
-                    using (var cw = new CsvWriter(sw, csvConfiguration))
-                    {
-                        cw.WriteHeader<UnifiedAccountOperation>();
-                        cw.WriteRecords(operations);
-                    }
+                    sw = null;
+                    cw.WriteHeader<UnifiedAccountOperation>();
+                    cw.WriteRecords(operations);
                 }
+            }
+            finally
+            {
+                sw?.Dispose();
+                fs?.Dispose();
             }
         }
 

@@ -14,9 +14,9 @@ namespace Operations.Classification.WpfUi.Technical.Projections
             _source = source;
         }
 
-        public IEnumerable<TTarget> To<TTarget>(Action<TSource, TTarget> onMappedItem)
+        public IEnumerable<TTarget> To<TTarget>(Action<TSource, TTarget> mappedItemCallback)
         {
-            return _source.Select(s => Mapper.Map<TSource, TTarget>(s, opts => opts.AfterMap(onMappedItem)));
+            return _source.Select(s => Mapper.Map<TSource, TTarget>(s, opts => opts.AfterMap(mappedItemCallback)));
         }
 
         public IEnumerable<TTarget> To<TTarget>()

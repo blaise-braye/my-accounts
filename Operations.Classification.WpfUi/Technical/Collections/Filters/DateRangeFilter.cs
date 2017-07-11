@@ -10,6 +10,8 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
         private DateTime? _fromDate;
         private DateTime? _toDate;
 
+        public event EventHandler FilterInvalidated;
+
         public DateTime? FromDate
         {
             get => _fromDate;
@@ -33,8 +35,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 }
             }
         }
-
-        public event EventHandler FilterInvalidated;
 
         public bool IsActive()
         {

@@ -5,7 +5,7 @@ using StackExchange.Redis;
 
 namespace Operations.Classification.WpfUi.Technical.Caching.InMemory
 {
-    public class InMemoryRawCacheRepository : IRawCacheRepository
+    public class InMemoryRawCacheRepository : IRawCacheRepository, IDisposable
     {
         private MemoryCache _objectCache;
 
@@ -47,7 +47,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching.InMemory
         public Task<RedisValue> StringGetAsync(string cacheKey)
         {
             var value = RedisValue.Null;
-            
+
             if (_objectCache.Contains(cacheKey))
             {
                 value = _objectCache.Get(cacheKey) as string;
@@ -55,13 +55,27 @@ namespace Operations.Classification.WpfUi.Technical.Caching.InMemory
 
             return Task.FromResult(value);
         }
-        
+
         public Task ClearCache()
         {
             ResetCache();
             return Task.CompletedTask;
         }
-        
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _objectCache.Dispose();
+            }
+        }
+
         private void ResetCache()
         {
             var previous = _objectCache;

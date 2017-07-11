@@ -17,12 +17,12 @@ namespace Operations.Classification.WpfUi.Technical.Caching.Redis
             options.AllowAdmin = true;
             _connection = ConnectionMultiplexer.Connect(options);
         }
-        
+
         ~RedisRawCacheRepository()
         {
             _connection.Dispose();
         }
-        
+
         private IDatabase Database => _connection.GetDatabase();
 
         public bool IsConnected(string cacheKey)
@@ -49,7 +49,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching.Redis
         {
             return Database.StringGetAsync(cacheKey);
         }
-        
+
         public async Task ClearCache()
         {
             var servers = _connection.GetEndPoints(true).Select(e => _connection.GetServer(e));

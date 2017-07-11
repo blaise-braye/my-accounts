@@ -19,7 +19,9 @@ namespace Operations.Classification.GererMesComptes
         public TransactionDeltaSet(IEnumerable<TransactionDelta> inputs)
         {
             foreach (var input in inputs)
+            {
                 AddDelta(input);
+            }
         }
 
         public int NewCount => _counters[(int)DeltaAction.Add];
@@ -93,7 +95,7 @@ namespace Operations.Classification.GererMesComptes
         {
             return _deltas.OrderByDescending(t => t.Source?.Date ?? t.Target?.Date).ToList();
         }
-        
+
         public IEnumerator<TransactionDelta> GetEnumerator()
         {
             return ToList().GetEnumerator();

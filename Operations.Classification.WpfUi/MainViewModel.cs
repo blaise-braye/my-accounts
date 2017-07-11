@@ -1,7 +1,10 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+
 using GalaSoft.MvvmLight;
+
 using Operations.Classification.AccountOperations;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts;
@@ -9,7 +12,6 @@ using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
-using Operations.Classification.WpfUi.Properties;
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Controls;
 using Operations.Classification.WpfUi.Technical.Input;
@@ -29,23 +31,22 @@ namespace Operations.Classification.WpfUi
     ///         See http://www.galasoft.ch/mvvm
     ///     </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IDisposable
     {
-        /// <summary>
-        ///     Initializes a new instance of the MainViewModel class.
-        /// </summary>
+        private readonly SettingsManager _settingsManager;
+
         public MainViewModel()
         {
-            var workingCopy = new WorkingCopy(Settings.Default.WorkingFolder);
+            var workingCopy = new WorkingCopy(Properties.Settings.Default.WorkingFolder);
 
             var accountsRepository = new AccountsRepository(workingCopy);
             var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager());
             BusyIndicator = new BusyIndicatorViewModel();
             TransactionsManager = new TransactionsManager(BusyIndicator, transactionsRepository);
             AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, TransactionsManager);
-            
+
             GmcManager = new GmcManager(BusyIndicator);
-            SettingsManager = new SettingsManager();
+            _settingsManager = new SettingsManager();
             LoadCommand = new AsyncCommand(Load);
             RefreshCommand = new AsyncCommand(Refresh);
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
@@ -67,13 +68,6 @@ namespace Operations.Classification.WpfUi
                 AccountsManager.CurrentAccount = AccountsManager.Accounts.First();
             }
         }
-        
-        private void OnSettingsUpdated(Settings obj)
-        {
-            ApplicationCulture.ResetCulture();
-            AccountsManager.UnifiedOperationsReporter.OnSettingsUpdated();
-            Application.Current.UpdateBindingTargets();
-        }
 
         public BusyIndicatorViewModel BusyIndicator { get; }
 
@@ -87,7 +81,28 @@ namespace Operations.Classification.WpfUi
 
         public TransactionsManager TransactionsManager { get; }
 
-        public SettingsManager SettingsManager { get; }
+        public SettingsManager SettingsManager => _settingsManager;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _settingsManager.Dispose();
+            }
+        }
+
+        private void OnSettingsUpdated(Properties.Settings obj)
+        {
+            ApplicationCulture.ResetCulture();
+            AccountsManager.UnifiedOperationsReporter.OnSettingsUpdated();
+            Application.Current.UpdateBindingTargets();
+        }
 
         private async Task Load()
         {

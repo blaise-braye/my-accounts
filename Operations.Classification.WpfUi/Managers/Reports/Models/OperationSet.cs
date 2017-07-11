@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using Operations.Classification.AccountOperations.Unified;
 
 namespace Operations.Classification.WpfUi.Managers.Reports.Models
@@ -14,9 +14,9 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
             Balance = initialBalance;
             Operations = new List<UnifiedAccountOperation>();
         }
-        
+
         public DateTime Day { get; }
-        
+
         public decimal InitialBalance { get; }
 
         public decimal Balance { get; private set; }
@@ -30,6 +30,14 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
         public decimal NetRevenue => Income - Outcome;
 
         public List<UnifiedAccountOperation> Operations { get; }
+
+        public static OperationSet CreateForNextDay(OperationSet currentBpd)
+        {
+            return new OperationSet(currentBpd.Day.AddDays(1), currentBpd.Balance)
+                       {
+                           Balance = currentBpd.Balance
+                       };
+        }
 
         public void Add(UnifiedAccountOperation operation)
         {
@@ -47,14 +55,6 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
             }
 
             return this;
-        }
-
-        public static OperationSet CreateForNextDay(OperationSet currentBpd)
-        {
-            return new OperationSet(currentBpd.Day.AddDays(1), currentBpd.Balance)
-            {
-                Balance = currentBpd.Balance
-            };
         }
     }
 }

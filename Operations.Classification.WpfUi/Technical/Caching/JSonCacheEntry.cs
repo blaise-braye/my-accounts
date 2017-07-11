@@ -43,9 +43,13 @@ namespace Operations.Classification.WpfUi.Technical.Caching
                     result = await valueLoader();
 
                     if (result != null && result.GetType() != _valueType)
+                    {
                         _log.Warn($"Won't cache computed value. Reason : invalid result type (expected : {_valueType}, actual {result.GetType()}");
+                    }
                     else
+                    {
                         await SetAsync(result);
+                    }
                 }
                 else
                 {
@@ -85,7 +89,9 @@ namespace Operations.Classification.WpfUi.Technical.Caching
 
                 isSet = await Repository.StringSetAsync(_cacheKey, rawResult);
                 if (!isSet)
+                {
                     _log.Warn($"failed to cache data ({_cacheKey})");
+                }
             }
             else
             {
@@ -121,15 +127,17 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             object result = null;
 
             if (cachedRawResult.HasValue)
+            {
                 try
                 {
                     result = JsonConvert.DeserializeObject(cachedRawResult, _valueType);
                 }
                 catch (Exception exn)
                 {
-                    exn.Data["RawCache"] = (string) cachedRawResult;
+                    exn.Data["RawCache"] = (string)cachedRawResult;
                     _log.Error($"failed to deserialize cache raw value with key {_cacheKey}", exn);
                 }
+            }
 
             return result;
         }

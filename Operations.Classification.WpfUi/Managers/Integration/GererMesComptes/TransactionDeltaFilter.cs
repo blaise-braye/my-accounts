@@ -86,7 +86,9 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             {
                 // check all
                 foreach (var item2 in this)
+                {
                     item2.IsChecked = allItem.IsChecked;
+                }
             }
             else
             {
@@ -95,7 +97,9 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 if (allValues.Count == filteredValues.Count)
                 {
                     foreach (var item2 in this)
+                    {
                         item2.IsChecked = true;
+                    }
                 }
                 else
                 {

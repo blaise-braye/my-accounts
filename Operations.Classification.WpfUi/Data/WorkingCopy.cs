@@ -7,10 +7,15 @@ namespace Operations.Classification.WpfUi.Data
     public interface IWorkingCopy
     {
         string Root { get; }
+
         string SettingsPath { get; }
+
         string GetAccountAggregatedOperationsPath(string accountName, string extension);
+
         string GetAccountDirectory(string accountName);
+
         string GetAccountOperationsDirectory(string accountName);
+
         Task<bool> MakeFolderOrSkip(string workingCopyRoot);
     }
 
@@ -50,7 +55,9 @@ namespace Operations.Classification.WpfUi.Data
         {
             Directory.CreateDirectory(folder);
             while (!Directory.Exists(folder))
+            {
                 await Task.Yield();
+            }
 
             return true;
         }

@@ -148,8 +148,12 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             set
             {
                 if (Set(nameof(AutoDetectSourceKind), ref _autoDetectSourceKind, value))
+                {
                     if (value)
+                    {
                         SourceKind = null;
+                    }
+                }
             }
         }
 
@@ -159,7 +163,9 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             set
             {
                 if (Set(nameof(IsFiltering), ref _isFiltering, value))
+                {
                     RefreshIsFilteringState();
+                }
             }
         }
 
@@ -168,6 +174,11 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             var result = await GetCacheEntry(accountName).GetOrAddAsync(
                 () => _transactionsRepository.GetTransformedUnifiedOperations(accountName));
             return result;
+        }
+
+        private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(string accountName)
+        {
+            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountName));
         }
 
         private void OnAnyFilterInvalidated(object sender, EventArgs e)
@@ -216,12 +227,16 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     if (operationYear == prevOpYear + 1)
                     {
                         if (operationYearNumber != 1)
+                        {
                             sequenceAsExpectated = false;
+                        }
                     }
                     else if (operationYear == prevOpYear)
                     {
                         if (operationYearNumber != prevOpYearNumber + 1)
+                        {
                             sequenceAsExpectated = false;
+                        }
                     }
                     else
                     {
@@ -229,8 +244,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     }
 
                     if (!sequenceAsExpectated)
+                    {
                         _log.Error(
                             $"operation id sequence mismatch (previous {string.Join("-", previousOperationId)}, current {string.Join("-", operationIdParts)}");
+                    }
                 }
 
                 previousOperationId = new[] { operationYear, operationYearNumber };
@@ -261,7 +278,9 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                         var clonedOperations =
                             JsonConvert.DeserializeObject<List<UnifiedAccountOperation>>(JsonConvert.SerializeObject(operations));
                         foreach (var clonedOperation in clonedOperations)
+                        {
                             clonedOperation.SourceKind = AccountOperations.Contracts.SourceKind.InternalExport;
+                        }
 
                         await _transactionsRepository.Export(ExportFilePath, clonedOperations.Cast<AccountOperationBase>().ToList());
                     }
@@ -270,7 +289,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 IsExporting = false;
             }
         }
-        
+
         private async Task CommitImport()
         {
             if (IsImporting)
@@ -280,28 +299,37 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     var paths = FilePaths.Split(',');
                     var files = new HashSet<string>();
                     foreach (var path in paths)
+                    {
                         if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
                         {
                             var dirFiles = Directory.GetFiles(path, "*.csv");
                             foreach (var dirFile in dirFiles)
+                            {
                                 files.Add(dirFile);
+                            }
                         }
                         else if (File.Exists(path))
                         {
                             files.Add(path);
                         }
+                    }
 
                     var account = CurrentAccount;
                     var someImportSucceeded = false;
                     if (account != null)
+                    {
                         foreach (var file in files)
                         {
                             var sourceKind = AccountOperations.Contracts.SourceKind.Unknwon;
 
                             if (AutoDetectSourceKind)
+                            {
                                 sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(file);
+                            }
                             else if (SourceKind.HasValue)
+                            {
                                 sourceKind = SourceKind.Value;
+                            }
 
                             using (var fs = File.OpenRead(file))
                             {
@@ -312,6 +340,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                                 }
                             }
                         }
+                    }
 
                     if (someImportSucceeded)
                     {
@@ -349,21 +378,22 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private void SelectFilesToImport()
         {
             if (string.IsNullOrEmpty(_ofd.InitialDirectory))
+            {
                 _ofd.InitialDirectory = Properties.Settings.Default.WorkingFolder;
+            }
 
             if (_ofd.ShowDialog() == true)
+            {
                 FilePaths = string.Join(",", _ofd.FileNames);
+            }
         }
 
         private void SelectTargetFileToExport()
         {
             if (_sfd.ShowDialog() == true)
+            {
                 ExportFilePath = _sfd.FileName;
-        }
-
-        private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(string accountName)
-        {
-            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountName));
+            }
         }
     }
 }

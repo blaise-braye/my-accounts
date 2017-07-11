@@ -28,18 +28,26 @@ namespace Operations.Classification.GeoLoc
 
             var places = JsonConvert.DeserializeObject<List<Place>>(Resources.Places);
 
-            using (var sr = new StringReader(Resources.zipcodes_alpha_beligum))
+            var config = new CsvConfiguration();
+            config.RegisterClassMap<BelgianPlaceCsvMap>();
+
+            StringReader sr = null;
+            try
             {
-                var config = new CsvConfiguration();
-                config.RegisterClassMap<BelgianPlaceCsvMap>();
+                sr = new StringReader(Resources.zipcodes_alpha_beligum);
                 using (var reader = new CsvReader(sr, config))
                 {
+                    sr = null;
                     _belgianPlaces = reader.GetRecords<BelgianPlace>().ToList();
                 }
             }
+            finally
+            {
+                sr?.Dispose();
+            }
 
-            var wordFlatifiedPlaces =
-                places.Select(l => Tuple.Create(l, l.Name)).Union(places.SelectMany(l => l.Abbrevs.Select(abbrev => Tuple.Create(l, abbrev))));
+            var wordFlatifiedPlaces = places.Select(l => Tuple.Create(l, l.Name))
+                .Union(places.SelectMany(l => l.Abbrevs.Select(abbrev => Tuple.Create(l, abbrev))));
 
             _placesByWordLookup = wordFlatifiedPlaces.ToLookup(s => s.Item2, s => s.Item1);
             _placesWordsTrie.InsertRange(_placesByWordLookup.Select(grp => grp.Key));
@@ -53,16 +61,14 @@ namespace Operations.Classification.GeoLoc
 
             if (containsAdressInfo)
             {
-                int addressStartIndex;
-                var address = GetAdressFromEndOfInput(freetext, out addressStartIndex);
+                var address = GetAdressFromEndOfInput(freetext, out int addressStartIndex);
                 var city = string.Empty;
 
                 if (!string.IsNullOrEmpty(address))
                 {
                     result.SetNotRelatedToPlaceInfo(addressStartIndex, freetext.Length - addressStartIndex);
 
-                    int cityStartIndex;
-                    city = GetCityFromEndOfInput(address, out cityStartIndex);
+                    city = GetCityFromEndOfInput(address, out int cityStartIndex);
                     if (!string.IsNullOrEmpty(city))
                     {
                         if (city.Equals(address))
@@ -81,8 +87,7 @@ namespace Operations.Classification.GeoLoc
             }
             else
             {
-                int cityStartIndex;
-                var cityWord = GetCityFromEndOfInput(freetext, out cityStartIndex);
+                var cityWord = GetCityFromEndOfInput(freetext, out int cityStartIndex);
                 if (!string.IsNullOrEmpty(cityWord))
                 {
                     var cityPlace = _placesByWordLookup[cityWord].SingleOrDefault();

@@ -38,7 +38,9 @@ namespace Operations.Classification.GererMesComptes
                     break;
                 default:
                     foreach (var childNode in node.ChildNodes)
+                    {
                         AddFieldsValues(childNode, fields);
+                    }
 
                     break;
             }

@@ -6,7 +6,7 @@ namespace Operations.Classification.AccountOperations.Unified
     {
         public override UnifiedAccountOperation Map(AccountOperationBase operationBase)
         {
-            return (UnifiedAccountOperation) operationBase;
+            return (UnifiedAccountOperation)operationBase;
         }
     }
 }

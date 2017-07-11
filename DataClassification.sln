@@ -19,8 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operations.Classification.G
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Gettings started", "00 Gettings started", "{3EB9216F-64E7-45D9-ADE4-1941E5F43229}"
 	ProjectSection(SolutionItems) = preProject
+		AlteredMinimumRecommendedRules.ruleset = AlteredMinimumRecommendedRules.ruleset
 		LICENSE = LICENSE
 		README.md = README.md
+		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
 Global

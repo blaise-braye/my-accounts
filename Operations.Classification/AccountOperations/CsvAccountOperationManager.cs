@@ -63,12 +63,18 @@ namespace Operations.Classification.AccountOperations
                     sourceKind =>
                     {
                         var config = _csvConfigurations[sourceKind];
+
+                        FileStream fs = null;
+                        StreamReader sr = null;
                         try
                         {
-                            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-                            using (var sr = new StreamReader(fs))
+                            fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+                            sr = new StreamReader(fs);
+                            fs = null;
                             using (var reader = new CsvReader(sr, config))
                             {
+                                sr = null;
+
                                 if (reader.Read())
                                 {
                                     sourceKind = reader.GetField<SourceKind>(nameof(SourceKind));
@@ -82,6 +88,8 @@ namespace Operations.Classification.AccountOperations
                         catch (Exception)
                         {
                             // ignored
+                            sr?.Dispose();
+                            fs?.Dispose();
                         }
 
                         return Tuple.Create(false, SourceKind.Unknwon);
@@ -123,19 +131,30 @@ namespace Operations.Classification.AccountOperations
             var sourceKind = operations[0].SourceKind;
             if (!operations.All(o => o.SourceKind == sourceKind && o.GetType() == type))
             {
-                throw new InvalidOperationException("All operations are expected to be of same source kind and same type");
+                throw new InvalidOperationException(
+                    "All operations are expected to be of same source kind and same type");
             }
 
             var config = _csvConfigurations[sourceKind];
 
-            using (var fs = File.Open(targetFile, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (var sw = new StreamWriter(fs, config.Encoding))
+            FileStream fs = null;
+            StreamWriter sw = null;
+            try
             {
+                fs = File.Open(targetFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                sw = new StreamWriter(fs, config.Encoding);
+                fs = null;
                 using (var reader = new CsvWriter(sw, config))
                 {
+                    sw = null;
                     reader.WriteHeader(type);
                     reader.WriteRecords(operations);
                 }
+            }
+            finally
+            {
+                sw?.Dispose();
+                fs?.Dispose();
             }
         }
 
@@ -169,7 +188,7 @@ namespace Operations.Classification.AccountOperations
                         default:
                             throw new ArgumentOutOfRangeException(nameof(sourceKind));
                     }
-                    
+
                     record.SourceKind = sourceKind;
 
                     yield return record;

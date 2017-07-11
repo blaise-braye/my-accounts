@@ -24,12 +24,12 @@ namespace Operations.Classification.WpfUi.Technical.Caching
 
             _log.Info($"Cache provider initialized, working with repository {_repository.GetType()}");
         }
-        
+
         public static ICacheEntry<TValue> GetJSonCacheEntry<TValue>(string route)
         {
             return new JSonCacheEntry<TValue>(_repository, route);
         }
-        
+
         public static Task ClearCache()
         {
             return _repository.ClearCache();

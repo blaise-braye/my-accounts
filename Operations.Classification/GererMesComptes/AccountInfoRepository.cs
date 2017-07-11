@@ -169,7 +169,9 @@ namespace Operations.Classification.GererMesComptes
             var account = AccountInfo.Create(fields);
 
             foreach (var initialValue in initialValues)
+            {
                 account.SetValue(initialValue.Key, initialValue.Value);
+            }
 
             return account;
         }

@@ -31,7 +31,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private bool _isEditing;
 
         private bool _isLoading;
-        
+
         public AccountsManager(BusyIndicatorViewModel busyIndicatorViewModel, AccountsRepository repository, ITransactionsManager transactionsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
@@ -79,7 +79,9 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             private set
             {
                 if (Set(nameof(IsEditing), ref _isEditing, value))
+                {
                     InvalidateCommands();
+                }
             }
         }
 
@@ -107,22 +109,12 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
         public AsyncCommand<IEnumerable> UpdateAccountSelectionCommand { get; }
 
-        private async Task UpdateAccountSelection(IEnumerable obj)
-        {
-            var selection = obj.Cast<AccountViewModel>().ToList();
-            if (selection.Count == 0)
-            {
-                selection.AddRange(Accounts);
-            }
-
-            await UnifiedOperationsReporter.UpdateAccountSelection(selection);
-        }
-
-
         public async Task<bool> BeginEdit()
         {
             if (CurrentAccount != null && await CommitEdit())
+            {
                 IsEditing = true;
+            }
 
             return IsEditing;
         }
@@ -143,8 +135,11 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             bool success;
 
             if (!IsEditing)
+            {
                 success = true;
+            }
             else
+            {
                 using (_busyIndicator.EncapsulateActiveJobDescription(this, "Committing pending changes"))
                 {
                     var account = CurrentAccount;
@@ -152,14 +147,19 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                     var entity = account.Map().To<AccountEntity>();
 
                     if (account.IsNew)
+                    {
                         entity.Id = Guid.NewGuid();
+                    }
 
                     success = await _repository.AddOrUpdate(entity);
                     if (success)
+                    {
                         account.Id = entity.Id;
+                    }
 
                     IsEditing = !success;
                 }
+            }
 
             return success;
         }
@@ -186,14 +186,29 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             }
         }
 
+        private async Task UpdateAccountSelection(IEnumerable obj)
+        {
+            var selection = obj.Cast<AccountViewModel>().ToList();
+            if (selection.Count == 0)
+            {
+                selection.AddRange(Accounts);
+            }
+
+            await UnifiedOperationsReporter.UpdateAccountSelection(selection);
+        }
+
         private async Task<bool> Delete()
         {
             var account = CurrentAccount;
             if (account == null)
+            {
                 return true;
+            }
 
             if (IsEditing)
+            {
                 return false;
+            }
 
             using (_busyIndicator.EncapsulateActiveJobDescription(this, $"Deleting current account ({account.Name})"))
             {
@@ -205,10 +220,14 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                         Accounts.RemoveAt(accountIdx);
 
                         if (Accounts.Count <= accountIdx)
+                        {
                             accountIdx = Accounts.Count - 1;
+                        }
 
                         if (accountIdx >= 0)
+                        {
                             CurrentAccount = Accounts.ElementAt(accountIdx);
+                        }
                     }
 
                     return true;
@@ -221,7 +240,9 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private void InvalidateCommands()
         {
             foreach (var asyncCommand in _commands)
+            {
                 asyncCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }
