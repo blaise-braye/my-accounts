@@ -174,7 +174,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private IFileSystem Fs { get; }
 
         private FileBase Fb => Fs.File;
-        
+
         public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
         {
             var result = await GetCacheEntry(accountName).GetOrAddAsync(
