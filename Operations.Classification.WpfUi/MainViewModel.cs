@@ -1,4 +1,5 @@
 using System;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,12 +38,13 @@ namespace Operations.Classification.WpfUi
 
         public MainViewModel()
         {
-            var workingCopy = new WorkingCopy(Properties.Settings.Default.WorkingFolder);
+            IFileSystem fs = new FileSystem();
+            var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
 
             var accountsRepository = new AccountsRepository(workingCopy);
             var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager());
             BusyIndicator = new BusyIndicatorViewModel();
-            TransactionsManager = new TransactionsManager(BusyIndicator, transactionsRepository);
+            TransactionsManager = new TransactionsManager(BusyIndicator, fs, transactionsRepository);
             AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, TransactionsManager);
 
             GmcManager = new GmcManager(BusyIndicator);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using Operations.Classification.AccountOperations;
@@ -23,6 +24,10 @@ namespace Operations.Classification.WpfUi.Data
             _transactionPatternMapper = new UnifiedAccountOperationPatternTransformer();
         }
 
+        private IFileSystem Fs => _workingCopy.Fs;
+
+        private FileBase Fb => Fs.File;
+
         public async Task<bool> Import(string accountName, Stream importData, SourceKind sourceKind)
         {
             var operationsDirectory = _workingCopy.GetAccountOperationsDirectory(accountName);
@@ -35,7 +40,7 @@ namespace Operations.Classification.WpfUi.Data
                 var filePath = $"{filePrefixPath}.csv";
 
                 var counter = 1;
-                while (File.Exists(filePath))
+                while (Fb.Exists(filePath))
                 {
                     filePath = $"{filePrefixPath}.{counter}.csv";
                 }

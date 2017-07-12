@@ -100,7 +100,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Features\Customizations\AccountOperationDataAttribute.cs" />
+    <Compile Include="AutoFixtures\Builders\AccountOperationBaseBuilder.cs" />
+    <Compile Include="AutoFixtures\Customizations\AccountOperationDataAttribute.cs" />
+    <Compile Include="AutoFixtures\Builders\DateBuilder.cs" />
     <Compile Include="Features\ReadFortisExport.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

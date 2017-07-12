@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
@@ -30,10 +31,14 @@ namespace Operations.Classification.WpfUi.Data
             _workingCopy = workingCopy;
         }
 
+        private IFileSystem Fs => _workingCopy.Fs;
+
+        private FileBase Fb => Fs.File;
+
         public async Task<List<AccountEntity>> GetList()
         {
             List<AccountEntity> list;
-            if (!File.Exists(_workingCopy.SettingsPath))
+            if (!Fb.Exists(_workingCopy.SettingsPath))
             {
                 list = new List<AccountEntity>();
             }
@@ -41,7 +46,7 @@ namespace Operations.Classification.WpfUi.Data
             {
                 try
                 {
-                    using (var destinationStream = File.OpenRead(_workingCopy.SettingsPath))
+                    using (var destinationStream = Fb.OpenRead(_workingCopy.SettingsPath))
                     using (var sw = new StreamReader(destinationStream))
                     {
                         var rawSettings = await sw.ReadToEndAsync();
@@ -103,7 +108,7 @@ namespace Operations.Classification.WpfUi.Data
             try
             {
                 Monitor.Enter(_writeLock);
-                using (var destinationStream = File.Create(_workingCopy.SettingsPath))
+                using (var destinationStream = Fb.Create(_workingCopy.SettingsPath))
                 using (var sw = new StreamWriter(destinationStream))
                 {
                     await sw.WriteAsync(rawJson);

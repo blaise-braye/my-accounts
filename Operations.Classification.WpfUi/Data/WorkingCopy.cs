@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ namespace Operations.Classification.WpfUi.Data
         string Root { get; }
 
         string SettingsPath { get; }
+
+        IFileSystem Fs { get; }
 
         string GetAccountAggregatedOperationsPath(string accountName, string extension);
 
@@ -21,11 +24,14 @@ namespace Operations.Classification.WpfUi.Data
 
     public class WorkingCopy : IWorkingCopy
     {
-        public WorkingCopy(string workingFolder)
+        public WorkingCopy(IFileSystem fileSystem, string workingFolder)
         {
+            Fs = fileSystem;
             Root = workingFolder;
             SettingsPath = GetAbsolutePath("Classifications.json");
         }
+
+        public IFileSystem Fs { get; }
 
         public string Root { get; }
 

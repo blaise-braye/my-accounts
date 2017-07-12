@@ -5,7 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.Tests.Features.Customizations;
+using Operations.Classification.Tests.AutoFixtures.Customizations;
 
 namespace Operations.Classification.Tests.Features
 {

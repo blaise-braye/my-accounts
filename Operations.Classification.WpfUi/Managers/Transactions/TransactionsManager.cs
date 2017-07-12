@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
@@ -45,9 +46,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private List<UnifiedAccountOperationModel> _operations;
         private SourceKind? _sourceKind;
 
-        public TransactionsManager(BusyIndicatorViewModel busyIndicator, ITransactionsRepository transactionsRepository)
+        public TransactionsManager(BusyIndicatorViewModel busyIndicator, IFileSystem fileSystem, ITransactionsRepository transactionsRepository)
         {
             _busyIndicator = busyIndicator;
+            Fs = fileSystem;
             _transactionsRepository = transactionsRepository;
             BeginImportCommand = new RelayCommand(BeginImport);
             BeginExportCommand = new RelayCommand(BeginExport);
@@ -169,6 +171,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             }
         }
 
+        private IFileSystem Fs { get; }
+
+        private FileBase Fb => Fs.File;
+        
         public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
         {
             var result = await GetCacheEntry(accountName).GetOrAddAsync(
@@ -300,7 +306,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                     var files = new HashSet<string>();
                     foreach (var path in paths)
                     {
-                        if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+                        if ((Fb.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
                         {
                             var dirFiles = Directory.GetFiles(path, "*.csv");
                             foreach (var dirFile in dirFiles)
@@ -308,7 +314,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                                 files.Add(dirFile);
                             }
                         }
-                        else if (File.Exists(path))
+                        else if (Fb.Exists(path))
                         {
                             files.Add(path);
                         }
@@ -331,7 +337,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                                 sourceKind = SourceKind.Value;
                             }
 
-                            using (var fs = File.OpenRead(file))
+                            using (var fs = Fb.OpenRead(file))
                             {
                                 if (await _transactionsRepository.Import(account.Name, fs, sourceKind))
                                 {
