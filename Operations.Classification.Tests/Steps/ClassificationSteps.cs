@@ -141,11 +141,11 @@ namespace Operations.Classification.Tests.Steps
         [When(@"I read the following fortis operations from an export csv file")]
         public async Task WhenIReadTheFollowingFortisOperationsFromAnExportCsvFile(string multilineText)
         {
-            var utf8bytes = Encoding.UTF8.GetBytes(multilineText);
+            var utf8Bytes = Encoding.UTF8.GetBytes(multilineText);
             var asciiBytes = Encoding.Convert(
                 Encoding.UTF8,
                 Encoding.GetEncoding("windows-1252"),
-                utf8bytes);
+                utf8Bytes);
 
             var rawStream = new MemoryStream(asciiBytes);
             var operationManager = new CsvAccountOperationManager();

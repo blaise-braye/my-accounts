@@ -1,12 +1,11 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
     /// <summary>
     ///     Interaction logic for GmcManagerView.xaml
     /// </summary>
-    public partial class GmcManagerView : UserControl
+    public partial class GmcManagerView
     {
         public GmcManagerView()
         {

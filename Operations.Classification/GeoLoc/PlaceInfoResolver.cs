@@ -55,6 +55,8 @@ namespace Operations.Classification.GeoLoc
             _placesWordsTrie.InsertRange(_belgianPlaces.Select(p => RemoveDiacritics(p.Province).ToUpperInvariant()));
         }
 
+        public List<BelgianPlace> BelgianPlaces => _belgianPlaces;
+
         public PlaceInfo ResolveKnowingPlaceInfoIsAtEndOfText(string freetext, bool containsAdressInfo)
         {
             var result = new PlaceInfo(freetext);

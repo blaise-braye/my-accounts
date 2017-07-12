@@ -43,8 +43,8 @@ namespace Operations.Classification.WpfUi.Technical.Controls
                     if (!string.IsNullOrEmpty(displayFormatAttribute.DataFormatString))
                     {
                         bindingBase.StringFormat = displayFormatAttribute.DataFormatString;
-                        const string CurrencyFormat = ":C";
-                        if (dtc.Binding.StringFormat.Contains(CurrencyFormat))
+                        const string currencyFormat = ":C";
+                        if (dtc.Binding.StringFormat.Contains(currencyFormat))
                         {
                             if (binding != null && binding.Converter == null)
                             {

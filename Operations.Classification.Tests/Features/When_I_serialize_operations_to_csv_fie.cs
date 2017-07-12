@@ -10,7 +10,7 @@ using Operations.Classification.Tests.Features.Customizations;
 namespace Operations.Classification.Tests.Features
 {
     [TestFixture(Category = "UnitTest")]
-    public class When_I_serialize_operations_to_csv_fie
+    public class WhenISerializeOperationsToCsvFie
     {
         [SetUp]
         public void Setup()
