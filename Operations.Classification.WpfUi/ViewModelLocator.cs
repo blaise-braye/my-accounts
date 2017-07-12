@@ -31,9 +31,6 @@ namespace Operations.Classification.WpfUi
     /// </summary>
     public class ViewModelLocator
     {
-        /// <summary>
-        ///     Initializes a new instance of the ViewModelLocator class.
-        /// </summary>
         public ViewModelLocator()
         {
             Mapper.Initialize(

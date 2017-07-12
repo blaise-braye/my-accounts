@@ -48,9 +48,8 @@ namespace Operations.Classification.AccountOperations.Unified
         {
             var typeAccessor = TypeAccessor.Create(@object.GetType());
 
-            var result = new ObjectMatch();
+            var result = new ObjectMatch { Success = true };
 
-            result.Success = true;
             foreach (var entry in _entries)
             {
                 var input = typeAccessor[@object, entry.SourceProperty]?.ToString() ?? string.Empty;

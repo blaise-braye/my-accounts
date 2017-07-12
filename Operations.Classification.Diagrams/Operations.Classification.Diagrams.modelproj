@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{fcba7f8a-bd30-4f21-b206-84c9aa9ba12c}</ProjectGuid>
+    <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
+    <Name>Operations.Classification.Diagrams</Name>
+    <RootNamespace>ProjectsDependenciesValidation</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Validate Include="SolutionLayersDependencies.layerdiagram">
+      <SubType>Content</SubType>
+    </Validate>
+    <Validate Include="SolutionLayersDependencies.layerdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>SolutionLayersDependencies.layerdiagram</DependentUpon>
+    </Validate>
+    <Validate Include="SolutionLayersDependencies.layerdiagram.suppressions">
+      <SubType>Content</SubType>
+      <DependentUpon>SolutionLayersDependencies.layerdiagram</DependentUpon>
+    </Validate>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Operations.Classification.Gmc.IntegrationTests\Operations.Classification.Gmc.Tests.csproj">
+      <Name>Operations.Classification.Gmc.Tests</Name>
+      <Project>{079a59ff-71a3-4e6b-827f-be6a6d548d71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Operations.Classification.Tests\Operations.Classification.Tests.csproj">
+      <Name>Operations.Classification.Tests</Name>
+      <Project>{5776ffe0-fab6-4bb0-9298-e7e9586280f1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Operations.Classification.WpfUi.Tests\Operations.Classification.WpfUi.Tests.csproj">
+      <Name>Operations.Classification.WpfUi.Tests</Name>
+      <Project>{4ae93f77-0e6a-4394-b662-f08457397e2d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Operations.Classification.WpfUi\Operations.Classification.WpfUi.csproj">
+      <Name>Operations.Classification.WpfUi</Name>
+      <Project>{89aac261-6e53-4d9a-95b3-83d0b442e313}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Operations.Classification\Operations.Classification.csproj">
+      <Name>Operations.Classification</Name>
+      <Project>{adffc68b-0f84-4832-984b-0cd0f463d17e}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

@@ -39,8 +39,7 @@ namespace Operations.Classification.Gmc.IntegrationTests
         {
             var hierarchy = (Hierarchy) LogManager.GetRepository();
 
-            var patternLayout = new PatternLayout();
-            patternLayout.ConversionPattern = "%d [%t] %-5p %m%n";
+            var patternLayout = new PatternLayout { ConversionPattern = "%d [%t] %-5p %m%n" };
             patternLayout.ActivateOptions();
 
             var consoleAppender = new ConsoleAppender { Layout = patternLayout };

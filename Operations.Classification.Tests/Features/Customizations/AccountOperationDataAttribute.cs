@@ -38,8 +38,7 @@ namespace Operations.Classification.Tests.Features.Customizations
         {
             public object Create(object request, ISpecimenContext context)
             {
-                var pi = request as PropertyInfo;
-                if (pi != null && pi.PropertyType == typeof(DateTime) && pi.Name.EndsWith("Date"))
+                if (request is PropertyInfo pi && pi.PropertyType == typeof(DateTime) && pi.Name.EndsWith("Date"))
                 {
                     return context.Create<DateTime>().Date;
                 }

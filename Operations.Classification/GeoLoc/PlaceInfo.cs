@@ -14,7 +14,7 @@ namespace Operations.Classification.GeoLoc
         }
 
         /// <summary>
-        ///     the free text that has been used to resolve the place info
+        /// Gets the free text that has been used to resolve the place info
         /// </summary>
         public string FreeTextInput { get; }
 
