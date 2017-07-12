@@ -25,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 Gettings started", "00 G
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operations.Classification.WpfUi.Tests", "Operations.Classification.WpfUi.Tests\Operations.Classification.WpfUi.Tests.csproj", "{4AE93F77-0E6A-4394-B662-F08457397E2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operations.Classification.Schemas", "Operations.Classification.Schemas\Operations.Classification.Schemas.csproj", "{0B3BF827-D5A9-474B-B6BD-D31E054AAE78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,12 @@ Global
 		{079A59FF-71A3-4E6B-827F-BE6A6D548D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{079A59FF-71A3-4E6B-827F-BE6A6D548D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{079A59FF-71A3-4E6B-827F-BE6A6D548D71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AE93F77-0E6A-4394-B662-F08457397E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AE93F77-0E6A-4394-B662-F08457397E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AE93F77-0E6A-4394-B662-F08457397E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AE93F77-0E6A-4394-B662-F08457397E2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B3BF827-D5A9-474B-B6BD-D31E054AAE78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B3BF827-D5A9-474B-B6BD-D31E054AAE78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,5 +66,6 @@ Global
 		{5776FFE0-FAB6-4BB0-9298-E7E9586280F1} = {132F170B-0A03-4B93-A0D6-FE2A7598247F}
 		{89AAC261-6E53-4D9A-95B3-83D0B442E313} = {078567A8-7BF7-4031-9806-C6BD9D6B2D5E}
 		{079A59FF-71A3-4E6B-827F-BE6A6D548D71} = {132F170B-0A03-4B93-A0D6-FE2A7598247F}
+		{4AE93F77-0E6A-4394-B662-F08457397E2D} = {132F170B-0A03-4B93-A0D6-FE2A7598247F}
 	EndGlobalSection
 EndGlobal

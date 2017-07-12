@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+  <xs:element name="specFlow">
+    <xs:annotation>
+      <xs:documentation>
+        Customizes SpecFlow code generation. This unofficial schema is hand-crafted based on actual use.
+        For additional details on SpecFlow configuration options see http://go.specflow.org/doc-config.
+
+        Should occur zero or one times in an app.config.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element name="stepAssemblies">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="1">
+                  <xs:element name="stepAssembly">
+                    <xs:complexType>
+                      <xs:attribute name="assembly" type="xs:string" use="required" />
+                    </xs:complexType>
+                  </xs:element>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element name="unitTestProvider">
+            <xs:complexType>
+              <xs:attribute name="name" type="SpecFlowUnitTestProvider" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="SpecFlowUnitTestProvider">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MsTest" />
+      <xs:enumeration value="NUnit" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
