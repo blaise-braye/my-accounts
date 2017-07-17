@@ -25,7 +25,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#{GmcUserName}#")]
         public string GmcUserName {
             get {
                 return ((string)(this["GmcUserName"]));
@@ -34,7 +34,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#{GmcPassword}#")]
         public string GmcPassword {
             get {
                 return ((string)(this["GmcPassword"]));
