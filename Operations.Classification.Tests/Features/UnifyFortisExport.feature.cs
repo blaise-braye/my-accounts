@@ -67,58 +67,98 @@ namespace Operations.Classification.Tests.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("parse \'BankTransfert\'")]
-        public virtual void ParseBankTransfert()
+        [NUnit.Framework.DescriptionAttribute("parse fortis amounts")]
+        public virtual void ParseFortisAmounts()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankTransfert\'", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse fortis amounts", ((string[])(null)));
 #line 6
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
-                        "Detail"});
+                        "Amount"});
             table1.AddRow(new string[] {
+                        "VE1",
+                        "0,01"});
+            table1.AddRow(new string[] {
+                        "VE2",
+                        "-0,01"});
+#line 7
+ testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table1, "Given ");
+#line 12
+ testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "OperationId",
+                        "Income",
+                        "Outcome"});
+            table2.AddRow(new string[] {
+                        "VE1",
+                        "0.01",
+                        "0"});
+            table2.AddRow(new string[] {
+                        "VE2",
+                        "0",
+                        "0.01"});
+#line 14
+ testRunner.Then("the operations data is", ((string)(null)), table2, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("parse \'BankTransfert\'")]
+        public virtual void ParseBankTransfert()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankTransfert\'", ((string[])(null)));
+#line 19
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Reference",
+                        "Detail"});
+            table3.AddRow(new string[] {
                         "VE1",
                         "PROXIMUS MOBILE BE31435411161155BIC KREDBEBB    VIA MOBILE BANKING COMMUNICATION " +
                             ": 285293318632 EXECUTE LE 05-02 DATE VALEUR : 05/02/2017"});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE2",
                         "GEVELCO BE05 3701 2392 6075  BIC BBRUBEBBCOMMUNICATION: LOYER RUE DE PASCALE 15 -" +
                             " ETAGE 1  BR AYE - BACQUELAINE DATE VALEUR : 01/02/2017"});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE2B",
                         "GEVELCO BE05370123926075BIC BBRUBEBB VOTRE REFERENCE : 171828956 COMMUNICATION : " +
                             "LOYER RUE DE PASCALE 15 - ETAGE 1  BR AYE - BACQUELAINE DATE VALEUR : 03/04/2017" +
                             ""});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE3",
                         "PARTENAMUT BE40310083000663BIC BBRUBEBB    VIA WEB BANKING COMMUNICATION : 170010" +
                             "267366 DATE VALEUR : 23/01/2017"});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE3B",
                         "PARTENA - MUTUALITE LIBRE BE74 2100 0818 2307  BIC GEBABEBBREFERENCE DONNEUR D\'OR" +
                             "DRE : 5090411H691 COMMUNICATION : /C/ PAIE /0201733339803 DU 10/04/2017 POUR 001" +
                             " PRESTATIONS CHEZ M.BAYET BEN 0201733339803 711041707696 DATE VALEUR : 11/04/201" +
                             "7"});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE4",
                         "SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L\'ALLEU BE02 3600 9651 844" +
                             "0  BIC BBRUBEBB REFERENCE DONNEUR D\'ORDRE : 1CS0125-01-0000245-1701310102822878 " +
                             "COMMUNICATION : /A/ 1CS0125-01-0000245 DATE VALEUR : 13/01/2017"});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE5",
                         "BACQUELAINE SYLVIE RUE DU DUC 231150     WOLUWE-SAINT-PIERRE BE70 0013 5026 1925 " +
                             " BIC GEBABEBB PAS DE COMMUNICATION DATE VALEUR : 18/01/2017"});
-            table1.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "VE6",
                         "COLINE BRAYE BE89750668924185BIC AXABBE22    VIA WEB BANKING COMMUNICATION : ANNI" +
                             "F PAPA DATE VALEUR : 05/12/2016"});
-#line 7
- testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table1, "Given ");
-#line 18
+#line 20
+ testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table3, "Given ");
+#line 31
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "OperationId",
                         "ThirdParty",
                         "City",
@@ -128,7 +168,7 @@ this.ScenarioSetup(scenarioInfo);
                         "IBAN",
                         "BIC",
                         "ThirdPartyOperationRef"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE1",
                         "PROXIMUS MOBILE",
                         "",
@@ -138,7 +178,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE31435411161155",
                         "KREDBEBB",
                         ""});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE2",
                         "GEVELCO",
                         "",
@@ -148,7 +188,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE05 3701 2392 6075",
                         "BBRUBEBB",
                         ""});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE2B",
                         "GEVELCO",
                         "",
@@ -158,7 +198,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE05370123926075",
                         "BBRUBEBB",
                         "171828956"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE3",
                         "PARTENAMUT",
                         "",
@@ -168,7 +208,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE40310083000663",
                         "BBRUBEBB",
                         ""});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE3B",
                         "PARTENA - MUTUALITE LIBRE",
                         "",
@@ -179,7 +219,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE74 2100 0818 2307",
                         "GEBABEBB",
                         "5090411H691"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE4",
                         "SELLIGENT S.A.",
                         "BRAINE-L\'ALLEU",
@@ -189,7 +229,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE02 3600 9651 8440",
                         "BBRUBEBB",
                         "1CS0125-01-0000245-1701310102822878"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE5",
                         "BACQUELAINE SYLVIE",
                         "WOLUWE-SAINT-PIERRE",
@@ -199,7 +239,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BE70 0013 5026 1925",
                         "GEBABEBB",
                         ""});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "VE6",
                         "COLINE BRAYE",
                         "",
@@ -209,8 +249,8 @@ this.ScenarioSetup(scenarioInfo);
                         "BE89750668924185",
                         "AXABBE22",
                         ""});
-#line 20
- testRunner.Then("the operations data is", ((string)(null)), table2, "Then ");
+#line 33
+ testRunner.Then("the operations data is", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -220,33 +260,33 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseCartPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CartPayment\'", ((string[])(null)));
-#line 31
+#line 44
 this.ScenarioSetup(scenarioInfo);
 #line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
                         "Detail"});
-            table3.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "Ref1",
                         "AVEC LA CARTE 6703 04XX XXXX X315 7 CARREFOUR EXPR   1000 BRUS.07-02-2017 EXECUTE" +
                             " LE 07-02 DATE VALEUR : 07/02/2017"});
-#line 32
-    testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table3, "Given ");
-#line 36
+#line 45
+    testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table5, "Given ");
+#line 49
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "OperationId",
                         "ThirdParty",
                         "City",
                         "PatternName"});
-            table4.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Ref1",
                         "CARREFOUR EXPR",
                         "BRUXELLES",
                         "CartPayment"});
-#line 38
-    testRunner.Then("the operations data is", ((string)(null)), table4, "Then ");
+#line 51
+    testRunner.Then("the operations data is", ((string)(null)), table6, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -256,48 +296,7 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseDomiciliation()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'Domiciliation\'", ((string[])(null)));
-#line 43
-this.ScenarioSetup(scenarioInfo);
-#line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Reference",
-                        "Detail"});
-            table5.AddRow(new string[] {
-                        "Ref1",
-                        "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A NUMERO DE MANDAT :43FJ224QUR62Q REFERENCE : 1" +
-                            "000265758596 PAYPAL COMMUNICATION : 1000265758596 PAYPAL DATE VALEUR : 02/12/201" +
-                            "6"});
-#line 44
-    testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table5, "Given ");
-#line 48
- testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                        "OperationId",
-                        "ThirdParty",
-                        "PatternName",
-                        "Mandat",
-                        "ThirdPartyOperationRef",
-                        "Communication"});
-            table6.AddRow(new string[] {
-                        "Ref1",
-                        "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A",
-                        "Domiciliation",
-                        "43FJ224QUR62Q",
-                        "1000265758596 PAYPAL",
-                        "1000265758596 PAYPAL"});
-#line 50
-    testRunner.Then("the operations data is", ((string)(null)), table6, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("parse \'CreditPayment\'")]
-        public virtual void ParseCreditPayment()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CreditPayment\'", ((string[])(null)));
-#line 55
+#line 56
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -305,7 +304,8 @@ this.ScenarioSetup(scenarioInfo);
                         "Detail"});
             table7.AddRow(new string[] {
                         "Ref1",
-                        "COMPTE INTERNE VISA : 17503879 ETAT DE DEPENSES NUMERO 336DATE VALEUR : 12/12/201" +
+                        "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A NUMERO DE MANDAT :43FJ224QUR62Q REFERENCE : 1" +
+                            "000265758596 PAYPAL COMMUNICATION : 1000265758596 PAYPAL DATE VALEUR : 02/12/201" +
                             "6"});
 #line 57
     testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table7, "Given ");
@@ -316,46 +316,40 @@ this.ScenarioSetup(scenarioInfo);
                         "OperationId",
                         "ThirdParty",
                         "PatternName",
+                        "Mandat",
+                        "ThirdPartyOperationRef",
                         "Communication"});
             table8.AddRow(new string[] {
                         "Ref1",
-                        "17503879",
-                        "CreditPayment",
-                        "ETAT DE DEPENSES NUMERO 336"});
+                        "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A",
+                        "Domiciliation",
+                        "43FJ224QUR62Q",
+                        "1000265758596 PAYPAL",
+                        "1000265758596 PAYPAL"});
 #line 63
- testRunner.Then("the operations data is", ((string)(null)), table8, "Then ");
+    testRunner.Then("the operations data is", ((string)(null)), table8, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("parse \'BankFees\'")]
-        public virtual void ParseBankFees()
+        [NUnit.Framework.DescriptionAttribute("parse \'CreditPayment\'")]
+        public virtual void ParseCreditPayment()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankFees\'", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CreditPayment\'", ((string[])(null)));
 #line 68
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
-                        "Detail",
-                        "CounterpartyOfTheTransaction"});
+                        "Detail"});
             table9.AddRow(new string[] {
                         "Ref1",
-                        "COMFORT PACK EXECUTE LE 06-02DATE VALEUR : 01/02/2017",
-                        "ANY"});
-            table9.AddRow(new string[] {
-                        "Ref2",
-                        "PERIODE DU 01-02-2017 AU 28-02-2017DETAILS VOIR ANNEXE EXECUTE LE 07-03 DATE VALE" +
-                            "UR : 01/03/2017",
-                        "ANY"});
-            table9.AddRow(new string[] {
-                        "Ref3",
-                        "EXECUTE LE 07-03 DATE VALEUR : 01/03/2017",
-                        "RECTIFICATION VERSEMENT BONUS"});
-#line 69
+                        "COMPTE INTERNE VISA : 17503879 ETAT DE DEPENSES NUMERO 336DATE VALEUR : 12/12/201" +
+                            "6"});
+#line 70
     testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table9, "Given ");
-#line 76
+#line 74
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
@@ -365,21 +359,67 @@ this.ScenarioSetup(scenarioInfo);
                         "Communication"});
             table10.AddRow(new string[] {
                         "Ref1",
+                        "17503879",
+                        "CreditPayment",
+                        "ETAT DE DEPENSES NUMERO 336"});
+#line 76
+ testRunner.Then("the operations data is", ((string)(null)), table10, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("parse \'BankFees\'")]
+        public virtual void ParseBankFees()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankFees\'", ((string[])(null)));
+#line 81
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Reference",
+                        "Detail",
+                        "CounterpartyOfTheTransaction"});
+            table11.AddRow(new string[] {
+                        "Ref1",
+                        "COMFORT PACK EXECUTE LE 06-02DATE VALEUR : 01/02/2017",
+                        "ANY"});
+            table11.AddRow(new string[] {
+                        "Ref2",
+                        "PERIODE DU 01-02-2017 AU 28-02-2017DETAILS VOIR ANNEXE EXECUTE LE 07-03 DATE VALE" +
+                            "UR : 01/03/2017",
+                        "ANY"});
+            table11.AddRow(new string[] {
+                        "Ref3",
+                        "EXECUTE LE 07-03 DATE VALEUR : 01/03/2017",
+                        "RECTIFICATION VERSEMENT BONUS"});
+#line 82
+    testRunner.Given("I have read the following fortis operations from export files", ((string)(null)), table11, "Given ");
+#line 89
+ testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                        "OperationId",
+                        "ThirdParty",
+                        "PatternName",
+                        "Communication"});
+            table12.AddRow(new string[] {
+                        "Ref1",
                         "Fortis",
                         "BankFees",
                         "MONTHLY FEE COMFORT PACK"});
-            table10.AddRow(new string[] {
+            table12.AddRow(new string[] {
                         "Ref2",
                         "Fortis",
                         "BankFees",
                         "PERIODE DU 01-02-2017 AU 28-02-2017"});
-            table10.AddRow(new string[] {
+            table12.AddRow(new string[] {
                         "Ref3",
                         "Fortis",
                         "BankFees",
                         "RECTIFICATION VERSEMENT BONUS"});
-#line 78
- testRunner.Then("the operations data is", ((string)(null)), table10, "Then ");
+#line 91
+ testRunner.Then("the operations data is", ((string)(null)), table12, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

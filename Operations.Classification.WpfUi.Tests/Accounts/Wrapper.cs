@@ -1,6 +1,4 @@
-using System.Diagnostics;
-
-namespace Operations.Classification.Gmc.IntegrationTests.Steps
+﻿namespace Operations.Classification.WpfUi.Tests.Accounts
 {
     public class Wrapper<T>
     {
@@ -13,7 +11,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
 
         public override string ToString()
         {
-            return Value?.ToString() ?? string.Empty;
+            return typeof(T).ToString();
         }
 
         public static implicit operator Wrapper<T>(T val)

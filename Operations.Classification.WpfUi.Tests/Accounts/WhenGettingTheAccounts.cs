@@ -20,7 +20,7 @@ namespace Operations.Classification.WpfUi.Tests.Accounts
             AccountsRepository sut,
             IWorkingCopy workingCopy,
             IMockFileDataAccessor mockFileDataAccessor,
-            string existingSettingPath,
+            Wrapper<string> existingSettingPath,
             List<AccountEntity> existingEntities)
         {
             //Arrange
@@ -40,7 +40,7 @@ namespace Operations.Classification.WpfUi.Tests.Accounts
         public async Task ThenAnEmptyListIsReturnedWhenSettingsFileDoesNotExist(
             AccountsRepository sut,
             IWorkingCopy workingCopy,
-            string inexistingSettingPath)
+            Wrapper<string> inexistingSettingPath)
         {
             //Arrange
             Mock.Get(workingCopy).Setup(w => w.SettingsPath).Returns(inexistingSettingPath);
@@ -58,7 +58,7 @@ namespace Operations.Classification.WpfUi.Tests.Accounts
             AccountsRepository sut,
             IWorkingCopy workingCopy,
             IMockFileDataAccessor mockFileDataAccessor,
-            string existingSettingPath)
+            Wrapper<string> existingSettingPath)
         {
             //Arrange
             mockFileDataAccessor.AddFile(existingSettingPath, new MockFileData("{ invalid json }"));

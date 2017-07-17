@@ -51,13 +51,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
         {
             _toImportQifData = qifData;
         }
-
-        [Given(@"I have an update of the qif data file to import at path (.*)")]
-        public void GivenIHaveAnUpdateOfTheQifDataFileToImportAtPath(string qifDataPath)
-        {
-            _toImportQifData = File.ReadAllText(qifDataPath);
-        }
-
+        
         [Given(@"I import the qif data on account '(.*)'")]
         [When(@"I import the qif data on account '(.*)'")]
         public async Task GivenIImportTheQifDataOnAccount(string accountName, string qifData)
@@ -65,6 +59,13 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
             var account = await _accounts.GetByName(accountName);
             _lastQifImportResult = await _operations.Import(account.Id, qifData);
         }
+
+        [Then(@"the last qif data import succeeded")]
+        public void ThenTheLastQifDataImportSucceeded()
+        {
+            _lastQifImportResult.Success.Should().BeTrue();
+        }
+
 
         [Then(@"dry run import available qif data to account '(.*)' produces the following delta report")]
         public async Task ThenDryRunImportAvailableQifDataToAccountProducesTheFollowingDeltaReport(string accountName, Table expectedQifDataDelta)
@@ -127,25 +128,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
         {
             table.CompareToSet(_lastExportedQifDom.BankTransactions);
         }
-
-        [Then(@"the last exported qif data is")]
-        public void ThenTheLastExportedQifDataIs(string qifData)
-        {
-            Assert.That(_lastExportedQifData, Is.EqualTo(qifData));
-        }
-
-        [Then(@"the last qif data import succeeded")]
-        public void ThenTheLastQifDataImportSucceeded()
-        {
-            Assert.That(_lastQifImportResult?.Success, Is.True);
-        }
-
-        [Then(@"The last synchronisation operation id is known")]
-        public void ThenTheLastSynchronisationOperationIdIsKnown()
-        {
-            ScenarioContext.Current.Pending();
-        }
-
+        
         [When(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
         [Given(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
         public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(Wrapper<string> userName, Wrapper<string> password)
@@ -176,16 +159,6 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
             var account = await _accounts.GetByName(accountName);
             _lastExportedQifData = await _operations.ExportQif(account.Id, startDate, endDate);
             _lastExportedQifDom = QifMapper.ParseQifDom(_lastExportedQifData);
-        }
-
-        [When(@"I import only new qif transactions from available qif data to account '(.*)'")]
-        public async Task WhenIImportOnlyNewQifTransactionsFromAvailableQifDataToAccount(string accountName)
-        {
-            var account = await _accounts.GetByName(accountName);
-            var operationsDelta = await _operations.DryRunImport(account.Id, _toImportQifData);
-            var newTransactions = operationsDelta.Where(d=>d.Action == DeltaAction.Add).ToList();
-            var lastQifImportResult = await _operations.RunImport(account.Id, newTransactions);
-            _lastQifImportResult = lastQifImportResult;
         }
         
         [Given(@"I wait that last imported qifdata in account '(.*)' is available in export")]

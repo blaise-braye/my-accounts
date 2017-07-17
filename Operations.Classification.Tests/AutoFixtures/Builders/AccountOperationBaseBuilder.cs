@@ -22,6 +22,7 @@ namespace Operations.Classification.Tests.AutoFixtures.Builders
             {
                 return new NoSpecimen();
             }
+
             AccountOperationBase instance;
 
             switch (_sourceKind)
