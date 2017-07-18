@@ -234,7 +234,7 @@ namespace Operations.Classification.GererMesComptes
             return result;
         }
 
-        public async Task<string> WaitExportAvailability(string accountId, string lastImportedQifData, int secondsToWait = 5)
+        public async Task<string> WaitExportAvailability(string accountId, string lastImportedQifData, int secondsToWait = 20)
         {
             var sw = Stopwatch.StartNew();
             bool available;
