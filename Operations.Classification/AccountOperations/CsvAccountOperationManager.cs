@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -202,6 +203,7 @@ namespace Operations.Classification.AccountOperations
             export.RegisterClassMap<FortisOperationExportCsvMap>();
             var ansiEncoding = Encoding.GetEncoding(1252);
             export.Encoding = ansiEncoding;
+            export.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
             export.Delimiter = ";";
             export.QuoteAllFields = false;
             export.TrimFields = true;
@@ -211,6 +213,7 @@ namespace Operations.Classification.AccountOperations
             var archive = new CsvConfiguration();
             archive.RegisterClassMap<FortisOperationArchiveCsvMap>();
             archive.Encoding = Encoding.UTF8;
+            archive.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
             archive.Delimiter = ";";
             archive.QuoteAllFields = true;
             archive.TrimFields = true;
@@ -220,6 +223,7 @@ namespace Operations.Classification.AccountOperations
             var sodexoExport = new CsvConfiguration();
             sodexoExport.RegisterClassMap<SodexoOperationCsvMap>();
             sodexoExport.Encoding = Encoding.UTF8;
+            sodexoExport.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
             sodexoExport.Delimiter = ";";
             sodexoExport.QuoteAllFields = true;
             sodexoExport.TrimFields = true;
@@ -229,6 +233,7 @@ namespace Operations.Classification.AccountOperations
             var internalExport = new CsvConfiguration();
             sodexoExport.Encoding = Encoding.UTF8;
             internalExport.Encoding = ansiEncoding;
+            sodexoExport.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
             internalExport.Delimiter = ";";
             internalExport.QuoteAllFields = false;
             internalExport.TrimFields = true;
