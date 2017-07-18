@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using log4net;
 using Newtonsoft.Json.Linq;
 using Operations.Classification.Extensions;
 
@@ -11,6 +12,8 @@ namespace Operations.Classification.GererMesComptes
 {
     public class AccountInfoRepository
     {
+        private readonly ILog _logger = LogManager.GetLogger(typeof(AccountInfoRepository));
+
         private readonly GererMesComptesClient _client;
 
         private List<AccountInfo> _cachedAccounts;
@@ -131,11 +134,19 @@ namespace Operations.Classification.GererMesComptes
                 var document = new HtmlDocument();
                 var html = await getResponse.Content.ReadAsStreamAsync();
                 document.Load(html);
-                var tableRows = document.DocumentNode.SelectNodes("//table/tbody/tr");
-                foreach (var tableRow in tableRows)
+                const string xpathAccountsRows = "//table/tbody/tr";
+                var tableRows = document.DocumentNode.SelectNodes(xpathAccountsRows);
+                if (tableRows != null)
                 {
-                    var accountId = tableRow.GetAttributeValue("data-account", string.Empty);
-                    result.Add(accountId);
+                    foreach (var tableRow in tableRows)
+                    {
+                        var accountId = tableRow.GetAttributeValue("data-account", string.Empty);
+                        result.Add(accountId);
+                    }
+                }
+                else
+                {
+                    _logger.WarnFormat("no account infomation could be found on url {0}, information is expected under the xpath {1}.", getResponse.RequestMessage.RequestUri, xpathAccountsRows);
                 }
             }
             else
