@@ -110,12 +110,10 @@ namespace Operations.Classification.GererMesComptes
                                ["encoding"] = "utf-8"
                            };
 
-            string qifData;
-
             var response = await Transport.PostAsync("/fr/u/finances/comptes/" + accountId + "/export.html", new FormUrlEncodedContent(dico));
             response.EnsureSuccessStatusCode();
 
-            qifData = await response.Content.ReadAsStringAsync();
+            var qifData = await response.Content.ReadAsStringAsync();
             qifData = qifData.Replace("\n", Environment.NewLine);
 
             return qifData;
@@ -234,7 +232,7 @@ namespace Operations.Classification.GererMesComptes
             return result;
         }
 
-        public async Task<string> WaitExportAvailability(string accountId, string lastImportedQifData, int secondsToWait = 20)
+        public async Task<string> WaitExportAvailability(string accountId, string lastImportedQifData, int secondsToWait = 60)
         {
             var sw = Stopwatch.StartNew();
             bool available;

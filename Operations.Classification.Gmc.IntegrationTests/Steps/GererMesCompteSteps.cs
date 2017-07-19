@@ -141,12 +141,13 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
         public async Task WhenICreateTheBankAccount(string accountName)
         {
             var values = new { name = accountName };
-            if (await _accounts.Create(values))
+            var accountInfo = await _accounts.Create(values);
+            if (accountInfo != null)
             {
-                _cleaner.Add(() => _accounts.Delete(accountName));
+                _cleaner.Add(() => _accounts.Delete(accountInfo));
             }
         }
-
+        
         [When(@"I delete the bank account '(.*)'")]
         public async Task WhenIDeleteTheBankAccount(string accountName)
         {

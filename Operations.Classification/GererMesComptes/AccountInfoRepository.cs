@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Operations.Classification.GererMesComptes
 
         private HttpClient Transport => _client.Transport;
 
-        public async Task<bool> Create(AccountInfo accountInfo)
+        public async Task<AccountInfo> Create(AccountInfo accountInfo)
         {
             var fields = accountInfo.ToDictionnary();
 
@@ -35,19 +36,30 @@ namespace Operations.Classification.GererMesComptes
             postResponse.EnsureSuccessStatusCode();
             var json = await postResponse.Content.ReadAsStringAsync();
             var succeeded = (bool)JObject.Parse(json)["response"];
+            AccountInfo createdAccount = null;
             if (succeeded)
             {
                 ClearCache();
+                createdAccount = await GetByName(accountInfo.Name);
+
+                var sw = Stopwatch.StartNew();
+                while (createdAccount == null && sw.Elapsed < TimeSpan.FromSeconds(5))
+                {
+                    ClearCache();
+                    createdAccount = await GetByName(accountInfo.Name);
+                }
+
+                sw.Stop();
             }
 
-            return succeeded;
+            return createdAccount;
         }
 
-        public async Task<bool> Create(object initialValues)
+        public async Task<AccountInfo> Create(object initialValues)
         {
             var info = initialValues as AccountInfo ?? await PrepareNew(initialValues);
-            var succeeded = await Create(info);
-            return succeeded;
+            var accountInfo = await Create(info);
+            return accountInfo;
         }
 
         public async Task<bool> Delete(AccountInfo account)
@@ -163,7 +175,7 @@ namespace Operations.Classification.GererMesComptes
             return PrepareNew(rawMembersDictionary);
         }
 
-        private void ClearCache()
+        public void ClearCache()
         {
             _cachedAccounts = null;
         }
