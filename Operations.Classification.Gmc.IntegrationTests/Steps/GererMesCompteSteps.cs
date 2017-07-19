@@ -96,6 +96,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
         }
 
         [Then(@"the bank account '(.*)' (exists|does not exist)")]
+        [Given(@"the bank account '(.*)' (exists|does not exist)")]
         public async Task ThenTheBankAccountExists(Wrapper<string> accountName, string existsString)
         {
             var expectedExists = existsString.Equals("exists");
@@ -104,7 +105,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
 
             accualExist.Should().Be(expectedExists);
         }
-
+        
         [Then(@"the last exported qif data are the following operations")]
         public void ThenTheLastExportedQifDataContainsTheFollowingOperations(Table table)
         {

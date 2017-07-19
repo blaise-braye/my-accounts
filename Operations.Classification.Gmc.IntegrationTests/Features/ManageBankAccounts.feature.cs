@@ -117,8 +117,10 @@ this.FeatureBackground();
 #line 17
  testRunner.Given("I create the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 18
- testRunner.When("I delete the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And("the bank account \'ScenarioContext:ScenarioInfo.Title\' exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 19
+ testRunner.When("I delete the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 20
  testRunner.Then("the bank account \'ScenarioContext:ScenarioInfo.Title\' does not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

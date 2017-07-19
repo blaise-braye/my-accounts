@@ -15,6 +15,7 @@ Scenario:Create an account
 
 Scenario:delete an account
 	Given I create the bank account 'ScenarioContext:ScenarioInfo.Title'
+	And the bank account 'ScenarioContext:ScenarioInfo.Title' exists
 	When I delete the bank account 'ScenarioContext:ScenarioInfo.Title'
 	Then the bank account 'ScenarioContext:ScenarioInfo.Title' does not exist
 
