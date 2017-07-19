@@ -72,7 +72,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Features
  testRunner.Given("I connect on GererMesComptes with email \'Settings:GmcUserName\' and password \'Sett" +
                     "ings:GmcPassword\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 7
- testRunner.And("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I create the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
         }
         
@@ -87,7 +87,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 10
- testRunner.When("I import the qif data on account \'Automated Test Account\'", "!Type:Bank\r\nD11/04/2016\r\nT0.01\r\nMPARTENA - MUTUALITE LIBRE - BE74 2100 0818 2307 " +
+ testRunner.When("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD11/04/2016\r\nT0.01\r\nMPARTENA - MUTUALITE LIBRE - BE74 2100 0818 2307 " +
                     "- BIC GEBABEBB - COMMUNICATION /C/ PAIE /0201733339803 DU 10/04/2017 POUR 001 PR" +
                     "ESTATIONS CHEZ M.BAYET BEN 0201733339803 711041707696 - BankTransfert\r\nN2017-014" +
                     "8\r\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -108,7 +108,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 22
- testRunner.Given("I import the qif data on account \'Automated Test Account\'", @"!Type:Bank
+ testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", @"!Type:Bank
 D11/04/2016
 T0.01
 MData Too Long Is Truncated To 129 Bytes You Should Not Be Able To Read Something After triple letter ooooooooooooooooooooooo SSS while there is something as you can read it :)
@@ -120,8 +120,8 @@ Mdates must be formatted in mm/dd/yyyy
 N2017-0148
 ^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 37
- testRunner.When("I export the qif data from account \'Automated Test Account\', between \'2016-04-11T" +
-                    "00:00:00\' and \'2016-11-05T00:00:00\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I export the qif data from account \'ScenarioContext:ScenarioInfo.Title\', between " +
+                    "\'2016-04-11T00:00:00\' and \'2016-11-05T00:00:00\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Number",
@@ -156,18 +156,20 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 47
- testRunner.Given("I import the qif data on account \'Automated Test Account\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMSome Memo\r\nN2017-0148\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 56
- testRunner.And("I wait that last imported qifdata in account \'Automated Test Account\' is availabl" +
-                    "e in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMSome Memo\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT0.02\r\nMS" +
+                    "ome Extra Memo\r\nN2017-0149\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 61
+ testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
+                    " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 58
- testRunner.When("I import the qif data on account \'Automated Test Account\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMSome Memo\r\nN2017-0148\r\n^\r\n!Type:Bank\r\nD04/01/201" +
-                    "6\r\nT0.02\r\nMSome Added Memo\r\nN2017-0149\r\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 74
- testRunner.And("I wait that last imported qifdata in account \'Automated Test Account\' is availabl" +
-                    "e in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 76
+#line 63
+ testRunner.When("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMSome Memo\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT0.02\r\nMS" +
+                    "ome Extra Memo\r\nN2017-0149\r\n^\r\nD04/01/2016\r\nT0.02\r\nMSome Added Memo\r\nN2017-0150\r" +
+                    "\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 83
+ testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
+                    " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 85
  testRunner.Then("the last qif data import succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -182,35 +184,40 @@ this.FeatureBackground();
                         "Some Memo"});
             table2.AddRow(new string[] {
                         "",
+                        "2016-09-28T00:00:00",
+                        "0.02",
+                        "Some Extra Memo"});
+            table2.AddRow(new string[] {
+                        "",
                         "2016-04-01T00:00:00",
                         "0.02",
                         "Some Added Memo"});
-#line 77
+#line 86
  testRunner.And("the last exported qif data are the following operations", ((string)(null)), table2, "And ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Identify delta between imported qif data and new available qif data")]
-        public virtual void IdentifyDeltaBetweenImportedQifDataAndNewAvailableQifData()
+        [NUnit.Framework.DescriptionAttribute("Identify remote with new available qif data")]
+        public virtual void IdentifyRemoteWithNewAvailableQifData()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Identify delta between imported qif data and new available qif data", ((string[])(null)));
-#line 84
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Identify remote with new available qif data", ((string[])(null)));
+#line 93
 this.ScenarioSetup(scenarioInfo);
 #line 5
 this.FeatureBackground();
 #line hidden
-#line 85
- testRunner.Given("I import the qif data on account \'Automated Test Account\'", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\n!Type:Bank\r\nD09/28/2013\r\nT0.01\r\nMR" +
-                    "emove\r\n^\r\n!Type:Bank\r\nD09/29/2013\r\nT0.02\r\nMSome Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 94
+ testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/28/2013\r\nT0.01\r\nMRemove\r\n^\r\nD0" +
+                    "9/29/2013\r\nT0.02\r\nMSome Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 104
- testRunner.Given("I have an update of the qif data file to import", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\n!Type:Bank\r\nD09/29/2013\r\nT0.02\r\nMU" +
-                    "pdated Memo\r\n^\r\n!Type:Bank\r\nD01/11/2014\r\nT0.01\r\nMAdded Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 123
- testRunner.And("I wait that last imported qifdata in account \'Automated Test Account\' is availabl" +
-                    "e in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 111
+ testRunner.Given("I have an update of the qif data file to import", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/29/2013\r\nT0.02\r\nMUpdated Memo\r" +
+                    "\n^\r\nD01/11/2014\r\nT0.01\r\nMAdded Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 128
+ testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
+                    " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "DeltaKey",
@@ -227,9 +234,9 @@ this.FeatureBackground();
             table3.AddRow(new string[] {
                         "2013-09-28$0.01",
                         "Remove"});
-#line 125
- testRunner.Then("dry run import available qif data to account \'Automated Test Account\' produces th" +
-                    "e following delta report", ((string)(null)), table3, "Then ");
+#line 130
+ testRunner.Then("dry run import available qif data to account \'ScenarioContext:ScenarioInfo.Title\'" +
+                    " produces the following delta report", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

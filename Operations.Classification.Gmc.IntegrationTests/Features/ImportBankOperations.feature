@@ -4,10 +4,10 @@ Feature: ImportBankOperations
 
 Background: Ensure a bank account is created
 	Given I connect on GererMesComptes with email 'Settings:GmcUserName' and password 'Settings:GmcPassword'
-	And I create the bank account 'Automated Test Account'
+	And I create the bank account 'ScenarioContext:ScenarioInfo.Title'
 
 Scenario: Import an operation
-	When I import the qif data on account 'Automated Test Account'
+	When I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
 		"""
 !Type:Bank
 D11/04/2016
@@ -19,7 +19,7 @@ N2017-0148
 		Then the last qif data import succeeded
 
 Scenario: Export imported operations
-	Given I import the qif data on account 'Automated Test Account'
+	Given I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
 		"""
 !Type:Bank
 D11/04/2016
@@ -34,7 +34,7 @@ N2017-0148
 ^
 		"""
 
-	When I export the qif data from account 'Automated Test Account', between '2016-04-11T00:00:00' and '2016-11-05T00:00:00'
+	When I export the qif data from account 'ScenarioContext:ScenarioInfo.Title', between '2016-04-11T00:00:00' and '2016-11-05T00:00:00'
 
 	Then the last exported qif data are the following operations
 	| Number | Date                | Amount | Memo                                                                                                                             |
@@ -44,7 +44,7 @@ N2017-0148
 Scenario:Execute two successive Imports
 	- latest version does not overwrite initial version
 	- new operations are added
-	Given I import the qif data on account 'Automated Test Account'
+	Given I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
 	"""
 !Type:Bank
 D09/28/2016
@@ -52,49 +52,56 @@ T0.01
 MSome Memo
 N2017-0148
 ^
-	"""
-	And I wait that last imported qifdata in account 'Automated Test Account' is available in export
-	
-	When I import the qif data on account 'Automated Test Account'
-	"""
-!Type:Bank
 D09/28/2016
-T0.01
-MSome Memo
-N2017-0148
-^
-!Type:Bank
-D04/01/2016
 T0.02
-MSome Added Memo
+MSome Extra Memo
 N2017-0149
 ^
 	"""
+	And I wait that last imported qifdata in account 'ScenarioContext:ScenarioInfo.Title' is available in export
+	
+	When I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
+	"""
+!Type:Bank
+D09/28/2016
+T0.01
+MSome Memo
+N2017-0148
+^
+D09/28/2016
+T0.02
+MSome Extra Memo
+N2017-0149
+^
+D04/01/2016
+T0.02
+MSome Added Memo
+N2017-0150
+^
+	"""
 
-	And I wait that last imported qifdata in account 'Automated Test Account' is available in export
+	And I wait that last imported qifdata in account 'ScenarioContext:ScenarioInfo.Title' is available in export
 	
 	Then the last qif data import succeeded
 	And the last exported qif data are the following operations
 	| Number | Date                | Amount | Memo            |
-	# latest version overwrites initial version
 	|        | 2016-09-28T00:00:00 | 0.01   | Some Memo       |
+	|        | 2016-09-28T00:00:00 | 0.02   | Some Extra Memo |
 	# extra item is imported
 	|        | 2016-04-01T00:00:00 | 0.02   | Some Added Memo |
 	
-Scenario: Identify delta between imported qif data and new available qif data
-	Given I import the qif data on account 'Automated Test Account'
+Scenario: Identify remote with new available qif data
+	Given I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
 	"""
 !Type:Bank
 D09/27/2013
 T1.00
 MUnchanged
 ^
-!Type:Bank
 D09/28/2013
 T0.01
 MRemove
 ^
-!Type:Bank
 D09/29/2013
 T0.02
 MSome Memo
@@ -108,21 +115,19 @@ D09/27/2013
 T1.00
 MUnchanged
 ^
-!Type:Bank
 D09/29/2013
 T0.02
 MUpdated Memo
 ^
-!Type:Bank
 D01/11/2014
 T0.01
 MAdded Memo
 ^
 	"""
 
-	And I wait that last imported qifdata in account 'Automated Test Account' is available in export
+	And I wait that last imported qifdata in account 'ScenarioContext:ScenarioInfo.Title' is available in export
 
-	Then dry run import available qif data to account 'Automated Test Account' produces the following delta report
+	Then dry run import available qif data to account 'ScenarioContext:ScenarioInfo.Title' produces the following delta report
 	| DeltaKey        | Action     |
 	| 2013-09-27$1.00 | Nothing    |
 	| 2013-09-29$0.02 | UpdateMemo |

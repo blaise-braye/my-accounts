@@ -111,9 +111,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Steps\GererMesCompteSteps.cs" />
+    <Compile Include="Steps\GererMesCompteTestContext.cs" />
     <Compile Include="Steps\PasswordWrapper.cs" />
     <Compile Include="Steps\PostScenarioCleaner.cs" />
-    <Compile Include="Steps\SettingsTransforms.cs" />
+    <Compile Include="Steps\TestAccessorsTransforms.cs" />
     <Compile Include="TestsRoot.cs" />
     <Compile Include="Steps\Wrapper.cs" />
   </ItemGroup>

@@ -14,12 +14,12 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
 
         private readonly List<Func<Task>> _tasks = new List<Func<Task>>();
 
-        public void Add(Action task)
+        public void AddAction(Action action)
         {
-            Add(() => Task.FromResult(task));
+            AddTask(() => Task.FromResult(action));
         }
 
-        public void Add(Func<Task> task)
+        public void AddTask(Func<Task> task)
         {
             lock (_tasks)
             {

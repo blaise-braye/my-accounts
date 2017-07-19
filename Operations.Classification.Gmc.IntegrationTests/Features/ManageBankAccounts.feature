@@ -6,16 +6,16 @@ Background: the user is connected
 	Given I connect on GererMesComptes with email 'Settings:GmcUserName' and password 'Settings:GmcPassword'
 
 Scenario:Create an account
-	When I create the bank account 'Automated Test Account'
-	Then the bank account 'Automated Test Account' exists
-	And the account information of the bank account 'Automated Test Account' are
-	| Key               | Value                  |
-	| name              | Automated Test Account |
-	| currency          | EUR                    |
+	When I create the bank account 'ScenarioContext:ScenarioInfo.Title'
+	Then the bank account 'ScenarioContext:ScenarioInfo.Title' exists
+	And the account information of the bank account 'ScenarioContext:ScenarioInfo.Title' are
+	| Key      | Value             |
+	| name     | Create an account |
+	| currency | EUR               |
 
 Scenario:delete an account
-	Given I create the bank account 'Automated Test Account'
-	When I delete the bank account 'Automated Test Account'
-	Then the bank account 'Automated Test Account' does not exist
+	Given I create the bank account 'ScenarioContext:ScenarioInfo.Title'
+	When I delete the bank account 'ScenarioContext:ScenarioInfo.Title'
+	Then the bank account 'ScenarioContext:ScenarioInfo.Title' does not exist
 
 

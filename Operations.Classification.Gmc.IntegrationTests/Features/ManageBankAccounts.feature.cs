@@ -85,21 +85,22 @@ this.ScenarioSetup(scenarioInfo);
 #line 5
 this.FeatureBackground();
 #line 9
- testRunner.When("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I create the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 10
- testRunner.Then("the bank account \'Automated Test Account\' exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the bank account \'ScenarioContext:ScenarioInfo.Title\' exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Key",
                         "Value"});
             table1.AddRow(new string[] {
                         "name",
-                        "Automated Test Account"});
+                        "Create an account"});
             table1.AddRow(new string[] {
                         "currency",
                         "EUR"});
 #line 11
- testRunner.And("the account information of the bank account \'Automated Test Account\' are", ((string)(null)), table1, "And ");
+ testRunner.And("the account information of the bank account \'ScenarioContext:ScenarioInfo.Title\' " +
+                    "are", ((string)(null)), table1, "And ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -114,11 +115,11 @@ this.ScenarioSetup(scenarioInfo);
 #line 5
 this.FeatureBackground();
 #line 17
- testRunner.Given("I create the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I create the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 18
- testRunner.When("I delete the bank account \'Automated Test Account\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I delete the bank account \'ScenarioContext:ScenarioInfo.Title\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 19
- testRunner.Then("the bank account \'Automated Test Account\' does not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the bank account \'ScenarioContext:ScenarioInfo.Title\' does not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
