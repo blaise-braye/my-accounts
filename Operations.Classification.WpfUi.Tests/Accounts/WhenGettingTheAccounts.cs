@@ -12,6 +12,7 @@ using Ploeh.AutoFixture.NUnit3;
 
 namespace Operations.Classification.WpfUi.Tests.Accounts
 {
+    [TestFixture(Category = "UnitTest")]
     public class WhenGettingTheAccounts
     {
         [Test]
