@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -131,7 +132,7 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
         
         [When(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
         [Given(@"I connect on GererMesComptes with email '(.*)' and password '(.*)'")]
-        public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(Wrapper<string> userName, Wrapper<string> password)
+        public async Task WhenIConnectOnGererMesComptesWithEmailAndPassword(Wrapper<string> userName, PasswordWrapper password)
         {
             await _client.Connect(userName, password);
         }

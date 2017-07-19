@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Operations.Classification.Gmc.IntegrationTests.Steps
 {
     public class Wrapper<T>

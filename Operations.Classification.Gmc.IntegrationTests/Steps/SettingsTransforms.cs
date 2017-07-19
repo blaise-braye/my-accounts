@@ -12,6 +12,12 @@ namespace Operations.Classification.Gmc.IntegrationTests.Steps
             return AppSettingsTransform<string>(key);
         }
 
+        [StepArgumentTransformation(@"Settings\:(.+)")]
+        public PasswordWrapper AppSettingPasswordTransform(string key)
+        {
+            return AppSettingsTransform<string>(key);
+        }
+
         private static T AppSettingsTransform<T>(string key)
         {
             return (T)Settings.Default[key];
