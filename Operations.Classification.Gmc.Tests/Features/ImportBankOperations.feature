@@ -49,12 +49,12 @@ Scenario:Execute two successive Imports
 !Type:Bank
 D09/28/2016
 T0.01
-MSome Memo
+MA First Operation
 N2017-0148
 ^
 D09/28/2016
 T0.02
-MSome Extra Memo
+MA Second Operation
 N2017-0149
 ^
 	"""
@@ -65,17 +65,17 @@ N2017-0149
 !Type:Bank
 D09/28/2016
 T0.01
-MSome Memo
+MA First Operation
 N2017-0148
 ^
 D09/28/2016
 T0.02
-MSome Extra Memo
+MA Second Operation
 N2017-0149
 ^
 D04/01/2016
 T0.02
-MSome Added Memo
+MA Third Operation
 N2017-0150
 ^
 	"""
@@ -84,11 +84,11 @@ N2017-0150
 	
 	Then the last qif data import succeeded
 	And the last exported qif data are the following operations
-	| Number | Date                | Amount | Memo            |
-	|        | 2016-09-28T00:00:00 | 0.01   | Some Memo       |
-	|        | 2016-09-28T00:00:00 | 0.02   | Some Extra Memo |
+	| Number | Date                | Amount | Memo               |
+	|        | 2016-09-28T00:00:00 | 0.01   | A First Operation  |
+	|        | 2016-09-28T00:00:00 | 0.02   | A Second Operation |
 	# extra item is imported
-	|        | 2016-04-01T00:00:00 | 0.02   | Some Added Memo |
+	|        | 2016-04-01T00:00:00 | 0.02   | A Third Operation  |
 	
 Scenario: Identify remote with new available qif data
 	Given I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'

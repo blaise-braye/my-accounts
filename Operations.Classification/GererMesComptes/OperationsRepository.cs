@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json.Linq;
 using Operations.Classification.Extensions;
+using QifApi;
 using QifApi.Transactions;
 
 namespace Operations.Classification.GererMesComptes
@@ -244,14 +245,17 @@ namespace Operations.Classification.GererMesComptes
             var importedByKey = importedQifDom.BankTransactions.ToLookup(s => s.GetBankTransactionLookupKey());
             var importedKeys = new HashSet<string>(importedByKey.Select(i => i.Key));
             string exportedQifData;
+
+            QifDom lastExportedQifDom;
             do
             {
                 exportedQifData = await ExportQif(
                     accountId,
                     importedQifDom.BankTransactions.Min(t => t.Date).AddDays(-1),
                     importedQifDom.BankTransactions.Max(t => t.Date));
-                var exportedQifDom = QifMapper.ParseQifDom(exportedQifData);
-                var exportedbyKey = exportedQifDom.BankTransactions.ToLookup(s => s.GetBankTransactionLookupKey());
+
+                lastExportedQifDom = QifMapper.ParseQifDom(exportedQifData);
+                var exportedbyKey = lastExportedQifDom.BankTransactions.ToLookup(s => s.GetBankTransactionLookupKey());
                 available = exportedbyKey.Select(s => s.Key).Where(importedKeys.Contains).Union(importedKeys).Count() == importedKeys.Count;
                 if (!available)
                 {
@@ -289,6 +293,10 @@ namespace Operations.Classification.GererMesComptes
 
             if (!available)
             {
+                var rawExport = string.Join(Environment.NewLine, lastExportedQifDom.BankTransactions.Select(
+                    s => $"{s.GetBankTransactionLookupKey()} - {s.Amount} - {s.Memo}"));
+                _logger.Debug($"Last received export{Environment.NewLine}{rawExport}");
+
                 throw new Exception($"Timeout, could not detect export availability during {secondsToWait} seconds");
             }
 

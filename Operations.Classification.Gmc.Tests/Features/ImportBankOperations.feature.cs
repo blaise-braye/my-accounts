@@ -156,16 +156,16 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 47
- testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMSome Memo\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT0.02\r\nMS" +
-                    "ome Extra Memo\r\nN2017-0149\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMA First Operation\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT" +
+                    "0.02\r\nMA Second Operation\r\nN2017-0149\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 61
  testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
                     " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 63
- testRunner.When("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMSome Memo\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT0.02\r\nMS" +
-                    "ome Extra Memo\r\nN2017-0149\r\n^\r\nD04/01/2016\r\nT0.02\r\nMSome Added Memo\r\nN2017-0150\r" +
-                    "\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMA First Operation\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT" +
+                    "0.02\r\nMA Second Operation\r\nN2017-0149\r\n^\r\nD04/01/2016\r\nT0.02\r\nMA Third Operation" +
+                    "\r\nN2017-0150\r\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 83
  testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
                     " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -181,17 +181,17 @@ this.FeatureBackground();
                         "",
                         "2016-09-28T00:00:00",
                         "0.01",
-                        "Some Memo"});
+                        "A First Operation"});
             table2.AddRow(new string[] {
                         "",
                         "2016-09-28T00:00:00",
                         "0.02",
-                        "Some Extra Memo"});
+                        "A Second Operation"});
             table2.AddRow(new string[] {
                         "",
                         "2016-04-01T00:00:00",
                         "0.02",
-                        "Some Added Memo"});
+                        "A Third Operation"});
 #line 86
  testRunner.And("the last exported qif data are the following operations", ((string)(null)), table2, "And ");
 #line hidden
