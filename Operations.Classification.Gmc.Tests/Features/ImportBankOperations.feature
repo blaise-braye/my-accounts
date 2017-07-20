@@ -107,8 +107,10 @@ T0.02
 MSome Memo
 ^
 	"""
+	
+	And I wait that last imported qifdata in account 'ScenarioContext:ScenarioInfo.Title' is available in export
 
-	Given I have an update of the qif data file to import
+	When I apply a dry run for the available qif data to account 'ScenarioContext:ScenarioInfo.Title'
 	"""
 !Type:Bank
 D09/27/2013
@@ -125,9 +127,7 @@ MAdded Memo
 ^
 	"""
 
-	And I wait that last imported qifdata in account 'ScenarioContext:ScenarioInfo.Title' is available in export
-
-	Then dry run import available qif data to account 'ScenarioContext:ScenarioInfo.Title' produces the following delta report
+	Then the last dry run result produces the following delta report
 	| DeltaKey        | Action     |
 	| 2013-09-27$1.00 | Nothing    |
 	| 2013-09-29$0.02 | UpdateMemo |

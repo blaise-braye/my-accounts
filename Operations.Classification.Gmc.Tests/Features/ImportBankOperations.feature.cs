@@ -211,13 +211,14 @@ this.FeatureBackground();
 #line 94
  testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/28/2013\r\nT0.01\r\nMRemove\r\n^\r\nD0" +
                     "9/29/2013\r\nT0.02\r\nMSome Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
 #line 111
- testRunner.Given("I have an update of the qif data file to import", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/29/2013\r\nT0.02\r\nMUpdated Memo\r" +
-                    "\n^\r\nD01/11/2014\r\nT0.01\r\nMAdded Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 128
  testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
                     " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 113
+ testRunner.When("I apply a dry run for the available qif data to account \'ScenarioContext:Scenario" +
+                    "Info.Title\'", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/29/2013\r\nT0.02\r\nMUpdated Memo\r" +
+                    "\n^\r\nD01/11/2014\r\nT0.01\r\nMAdded Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "DeltaKey",
@@ -235,8 +236,7 @@ this.FeatureBackground();
                         "2013-09-28$0.01",
                         "Remove"});
 #line 130
- testRunner.Then("dry run import available qif data to account \'ScenarioContext:ScenarioInfo.Title\'" +
-                    " produces the following delta report", ((string)(null)), table3, "Then ");
+ testRunner.Then("the last dry run result produces the following delta report", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

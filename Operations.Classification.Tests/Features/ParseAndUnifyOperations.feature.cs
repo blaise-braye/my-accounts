@@ -19,7 +19,6 @@ namespace Operations.Classification.Tests.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("ParseTransactionFiles")]
-    [NUnit.Framework.IgnoreAttribute("Ignored feature")]
     [NUnit.Framework.CategoryAttribute("IntegrationTest")]
     public partial class ParseTransactionFilesFeature
     {
@@ -35,8 +34,7 @@ namespace Operations.Classification.Tests.Features
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ParseTransactionFiles", "\tIn order to classify my personal operations,\r\n\tI want a more structure operation" +
                     " detail for any transactions coming for any csv file kind", ProgrammingLanguage.CSharp, new string[] {
-                        "IntegrationTest",
-                        "Ignore"});
+                        "IntegrationTest"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -70,9 +68,9 @@ namespace Operations.Classification.Tests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("merge fortis operations and parse details")]
-        [NUnit.Framework.TestCaseAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data\\Blaise\\SODEXO", "", "100", null)]
-        [NUnit.Framework.TestCaseAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data\\Blaise\\FORTIS-BE02275045085140EUR", "", "99.57", null)]
-        [NUnit.Framework.TestCaseAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data\\Sylvie\\FORTIS-BE70001350261925EUR", "", "99.45", null)]
+        [NUnit.Framework.TestCaseAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data2\\Blaise - Sodexo\\operations", "", "100", null)]
+        [NUnit.Framework.TestCaseAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data2\\Blaise - Compte courant\\operations", "", "99.59", null)]
+        [NUnit.Framework.TestCaseAttribute("C:\\Users\\BBraye\\OneDrive\\Gestion\\Data2\\Sylvie - Compte courant\\operations", "", "99.48", null)]
         public virtual void MergeFortisOperationsAndParseDetails(string path, string latestSynchronised, string minAccuracy, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("merge fortis operations and parse details", exampleTags);

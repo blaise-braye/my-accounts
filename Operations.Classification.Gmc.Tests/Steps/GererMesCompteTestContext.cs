@@ -27,7 +27,7 @@ namespace Operations.Classification.Gmc.Tests.Steps
         public QifDom LastExportedQifDom { set; get; }
 
         public RunImportResult LastQifImportResult { set; get; }
-
-        public string ToImportQifData { set; get; }
+        
+        public TransactionDeltaSet LastOperationsDelta { get; set; }
     }
 }

@@ -27,12 +27,6 @@ namespace Operations.Classification.Gmc.Tests.Steps
         {
             await Context.GmcClient.Disconnect();
         }
-
-        [Given(@"I have an update of the qif data file to import")]
-        public void GivenIHaveAnUpdateOfTheQifDataFileToImport(string qifData)
-        {
-            Context.ToImportQifData = qifData;
-        }
         
         [Given(@"I import the qif data on account '(.*)'")]
         [When(@"I import the qif data on account '(.*)'")]
@@ -49,12 +43,17 @@ namespace Operations.Classification.Gmc.Tests.Steps
         }
 
 
-        [Then(@"dry run import available qif data to account '(.*)' produces the following delta report")]
-        public async Task ThenDryRunImportAvailableQifDataToAccountProducesTheFollowingDeltaReport(Wrapper<string> accountName, Table expectedQifDataDelta)
+        [When(@"I apply a dry run for the available qif data to account '(.*)'")]
+        public async Task WhenIApplyADryRunForTheAvailableQifDataToAccount(string accountName, string qifData)
         {
             var account = await Context.GmcAccounts.GetByName(accountName);
-            var operationsDelta = await Context.GmcOperations.DryRunImport(account.Id, Context.ToImportQifData);
-            var comparableOperationsDelta = operationsDelta.ToList().Select(
+            Context.LastOperationsDelta = await Context.GmcOperations.DryRunImport(account.Id, qifData);
+        }
+
+        [Then(@"dry run import available qif data to account '(.*)' produces the following delta report")]
+        public void ThenDryRunImportAvailableQifDataToAccountProducesTheFollowingDeltaReport(Table expectedQifDataDelta)
+        {
+            var comparableOperationsDelta = Context.LastOperationsDelta.ToList().Select(
                 d => new
                 {
                     d.DeltaKey,
@@ -62,21 +61,8 @@ namespace Operations.Classification.Gmc.Tests.Steps
                     SourceMemo = d.Source?.Memo,
                     TargetMemo = d.Target?.Memo
                 }).ToList();
-
-            var csvConfiguration = new CsvConfiguration();
-            using (var fs = File.Open($"c:\\temp\\delta-{account.Id}.csv", FileMode.Create))
-            {
-                using (var sw = new StreamWriter(fs))
-                {
-                    using (var cw = new CsvWriter(sw, csvConfiguration))
-                    {
-                        cw.WriteHeader(comparableOperationsDelta.First().GetType());
-                        cw.WriteRecords(comparableOperationsDelta);
-                    }
-                }
-            }
-
-            //expectedQifDataDelta.CompareToSet(comparableOperationsDelta);
+            
+            expectedQifDataDelta.CompareToSet(comparableOperationsDelta);
         }
 
         [Then(@"I am (not )?connected")]

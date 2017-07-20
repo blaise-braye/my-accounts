@@ -1,5 +1,5 @@
 ﻿@IntegrationTest
-@Ignore
+
 Feature: ParseTransactionFiles
 	In order to classify my personal operations,
 	I want a more structure operation detail for any transactions coming for any csv file kind
@@ -16,7 +16,7 @@ Scenario Outline: merge fortis operations and parse details
 	And pattern detection accuracy is higher that <MinAccuracy> %
 
 	Examples: 
-	| Path                                                                    | LatestSynchronised | MinAccuracy |
-	| C:\Users\BBraye\OneDrive\Gestion\Data\Blaise\SODEXO                     |                    | 100         |
-	| C:\Users\BBraye\OneDrive\Gestion\Data\Blaise\FORTIS-BE02275045085140EUR |                    | 99.57       |
-	| C:\Users\BBraye\OneDrive\Gestion\Data\Sylvie\FORTIS-BE70001350261925EUR |                    | 99.45       |
+	| Path                                                                      | LatestSynchronised | MinAccuracy |
+	| C:\Users\BBraye\OneDrive\Gestion\Data2\Blaise - Sodexo\operations         |                    | 100         |
+	| C:\Users\BBraye\OneDrive\Gestion\Data2\Blaise - Compte courant\operations |                    | 99.59       |
+	| C:\Users\BBraye\OneDrive\Gestion\Data2\Sylvie - Compte courant\operations |                    | 99.48       |
