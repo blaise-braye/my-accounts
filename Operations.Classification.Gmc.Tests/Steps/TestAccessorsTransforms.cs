@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Operations.Classification.Gmc.Tests.Properties;
 using TechTalk.SpecFlow;
 
 namespace Operations.Classification.Gmc.Tests.Steps
@@ -49,6 +50,5 @@ namespace Operations.Classification.Gmc.Tests.Steps
 
             return Expression.Lambda<Func<TOwner, TMember>>(body, paramObj).Compile();
         }
-
     }
 }

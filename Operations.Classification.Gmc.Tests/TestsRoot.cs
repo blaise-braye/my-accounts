@@ -6,6 +6,7 @@ using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Operations.Classification.Gmc.Tests.Properties;
 
 namespace Operations.Classification.Gmc.Tests
 {
