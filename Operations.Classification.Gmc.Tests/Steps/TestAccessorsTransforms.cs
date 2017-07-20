@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Operations.Classification.Gmc.IntegrationTests.Properties;
 using TechTalk.SpecFlow;
 
-namespace Operations.Classification.Gmc.IntegrationTests.Steps
+namespace Operations.Classification.Gmc.Tests.Steps
 {
     [Binding]
     public class TestAccessorsTransforms

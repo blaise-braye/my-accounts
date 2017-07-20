@@ -82,19 +82,18 @@
             </reference>
           </references>
         </layer>
-        <layer Id="95e2dcf7-1862-4b8a-99bc-1824d5942bca" name="Operations.Classification.Gmc.Tests">
+        <layer Id="cfa9d6e9-1f0f-4d8f-8697-1f4b191c9caa" name="Operations.Classification.Gmc.Tests">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="8651083e-169c-4dc8-9147-2ff2d932077b" direction="Forward">
+            <dependencyFromLayerToLayer Id="9a86fb96-d90a-4b9f-9670-81d1a5310a14" direction="Forward">
               <layerMoniker Id="b884e606-0b42-4115-adec-13b669123ba5" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="2e66423b-280f-43ee-a83f-0da88e22760c" name="Operations.Classification.Gmc.Tests">
-              <ArtifactNode Label="Operations.Classification.Gmc.Tests" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.Gmc.IntegrationTests/Operations.Classification.Gmc.Tests.csproj)">
+            <reference Id="da4c6ebc-dd16-4c64-adbd-03262417f8f0" name="Operations.Classification.Gmc.Tests">
+              <ArtifactNode Label="Operations.Classification.Gmc.Tests" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.Gmc.Tests/Operations.Classification.Gmc.Tests.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
-              <ExpandedNode Id="(Assembly=Operations.Classification.Gmc.IntegrationTests)" Label="Operations.Classification.Gmc.IntegrationTests.dll" Category="CodeSchema_Assembly">
-                <Category Ref="FileSystem.Category.FileOfType.dll" />
+              <ExpandedNode Id="(Assembly=Operations.Classification.Gmc.Tests)" Label="Operations.Classification.Gmc.Tests.dll" Category="CodeSchema_Assembly">
                 <LinkCategory Ref="Produces" />
                 <LinkCategory Ref="Represents" />
               </ExpandedNode>

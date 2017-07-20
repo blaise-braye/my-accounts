@@ -1,7 +1,7 @@
 using Operations.Classification.GererMesComptes;
 using QifApi;
 
-namespace Operations.Classification.Gmc.IntegrationTests.Steps
+namespace Operations.Classification.Gmc.Tests.Steps
 {
     public class GererMesCompteTestContext
     {

@@ -6,9 +6,8 @@ using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Operations.Classification.Gmc.IntegrationTests.Properties;
 
-namespace Operations.Classification.Gmc.IntegrationTests
+namespace Operations.Classification.Gmc.Tests
 {
     [SetUpFixture]
     public class TestsRoot

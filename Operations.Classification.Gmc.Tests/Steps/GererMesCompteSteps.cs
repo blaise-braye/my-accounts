@@ -10,7 +10,7 @@ using Operations.Classification.GererMesComptes;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-namespace Operations.Classification.Gmc.IntegrationTests.Steps
+namespace Operations.Classification.Gmc.Tests.Steps
 {
     [Binding]
     public class GererMesCompteSteps

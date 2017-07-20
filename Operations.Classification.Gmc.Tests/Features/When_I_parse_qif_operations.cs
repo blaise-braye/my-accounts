@@ -5,7 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Operations.Classification.GererMesComptes;
 
-namespace Operations.Classification.Gmc.IntegrationTests.Features
+namespace Operations.Classification.Gmc.Tests.Features
 {
     [TestFixture(Category = "UnitTest")]
     public class WhenIParseQifOperations

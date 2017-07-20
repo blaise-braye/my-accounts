@@ -1,4 +1,4 @@
-namespace Operations.Classification.Gmc.IntegrationTests.Steps
+namespace Operations.Classification.Gmc.Tests.Steps
 {
     public class PasswordWrapper : Wrapper<string>
     {

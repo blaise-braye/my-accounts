@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Operations.Classification.Gmc.IntegrationTests.Features
+namespace Operations.Classification.Gmc.Tests.Features
 {
     using TechTalk.SpecFlow;
     

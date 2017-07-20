@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using log4net;
 using TechTalk.SpecFlow;
 
-namespace Operations.Classification.Gmc.IntegrationTests.Steps
+namespace Operations.Classification.Gmc.Tests.Steps
 {
     [Binding]
     public class PostScenarioCleaner

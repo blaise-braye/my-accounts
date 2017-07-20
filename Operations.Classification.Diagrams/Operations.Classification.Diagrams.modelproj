@@ -34,7 +34,7 @@
     </Validate>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Operations.Classification.Gmc.IntegrationTests\Operations.Classification.Gmc.Tests.csproj">
+    <ProjectReference Include="..\Operations.Classification.Gmc.Tests\Operations.Classification.Gmc.Tests.csproj">
       <Name>Operations.Classification.Gmc.Tests</Name>
       <Project>{079a59ff-71a3-4e6b-827f-be6a6d548d71}</Project>
     </ProjectReference>
