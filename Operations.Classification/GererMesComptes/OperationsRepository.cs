@@ -256,7 +256,7 @@ namespace Operations.Classification.GererMesComptes
 
                 lastExportedQifDom = QifMapper.ParseQifDom(exportedQifData);
                 var exportedbyKey = lastExportedQifDom.BankTransactions.ToLookup(s => s.GetBankTransactionLookupKey());
-                available = exportedbyKey.Select(s => s.Key).Where(importedKeys.Contains).Union(importedKeys).Count() == importedKeys.Count;
+                available = exportedbyKey.Select(s => s.Key).Where(importedKeys.Contains).Intersect(importedKeys).Count() == importedKeys.Count;
                 if (!available)
                 {
                     _logger.Warn("number of imported items do not match number exported items yet");
