@@ -20,6 +20,7 @@ namespace Operations.Classification.Tests.Features
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("ParseTransactionFiles")]
     [NUnit.Framework.CategoryAttribute("IntegrationTest")]
+    [NUnit.Framework.CategoryAttribute("UserPcHelperTest")]
     public partial class ParseTransactionFilesFeature
     {
         
@@ -34,7 +35,8 @@ namespace Operations.Classification.Tests.Features
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ParseTransactionFiles", "\tIn order to classify my personal operations,\r\n\tI want a more structure operation" +
                     " detail for any transactions coming for any csv file kind", ProgrammingLanguage.CSharp, new string[] {
-                        "IntegrationTest"});
+                        "IntegrationTest",
+                        "UserPcHelperTest"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
