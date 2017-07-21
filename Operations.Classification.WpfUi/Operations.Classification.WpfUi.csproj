@@ -91,6 +91,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Abstractions, Version=2.0.0.144, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Abstractions.2.0.0.144\lib\net40\System.IO.Abstractions.dll</HintPath>
     </Reference>
@@ -128,6 +129,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterViewModel.cs" />
+    <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml.cs">
+      <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Managers\Transactions\ExportOperationsView.xaml.cs">
       <DependentUpon>ExportOperationsView.xaml</DependentUpon>
     </Compile>
@@ -219,6 +224,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Managers\Integration\GererMesComptes\GmcManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -31,7 +31,7 @@ namespace Operations.Classification.WpfUi.Data
         public async Task<bool> Import(string accountName, Stream importData, SourceKind sourceKind)
         {
             var operationsDirectory = _workingCopy.GetAccountOperationsDirectory(accountName);
-            await _workingCopy.MakeFolderOrSkip(operationsDirectory);
+            await _workingCopy.CreateFolderIfDoesNotExistsYet(operationsDirectory);
 
             var filteredData = await ReadAndFilterNewImportDataOnly(accountName, importData, sourceKind);
             if (filteredData.Operations.Length > 0)

@@ -1,4 +1,4 @@
-﻿namespace Operations.Classification.WpfUi.Tests.Accounts
+﻿namespace Operations.Classification.WpfUi.Tests
 {
     /// <summary>
     /// this wrapper is used as a trick to fool the test explorer.

@@ -91,18 +91,20 @@ namespace Operations.Classification.WpfUi.Data
         {
             var entities = await GetList();
             var idx = entities.FindIndex(a => a.Id == accountId);
+            bool result = false;
+
             if (idx >= 0)
             {
                 entities.RemoveAt(idx);
+                result = await ReplaceAll(entities);
             }
 
-            var result = await ReplaceAll(entities);
             return result;
         }
 
         private async Task<bool> ReplaceAll(List<AccountEntity> entities)
         {
-            await _workingCopy.MakeFolderOrSkip(_workingCopy.Root);
+            await _workingCopy.CreateFolderIfDoesNotExistsYet(_workingCopy.Root);
 
             var rawJson = JsonConvert.SerializeObject(entities);
             try

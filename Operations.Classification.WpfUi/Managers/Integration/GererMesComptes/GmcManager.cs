@@ -9,7 +9,6 @@ using Operations.Classification.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Collections;
-using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 using QifApi.Transactions;
@@ -18,40 +17,30 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
     public class GmcManager : ViewModelBase
     {
-        private readonly CompositeFilter _anyFilter;
         private readonly BusyIndicatorViewModel _busyIndicator;
 
         private Dictionary<Guid, TransactionDeltaSet> _loadedDeltas;
         private AccountViewModel _currentAccount;
         private bool _isDeltaAvailable;
-        private bool _isFiltering;
         private List<BasicTransactionModel> _currentAccountBasicTransactions;
         private TransactionDeltaSet _transactionDelta;
 
         public GmcManager(BusyIndicatorViewModel busyIndicator)
         {
             _busyIndicator = busyIndicator;
-
-            Transactions = new SmartCollection<BasicTransactionModel>();
+            Filter = new GmcManagerFilterViewModel();
+            Filter.FilterInvalidated += OnFilterInvalidated;
+            LocalTransactions = new SmartCollection<BasicTransactionModel>();
             RemoteTransactions = new SmartCollection<BasicTransactionModel>();
 
             RefreshRemoteKnowledgeCommand = new AsyncCommand(ComputeDeltaWithRemote);
             SynchronizeCommand = new AsyncCommand(Synchronize);
             ClearCurrentAccountCacheAndResetCommand = new AsyncCommand(ClearCurrentAccountCacheAndReset);
 
-            DeltaFilter = new TransactionDeltaFilter();
-            DateFilter = new DateRangeFilter();
-            MemoFilter = new TextFilter();
-            _anyFilter = new CompositeFilter(DeltaFilter, DateFilter, MemoFilter);
-            _anyFilter.FilterInvalidated += OnAnyFilterInvalidated;
-
-            ResetFilterCommad = new RelayCommand(() => _anyFilter.Reset());
-            FilterOnItemDateCommand = new RelayCommand<BasicTransactionModel>(FilterOnItemDate);
-
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
         }
 
-        public AccountViewModel CurrentAccount => _currentAccount;
+        public GmcManagerFilterViewModel Filter { get; }
 
         public AsyncCommand RefreshRemoteKnowledgeCommand { get; }
 
@@ -61,7 +50,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public SmartCollection<BasicTransactionModel> RemoteTransactions { get; }
 
-        public SmartCollection<BasicTransactionModel> Transactions { get; }
+        public SmartCollection<BasicTransactionModel> LocalTransactions { get; }
 
         public TransactionDeltaSet TransactionDelta
         {
@@ -78,30 +67,16 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         public bool IsDeltaAvailable
         {
             get => _isDeltaAvailable;
-            private set => Set(nameof(IsDeltaAvailable), ref _isDeltaAvailable, value);
-        }
-
-        public bool IsFiltering
-        {
-            get => _isFiltering;
-            set
+            private set
             {
-                if (Set(nameof(IsFiltering), ref _isFiltering, value))
+                if (Set(nameof(IsDeltaAvailable), ref _isDeltaAvailable, value))
                 {
-                    RefreshIsFilteringState();
+                    Filter.IsDeltaFilterActive = value;
                 }
             }
         }
 
-        public TransactionDeltaFilter DeltaFilter { get; }
-
-        public DateRangeFilter DateFilter { get; }
-
-        public TextFilter MemoFilter { get; }
-
-        public RelayCommand<BasicTransactionModel> FilterOnItemDateCommand { get; }
-
-        public RelayCommand ResetFilterCommad { get; }
+        private AccountViewModel CurrentAccount => _currentAccount;
 
         public async Task InitializeAsync(IEnumerable<AccountViewModel> accounts)
         {
@@ -126,10 +101,10 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             var result = basicTransactions
                 .Project().To<BasicTransactionModel>(
                     (sourceItem, targetItem) =>
-                        {
-                            targetItem.Memo = sourceItem.Memo;
-                            targetItem.SourceItem = sourceItem;
-                        })
+                    {
+                        targetItem.Memo = sourceItem.Memo;
+                        targetItem.SourceItem = sourceItem;
+                    })
                 .OrderByDescending(d => d.Number)
                 .ThenByDescending(d => d.Date);
 
@@ -173,16 +148,6 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             return delta;
         }
 
-        private void FilterOnItemDate(BasicTransactionModel obj)
-        {
-            _anyFilter.Apply(
-                () =>
-                {
-                    _anyFilter.Reset();
-                    DateFilter.SetDayFilter(obj.Date);
-                });
-        }
-
         private ICacheEntry<List<TransactionDelta>> GetDeltaCacheEntry(AccountViewModel account)
         {
             return CacheProvider.GetJSonCacheEntry<List<TransactionDelta>>($"TransactionDeltas/{account.Name}");
@@ -203,15 +168,9 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             }
         }
 
-        private void OnAnyFilterInvalidated(object sender, EventArgs e)
+        private void OnFilterInvalidated(object sender, EventArgs e)
         {
-            RefreshIsFilteringState();
             RefreshTransactions();
-        }
-
-        private void RefreshIsFilteringState()
-        {
-            IsFiltering = _anyFilter.IsActive();
         }
 
         private void RefreshTransactions()
@@ -219,26 +178,20 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             if (IsDeltaAvailable)
             {
                 var deltas = TransactionDelta.ToList();
-                deltas = DeltaFilter.Apply(deltas, d => d.Action).ToList();
 
-                var locals = deltas.Where(d => d.Source != null).Select(d => d.Source);
-                locals = DateFilter.Apply(locals, l => l.Date);
-                locals = MemoFilter.Apply(locals, l => l.Memo);
+                var locals = Filter.FilterDelta(deltas, t => t.Source);
                 var localViewModels = ProjectToViewModelCollection(locals);
-                Transactions.Reset(localViewModels);
+                LocalTransactions.Reset(localViewModels);
 
                 var remotes = deltas.Where(d => d.Target != null).Select(d => d.Target);
                 var remoteViewModels = ProjectToViewModelCollection(remotes);
-                remoteViewModels = DateFilter.Apply(remoteViewModels, l => l.Date);
-                remoteViewModels = MemoFilter.Apply(remoteViewModels, l => l.Memo);
                 RemoteTransactions.Reset(remoteViewModels);
             }
             else
             {
                 var locals = _currentAccountBasicTransactions;
-                var filteredLocals = DateFilter.Apply(locals, l => l.Date);
-                filteredLocals = MemoFilter.Apply(filteredLocals, l => l.Memo);
-                Transactions.Reset(filteredLocals);
+                var filteredLocals = Filter.FilterBasicTransactions(locals);
+                LocalTransactions.Reset(filteredLocals);
                 RemoteTransactions.Clear();
             }
         }

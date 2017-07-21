@@ -13,13 +13,9 @@ namespace Operations.Classification.WpfUi.Data
 
         IFileSystem Fs { get; }
 
-        string GetAccountAggregatedOperationsPath(string accountName, string extension);
-
-        string GetAccountDirectory(string accountName);
-
         string GetAccountOperationsDirectory(string accountName);
 
-        Task<bool> MakeFolderOrSkip(string workingCopyRoot);
+        Task<bool> CreateFolderIfDoesNotExistsYet(string workingCopyRoot);
     }
 
     public class WorkingCopy : IWorkingCopy
@@ -37,35 +33,23 @@ namespace Operations.Classification.WpfUi.Data
 
         public string SettingsPath { get; }
 
-        public string GetAccountDirectory(string accountName)
+        public async Task<bool> CreateFolderIfDoesNotExistsYet(string folder)
         {
-            return GetAbsolutePath(accountName);
+            if (!Fs.Directory.Exists(folder))
+            {
+                Fs.Directory.CreateDirectory(folder);
+                while (!Fs.Directory.Exists(folder))
+                {
+                    await Task.Yield();
+                }
+            }
+
+            return true;
         }
 
         public string GetAccountOperationsDirectory(string accountName)
         {
             return GetAbsolutePath(accountName, "operations");
-        }
-
-        public string GetAccountAggregatedOperationsPath(string accountName, string extension)
-        {
-            if (!extension.StartsWith("."))
-            {
-                extension = $".{extension}";
-            }
-
-            return GetAbsolutePath(accountName, $"operations{extension}");
-        }
-
-        public async Task<bool> MakeFolderOrSkip(string folder)
-        {
-            Directory.CreateDirectory(folder);
-            while (!Directory.Exists(folder))
-            {
-                await Task.Yield();
-            }
-
-            return true;
         }
 
         private string GetAbsolutePath(params string[] relativePathChain)
