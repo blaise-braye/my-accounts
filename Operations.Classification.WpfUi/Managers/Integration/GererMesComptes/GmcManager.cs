@@ -271,7 +271,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                     var account = await accountsRepository.GetByName(CurrentAccount.GmcAccountName);
                     var repository = new OperationsRepository(client);
 
-                    var runImportResult = await repository.RunImport(account.Id, delta.ToList());
+                    var runImportResult = await repository.RunImportFromDeltaActions(account.Id, delta.ToList());
                     if (runImportResult.Success)
                     {
                         using (_busyIndicator.EncapsulateActiveJobDescription(this, "Waiting synchronized data is available on remote"))

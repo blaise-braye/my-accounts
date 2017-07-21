@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
 using FluentAssertions;
 using NUnit.Framework;
 using Operations.Classification.GererMesComptes;
@@ -41,17 +38,16 @@ namespace Operations.Classification.Gmc.Tests.Steps
         {
             Context.LastQifImportResult.Success.Should().BeTrue();
         }
-
-
+        
         [When(@"I apply a dry run for the available qif data to account '(.*)'")]
-        public async Task WhenIApplyADryRunForTheAvailableQifDataToAccount(string accountName, string qifData)
+        public async Task WhenIApplyADryRunForTheAvailableQifDataToAccount(Wrapper<string> accountName, string qifData)
         {
             var account = await Context.GmcAccounts.GetByName(accountName);
             Context.LastOperationsDelta = await Context.GmcOperations.DryRunImport(account.Id, qifData);
         }
 
-        [Then(@"dry run import available qif data to account '(.*)' produces the following delta report")]
-        public void ThenDryRunImportAvailableQifDataToAccountProducesTheFollowingDeltaReport(Table expectedQifDataDelta)
+        [Then(@"the last dry run result produces the following delta report")]
+        public void ThenTheLastDryRunResultProducesTheFollowingDeltaReport(Table expectedQifDataDelta)
         {
             var comparableOperationsDelta = Context.LastOperationsDelta.ToList().Select(
                 d => new
@@ -110,6 +106,10 @@ namespace Operations.Classification.Gmc.Tests.Steps
         [When(@"I create the bank account '(.*)'")]
         public async Task WhenICreateTheBankAccount(Wrapper<string> accountName)
         {
+            if (accountName.Value.ToLower().Contains("identify"))
+            {
+                
+            }
             var values = new { name = accountName };
             if (await Context.GmcAccounts.Create(values))
             {

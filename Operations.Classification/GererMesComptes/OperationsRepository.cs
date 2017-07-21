@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using log4net.Util;
 using Newtonsoft.Json.Linq;
 using Operations.Classification.Extensions;
 using QifApi;
@@ -111,12 +112,10 @@ namespace Operations.Classification.GererMesComptes
                                ["encoding"] = "utf-8"
                            };
 
-            string qifData;
-
             var response = await Transport.PostAsync("/fr/u/finances/comptes/" + accountId + "/export.html", new FormUrlEncodedContent(dico));
             response.EnsureSuccessStatusCode();
 
-            qifData = await response.Content.ReadAsStringAsync();
+            var qifData = await response.Content.ReadAsStringAsync();
             qifData = qifData.Replace("\n", Environment.NewLine);
 
             return qifData;
@@ -181,41 +180,60 @@ namespace Operations.Classification.GererMesComptes
                 var finished = false;
                 bool failed;
                 var sw = Stopwatch.StartNew();
+                int progression = 0;
+
+                HttpResponseMessage lastCheckProgressionResponse;
+                JObject lastCheckProgressionModel = null;
                 do
                 {
                     var postContent = new FormUrlEncodedContent(fields);
-                    var checkProgressionResponse =
-                        await Transport.PostAsync("/system/requests/user/finances/account/account.import.html?action_form=checkProgression", postContent);
 
-                    failed = !checkProgressionResponse.IsSuccessStatusCode;
-                    JObject checkProgressionModel = null;
+                    lastCheckProgressionResponse = await Transport.PostAsync("/system/requests/user/finances/account/account.import.html?action_form=checkProgression", postContent);
+                    failed = !lastCheckProgressionResponse.IsSuccessStatusCode;
 
                     if (!failed)
                     {
-                        checkProgressionModel = JObject.Parse(await checkProgressionResponse.Content.ReadAsStringAsync());
-                        failed = !(bool)checkProgressionModel["response"] || (string)checkProgressionModel["errno"] != null;
+                        lastCheckProgressionModel = JObject.Parse(await lastCheckProgressionResponse.Content.ReadAsStringAsync());
+                        failed = !(bool)lastCheckProgressionModel["response"] || (string)lastCheckProgressionModel["errno"] != null;
                     }
 
                     if (!failed)
                     {
-                        finished = (int)checkProgressionModel["progression"] == 100;
-                    }
+                        var previousProgression = progression;
+                        progression = (int)lastCheckProgressionModel["progression"];
+                        if (previousProgression != progression)
+                        {
+                            _logger.Debug($"import process progressed: {progression} %, check number : {attempts}, eslapsed time : {sw.Elapsed.TotalSeconds:N2} seconds");
+                        }
 
-                    if (!finished && sw.Elapsed.TotalSeconds < 30)
-                    {
-                        await Task.Delay(300);
+                        finished = progression == 100;
+
+                        if (!finished && sw.Elapsed.TotalSeconds < 30)
+                        {
+                            await Task.Delay(500);
+                        }
                     }
                 }
                 while (sw.Elapsed.TotalSeconds < 30 && attempts++ < 20 && !failed && !finished);
                 sw.Stop();
 
                 result.Success = !failed && finished;
+
+                if (!result.Success)
+                {
+                    _logger.DebugExt(() => $"last received progression response{Environment.NewLine}" +
+                                           $"Request : {lastCheckProgressionResponse.RequestMessage?.RequestUri}{Environment.NewLine}" +
+                                           $"Response Model : {lastCheckProgressionModel}");
+                }
+
+                _logger.DebugExt(() =>
+                    $"import process completed. success ? {!failed}. eslapsed time : {sw.Elapsed.TotalSeconds:N2} seconds");
             }
 
             return result;
         }
 
-        public async Task<RunImportResult> RunImport(string accountId, List<TransactionDelta> operationsDelta)
+        public async Task<RunImportResult> RunImportFromDeltaActions(string accountId, List<TransactionDelta> operationsDelta)
         {
             var deltasOfAddKind = operationsDelta.Where(s => s.Action == DeltaAction.Add);
             var newTransactions = deltasOfAddKind.Select(i => i.Source).ToList();
