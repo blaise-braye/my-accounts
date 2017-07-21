@@ -83,6 +83,7 @@ namespace Operations.Classification.GererMesComptes
                 {
                     var modificationFormUrl = $"/fr/u/parametres/mes-comptes/compte-{identifer}.html";
                     var getResponse = await Transport.GetAsync(modificationFormUrl);
+                    getResponse.EnsureSuccessStatusCode();
                     var html = await getResponse.Content.ReadAsStringAsync();
 
                     var fields = HtmlParser.ParseFieldsToDictionnary(html, "//form[@id='account-edition']");

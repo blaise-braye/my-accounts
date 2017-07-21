@@ -33,7 +33,7 @@ namespace Operations.Classification.Tests
             var root = hierarchy.Root;
             root.AddAppender(consoleAppender);
             root.AddAppender(debugAppender);
-            root.Level = Level.All;
+            root.Level = Level.Debug;
 
             hierarchy.Configured = true;
         }

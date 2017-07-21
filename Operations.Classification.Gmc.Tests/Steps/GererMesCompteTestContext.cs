@@ -1,3 +1,11 @@
+using System;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
+using log4net;
 using Operations.Classification.GererMesComptes;
 using QifApi;
 
@@ -8,7 +16,7 @@ namespace Operations.Classification.Gmc.Tests.Steps
         public GererMesCompteTestContext(PostScenarioCleaner cleaner)
         {
             Cleaner = cleaner;
-            GmcClient = new GererMesComptesClient();
+            GmcClient = new GererMesComptesClient(h => new LoggingHandler(h));
             GmcAccounts = new AccountInfoRepository(GmcClient);
             GmcOperations = new OperationsRepository(GmcClient);
         }
@@ -18,8 +26,7 @@ namespace Operations.Classification.Gmc.Tests.Steps
         public GererMesComptesClient GmcClient { get; }
 
         public AccountInfoRepository GmcAccounts { set; get; }
-
-
+        
         public OperationsRepository GmcOperations { set; get; }
 
         public string LastExportedQifData { set; get; }
@@ -29,5 +36,50 @@ namespace Operations.Classification.Gmc.Tests.Steps
         public RunImportResult LastQifImportResult { set; get; }
         
         public TransactionDeltaSet LastOperationsDelta { get; set; }
+
+        public class LoggingHandler : DelegatingHandler
+        {
+            private static readonly ILog _logger = LogManager.GetLogger(typeof(HttpMessageHandler));
+
+            public LoggingHandler(HttpMessageHandler innerHandler)
+                : base(innerHandler)
+            {
+            }
+
+            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                Stopwatch processingTime = null;
+                if (_logger.IsDebugEnabled)
+                {
+                    _logger.Debug($"Processing Request: {request.Method} - {request.RequestUri}");
+
+                    if (_logger.IsVerboseEnabled() && request.Content != null)
+                    {
+                        var rawContent = await request.Content.ReadAsStringAsync();
+                        _logger.Verbose($"Request Content{Environment.NewLine} {rawContent}");
+                    }
+                    
+                    processingTime = Stopwatch.StartNew();
+                }
+                
+                HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+                
+                if (processingTime!=null)
+                {
+                    var elapsed = processingTime.Elapsed;
+                    processingTime.Stop();
+                    _logger.Debug($"Processed Request in {elapsed.TotalMilliseconds:N0} msec - with response status {response.StatusCode}, {response.ReasonPhrase} : {request.Method} - {request.RequestUri}");
+                    
+                    if (_logger.IsVerboseEnabled() && response.Content != null)
+                    {
+                        var rawContent = await response.Content.ReadAsStringAsync();
+                        _logger.Verbose($"**** Response Content ***{Environment.NewLine} {rawContent}");
+                    }
+                }
+                
+                return response;
+            }
+        }
+
     }
 }

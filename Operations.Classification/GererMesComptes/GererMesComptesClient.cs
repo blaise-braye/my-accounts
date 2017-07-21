@@ -8,15 +8,20 @@ namespace Operations.Classification.GererMesComptes
 {
     public class GererMesComptesClient : IDisposable
     {
-        public GererMesComptesClient()
+        public GererMesComptesClient(Func<HttpMessageHandler, HttpMessageHandler> wrapClientHandler)
         {
             var cookieContainer = new CookieContainer();
-            var handler = new HttpClientHandler
+            HttpMessageHandler handler = new HttpClientHandler
             {
                 CookieContainer = cookieContainer,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 AllowAutoRedirect = true
             };
+
+            if (wrapClientHandler != null)
+            {
+                handler = wrapClientHandler(handler);
+            }
 
             Transport = new HttpClient(handler) { BaseAddress = new Uri("https://www.gerermescomptes.com/") };
             Transport.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json,text/javascript,*/*;q=0.01");
@@ -29,6 +34,11 @@ namespace Operations.Classification.GererMesComptes
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
             Transport.DefaultRequestHeaders.TryAddWithoutValidation("X-Requested-With", "XMLHttpRequest");
             Transport.DefaultRequestHeaders.TryAddWithoutValidation("Origin", "https://www.gerermescomptes.com/");
+        }
+
+        public GererMesComptesClient()
+            : this(null)
+        {
         }
 
         public HttpClient Transport { get; }

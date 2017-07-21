@@ -29,7 +29,7 @@ namespace Operations.Classification.WpfUi.Tests
 
             var root = hierarchy.Root;
             root.AddAppender(consoleAppender);
-            root.Level = Level.All;
+            root.Level = Level.Debug;
 
             hierarchy.Configured = true;
         }

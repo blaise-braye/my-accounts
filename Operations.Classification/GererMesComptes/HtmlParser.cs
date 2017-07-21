@@ -15,7 +15,6 @@ namespace Operations.Classification.GererMesComptes
             var formNode = document.DocumentNode.SelectSingleNode(formXpath);
 
             var fields = new Dictionary<string, string>();
-
             AddFieldsValues(formNode, fields);
 
             return fields;
@@ -23,6 +22,11 @@ namespace Operations.Classification.GererMesComptes
 
         private static void AddFieldsValues(HtmlNode node, Dictionary<string, string> fields)
         {
+            if (node == null)
+            {
+                return;
+            }
+
             var nodeName = node.Name.ToLower();
 
             switch (nodeName)
