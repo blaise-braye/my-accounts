@@ -122,6 +122,7 @@
     <Compile Include="GererMesComptes\HtmlParser.cs" />
     <Compile Include="GererMesComptes\ObjectFields.cs" />
     <Compile Include="GererMesComptes\OperationsRepository.cs" />
+    <Compile Include="GererMesComptes\QifDataImportWorker.cs" />
     <Compile Include="GererMesComptes\QifDomExtensions.cs" />
     <Compile Include="GererMesComptes\QifMapper.cs" />
     <Compile Include="GererMesComptes\RunImportResult.cs" />

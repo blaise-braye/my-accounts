@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using log4net;
-using log4net.Util;
-using Newtonsoft.Json.Linq;
-using Operations.Classification.Extensions;
 using QifApi;
 using QifApi.Transactions;
 
@@ -21,10 +15,12 @@ namespace Operations.Classification.GererMesComptes
         private static readonly ILog _logger = LogManager.GetLogger(typeof(OperationsRepository));
 
         private readonly GererMesComptesClient _client;
+        private readonly QifDataImportWorker _importWorker;
 
         public OperationsRepository(GererMesComptesClient client)
         {
             _client = client;
+            _importWorker = new QifDataImportWorker(client);
         }
 
         private HttpClient Transport => _client.Transport;
@@ -121,116 +117,9 @@ namespace Operations.Classification.GererMesComptes
             return qifData;
         }
 
-        public async Task<RunImportResult> Import(string accountId, string qifData)
+        public Task<RunImportResult> Import(string accountId, string qifData)
         {
-            var result = new RunImportResult(false, qifData);
-
-            //1 upload file
-            var content = new MultipartFormDataContent();
-            content.Headers.TryAddWithoutValidation("Accept", "application/json, text/javascript, */*; q=0.01");
-            var qifDataStream = new MemoryStream(Encoding.UTF8.GetBytes(qifData));
-            var streamContent = new StreamContent(qifDataStream, (int)qifDataStream.Length);
-            streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-            content.Add(streamContent, "file", $"{Guid.NewGuid()}.qif");
-
-            var uploadResponse = await Transport.PostAsync("/system/requests/user/parameters/accounts.html?action_form=importManual_upload_tmp", content);
-            uploadResponse.EnsureSuccessStatusCode();
-
-            var uploadResponseModel = JObject.Parse(await uploadResponse.Content.ReadAsStringAsync());
-            var uploadSucceed = (bool)uploadResponseModel["response"];
-
-            var processRequestSucceed = false;
-            JObject processResponseModel = null;
-
-            if (uploadSucceed)
-            {
-                var fileId = (string)uploadResponseModel["tmp_name"];
-
-                //2 request processing of file
-                var fields =
-                    new Dictionary<string, string>
-                        {
-                            ["id_account"] = accountId,
-                            ["format"] = "QIF",
-                            ["file"] = fileId,
-                            ["i_account_import"] = "0",
-                            ["account_iban"] = "no",
-                            ["date_format"] = "m-d-Y",
-                            ["number_format"] = "fr",
-                            ["qif_import_third_party"] = "yes",
-                            ["check_duplicates"] = "yes",
-                            ["auto_categorization"] = "yes"
-                        };
-
-                var processResponse = await Transport.PostAsync(
-                    "/system/requests/user/finances/account/account.import.html?action_form=askImportManual",
-                    new FormUrlEncodedContent(fields));
-                processResponse.EnsureSuccessStatusCode();
-                processResponseModel = JObject.Parse(await processResponse.Content.ReadAsStringAsync());
-                processRequestSucceed = (bool)processResponseModel["response"];
-            }
-
-            if (processRequestSucceed)
-            {
-                //3 wait file is processed
-                var importId = processResponseModel["id_import"];
-                var fields = new { id_import = importId }.ToRawMembersDictionary();
-
-                var attempts = 0;
-                var finished = false;
-                bool failed;
-                var sw = Stopwatch.StartNew();
-                int progression = 0;
-
-                HttpResponseMessage lastCheckProgressionResponse;
-                JObject lastCheckProgressionModel = null;
-                do
-                {
-                    var postContent = new FormUrlEncodedContent(fields);
-
-                    lastCheckProgressionResponse = await Transport.PostAsync("/system/requests/user/finances/account/account.import.html?action_form=checkProgression", postContent);
-                    failed = !lastCheckProgressionResponse.IsSuccessStatusCode;
-
-                    if (!failed)
-                    {
-                        lastCheckProgressionModel = JObject.Parse(await lastCheckProgressionResponse.Content.ReadAsStringAsync());
-                        failed = !(bool)lastCheckProgressionModel["response"] || (string)lastCheckProgressionModel["errno"] != null;
-                    }
-
-                    if (!failed)
-                    {
-                        var previousProgression = progression;
-                        progression = (int)lastCheckProgressionModel["progression"];
-                        if (previousProgression != progression)
-                        {
-                            _logger.Debug($"import process progressed: {progression} %, check number : {attempts}, eslapsed time : {sw.Elapsed.TotalSeconds:N2} seconds");
-                        }
-
-                        finished = progression == 100;
-
-                        if (!finished && sw.Elapsed.TotalSeconds < 30)
-                        {
-                            await Task.Delay(500);
-                        }
-                    }
-                }
-                while (sw.Elapsed.TotalSeconds < 30 && attempts++ < 20 && !failed && !finished);
-                sw.Stop();
-
-                result.Success = !failed && finished;
-
-                if (!result.Success)
-                {
-                    _logger.DebugExt(() => $"last received progression response{Environment.NewLine}" +
-                                           $"Request : {lastCheckProgressionResponse.RequestMessage?.RequestUri}{Environment.NewLine}" +
-                                           $"Response Model : {lastCheckProgressionModel}");
-                }
-
-                _logger.DebugExt(() =>
-                    $"import process completed. success ? {!failed}. eslapsed time : {sw.Elapsed.TotalSeconds:N2} seconds");
-            }
-
-            return result;
+            return _importWorker.Import(accountId, qifData);
         }
 
         public async Task<RunImportResult> RunImportFromDeltaActions(string accountId, List<TransactionDelta> operationsDelta)
@@ -300,11 +189,11 @@ namespace Operations.Classification.GererMesComptes
                             break;
                         }
                     }
+                }
 
-                    if (!available)
-                    {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500));
-                    }
+                if (!available)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
                 }
             }
             while (sw.Elapsed.TotalSeconds < secondsToWait && !available);
