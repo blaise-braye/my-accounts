@@ -9,11 +9,12 @@ using QifApi.Transactions;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
-    public class GmcManagerFilterViewModel : ObservableObject , IFilter
+    public class GmcManagerFilterViewModel : ObservableObject, IFilter
     {
         private readonly CompositeFilter _anyFilter;
         private bool _isFiltering;
         private bool _isDeltaFilterActive;
+
         public GmcManagerFilterViewModel()
         {
             FilterOnItemDateCommand = new RelayCommand<BasicTransactionModel>(FilterOnItemDate);
@@ -56,7 +57,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         public RelayCommand<BasicTransactionModel> FilterOnItemDateCommand { get; }
 
         public RelayCommand ResetFilterCommad { get; }
-        
+
         public bool IsActive()
         {
             return IsFiltering;
@@ -66,7 +67,6 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         {
             _anyFilter.Reset();
         }
-
 
         public IEnumerable<BasicTransaction> FilterDelta(IEnumerable<TransactionDelta> deltas, Func<TransactionDelta, BasicTransaction> selector)
         {
@@ -104,6 +104,5 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                     DateFilter.SetDayFilter(obj.Date);
                 });
         }
-
     }
 }
