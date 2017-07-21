@@ -23,18 +23,7 @@ namespace Operations.Classification.Tests.Steps
         private List<AccountOperationBase> _readOperations;
 
         private List<UnifiedAccountOperation> _unifiedOperations;
-
-        [Given(@"I have read the following account operations from source of kind (\w+)")]
-        public void GivenIHaveReadTheFollowingAccountOperationsFromSourceOfKindFortisCsvArchive(SourceKind sourceKind, Table table)
-        {
-            _unifiedOperations = table.CreateSet<UnifiedAccountOperation>().Select(
-                o =>
-                {
-                    o.SourceKind = sourceKind;
-                    return o;
-                }).ToList();
-        }
-
+        
         [Given(@"I have read the following fortis operations from archive files")]
         public void GivenIHaveReadTheFollowingFortisOperationsFromArchiveFiles(Table table)
         {
@@ -96,21 +85,7 @@ namespace Operations.Classification.Tests.Steps
         {
             table.CompareToSet(_readOperations.Cast<FortisOperation>());
         }
-
-        [When(@"I apply the cleanup transformation on unified operations")]
-        public void WhenIApplyTheCleanupTransformationOnUnifiedOperations()
-        {
-            foreach (var operation in _unifiedOperations)
-                _transformer.Apply(operation);
-        }
-
-        [When(@"I Filter the details where date is higher than '(.*)' days")]
-        public void WhenIFilterTheDetailsWhereDateIsHigherThanDays(int days)
-        {
-            var comparativeDate = DateTime.Today.AddDays(-days);
-            _unifiedOperations = _unifiedOperations.Where(t => t.ValueDate > comparativeDate).ToList();
-        }
-
+        
         [When(@"I Filter the details where number is higher than '(.*)'")]
         public void WhenIFilterTheDetailsWhereNumberIsHigherThan(string number)
         {
