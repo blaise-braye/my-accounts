@@ -2,6 +2,7 @@ using System;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
 using Operations.Classification.AccountOperations.Sodexo;
+using Operations.Classification.AccountOperations.Unified;
 using Ploeh.AutoFixture.Kernel;
 
 namespace Operations.Classification.Tests.AutoFixtures.Builders
@@ -33,6 +34,9 @@ namespace Operations.Classification.Tests.AutoFixtures.Builders
                     break;
                 case SourceKind.SodexoCsvExport:
                     instance = (AccountOperationBase)context.Resolve(typeof(SodexoOperation));
+                    break;
+                case SourceKind.InternalExport:
+                    instance = (AccountOperationBase) context.Resolve(typeof(UnifiedAccountOperation));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

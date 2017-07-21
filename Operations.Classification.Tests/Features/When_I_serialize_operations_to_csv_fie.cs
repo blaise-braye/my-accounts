@@ -35,7 +35,44 @@ namespace Operations.Classification.Tests.Features
 
         [Test]
         [AccountOperationData(SourceKind.FortisCsvExport)]
-        public async Task ThenDeserializationIsConsistentAndOriginalDataIsPreserved(
+        public async Task ThenDeserializationIsConsistentAndOriginalDataIsPreservedWithFortisCsvExport(
+            CsvAccountOperationManager operationManager,
+            List<AccountOperationBase> operations)
+        {
+            await operationManager.WriteAsync(_testTempFile, operations);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+
+            operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
+        }
+
+
+        [Test]
+        [AccountOperationData(SourceKind.FortisCsvArchive)]
+        public async Task ThenDeserializationIsConsistentAndOriginalDataIsPreservedWithFortisCsvArchive(
+            CsvAccountOperationManager operationManager,
+            List<AccountOperationBase> operations)
+        {
+            await operationManager.WriteAsync(_testTempFile, operations);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+
+            operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
+        }
+        
+        [Test]
+        [AccountOperationData(SourceKind.SodexoCsvExport)]
+        public async Task ThenDeserializationIsConsistentAndOriginalDataIsPreservedWithSodexoExport(
+            CsvAccountOperationManager operationManager,
+            List<AccountOperationBase> operations)
+        {
+            await operationManager.WriteAsync(_testTempFile, operations);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+
+            operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
+        }
+
+        [Test]
+        [AccountOperationData(SourceKind.InternalExport)]
+        public async Task ThenDeserializationIsConsistentAndOriginalDataIsPreservedWithInternalExport(
             CsvAccountOperationManager operationManager,
             List<AccountOperationBase> operations)
         {
