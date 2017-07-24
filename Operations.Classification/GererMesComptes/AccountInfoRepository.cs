@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -35,12 +36,29 @@ namespace Operations.Classification.GererMesComptes
             postResponse.EnsureSuccessStatusCode();
             var json = await postResponse.Content.ReadAsStringAsync();
             var succeeded = (bool)JObject.Parse(json)["response"];
+            AccountInfo createdAccount = null;
             if (succeeded)
             {
                 ClearCache();
+                createdAccount = await GetByName(accountInfo.Name);
+
+                var sw = Stopwatch.StartNew();
+                while (createdAccount == null && sw.Elapsed < TimeSpan.FromSeconds(3))
+                {
+                    ClearCache();
+                    createdAccount = await GetByName(accountInfo.Name);
+                    await Task.Delay(300);
+                }
+
+                sw.Stop();
             }
 
-            return succeeded;
+            if (createdAccount == null)
+            {
+                _logger.Warn("account was created but could not be retrieved");
+            }
+
+            return createdAccount != null;
         }
 
         public async Task<bool> Create(object initialValues)
