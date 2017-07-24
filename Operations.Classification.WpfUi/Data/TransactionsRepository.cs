@@ -16,12 +16,14 @@ namespace Operations.Classification.WpfUi.Data
         private readonly UnifiedAccountOperationPatternTransformer _transactionPatternMapper;
         private readonly IWorkingCopy _workingCopy;
 
-        public TransactionsRepository(IWorkingCopy workingCopy, ICsvAccountOperationManager csvAccountOperationManager)
+        public TransactionsRepository(
+            IWorkingCopy workingCopy,
+            ICsvAccountOperationManager csvAccountOperationManager,
+            UnifiedAccountOperationPatternTransformer transactionPatternMapper)
         {
             _workingCopy = workingCopy;
             _csvAccountOperationManager = csvAccountOperationManager;
-
-            _transactionPatternMapper = new UnifiedAccountOperationPatternTransformer();
+            _transactionPatternMapper = transactionPatternMapper;
         }
 
         private IFileSystem Fs => _workingCopy.Fs;

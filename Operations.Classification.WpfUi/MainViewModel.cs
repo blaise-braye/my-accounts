@@ -7,6 +7,8 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 
 using Operations.Classification.AccountOperations;
+using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.GeoLoc;
 using Operations.Classification.WpfUi.Data;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
@@ -38,11 +40,17 @@ namespace Operations.Classification.WpfUi
 
         public MainViewModel()
         {
+            var placesRepository = new PlacesRepository();
+            var placeProvider = PlaceProvider.Load(placesRepository);
+            var placeInfoResolver = new PlaceInfoResolver(placeProvider);
+            var operationPatternTransformer = new UnifiedAccountOperationPatternTransformer(placeInfoResolver);
+
             IFileSystem fs = new FileSystem();
             var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
 
+            var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
             var accountsRepository = new AccountsRepository(workingCopy);
-            var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager());
+
             BusyIndicator = new BusyIndicatorViewModel();
             TransactionsManager = new TransactionsManager(BusyIndicator, fs, transactionsRepository);
             AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, TransactionsManager);

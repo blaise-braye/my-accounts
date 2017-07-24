@@ -114,6 +114,8 @@
     <Compile Include="AccountOperations\CsvAccountOperationManager.cs" />
     <Compile Include="AccountOperations\Fortis\FortisToUnifiedAccountOperationMapper.cs" />
     <Compile Include="AccountOperations\Contracts\SourceKind.cs" />
+    <Compile Include="GeoLoc\PlacesRepository.cs" />
+    <Compile Include="GeoLoc\PlaceProvider.cs" />
     <Compile Include="GererMesComptes\AccountInfo.cs" />
     <Compile Include="GererMesComptes\AccountInfoRepository.cs" />
     <Compile Include="GererMesComptes\AccountSummary.cs" />

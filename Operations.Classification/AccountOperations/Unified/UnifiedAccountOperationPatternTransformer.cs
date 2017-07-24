@@ -13,22 +13,28 @@ namespace Operations.Classification.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternTransformer
     {
+        private static readonly TypeAccessor _unifiedOpAccessors;
+
+        private static readonly Dictionary<string, Type> _unifiedOpProperties;
+
         private readonly AccountToUnifiedOperationMapper _mapper;
+
         private readonly List<UnifiedAccountOperationPatternMapping> _patterns;
 
         private readonly PlaceInfoResolver _placeInfoResolver;
 
-        private readonly TypeAccessor _unifiedOpAccessors;
-        private readonly Dictionary<string, Type> _unifiedOpProperties;
-
-        public UnifiedAccountOperationPatternTransformer()
+        static UnifiedAccountOperationPatternTransformer()
         {
-            _patterns = LoadPatterns();
-            _mapper = new AccountToUnifiedOperationMapper();
-            _placeInfoResolver = new PlaceInfoResolver();
             _unifiedOpAccessors = TypeAccessor.Create(typeof(UnifiedAccountOperation));
             _unifiedOpProperties = typeof(UnifiedAccountOperation).GetProperties().Where(p => p.CanRead && p.CanWrite)
                 .ToDictionary(p => p.Name, p => p.PropertyType);
+        }
+
+        public UnifiedAccountOperationPatternTransformer(PlaceInfoResolver placeInfoResolver)
+        {
+            _patterns = LoadPatterns();
+            _mapper = new AccountToUnifiedOperationMapper();
+            _placeInfoResolver = placeInfoResolver;
         }
 
         public UnifiedAccountOperation Apply(AccountOperationBase operation)
@@ -72,7 +78,7 @@ namespace Operations.Classification.AccountOperations.Unified
                     }
                     else if (groupName.EndsWith("ThenCity"))
                     {
-                        var placeInfo = _placeInfoResolver.ResolveKnowingPlaceInfoIsAtEndOfText(input, false);
+                        var placeInfo = _placeInfoResolver.ResolveFromEndOfText(input, false);
                         var freeTextWithoutPlaceInfo = placeInfo.GetFreeTextWithoutPlaceInfo();
 
                         target.City = placeInfo.City;
@@ -92,7 +98,7 @@ namespace Operations.Classification.AccountOperations.Unified
                     }
                     else if (groupName.EndsWith("ThenAddress"))
                     {
-                        var placeInfo = _placeInfoResolver.ResolveKnowingPlaceInfoIsAtEndOfText(input, true);
+                        var placeInfo = _placeInfoResolver.ResolveFromEndOfText(input, true);
                         var freeTextWithoutPlaceInfo = placeInfo.GetFreeTextWithoutPlaceInfo();
 
                         target.City = placeInfo.City;

@@ -106,10 +106,6 @@ namespace Operations.Classification.Gmc.Tests.Steps
         [When(@"I create the bank account '(.*)'")]
         public async Task WhenICreateTheBankAccount(Wrapper<string> accountName)
         {
-            if (accountName.Value.ToLower().Contains("identify"))
-            {
-                
-            }
             var values = new { name = accountName };
             if (await Context.GmcAccounts.Create(values))
             {

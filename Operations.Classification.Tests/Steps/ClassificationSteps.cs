@@ -9,6 +9,7 @@ using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.GeoLoc;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -18,7 +19,10 @@ namespace Operations.Classification.Tests.Steps
     public class ClassificationSteps
     {
         private readonly CsvAccountOperationManager _csvAccountOperationManager = new CsvAccountOperationManager();
-        private readonly UnifiedAccountOperationPatternTransformer _transformer = new UnifiedAccountOperationPatternTransformer();
+
+        private readonly UnifiedAccountOperationPatternTransformer _transformer =
+            new UnifiedAccountOperationPatternTransformer(
+                new PlaceInfoResolver(PlaceProvider.Load(new PlacesRepository())));
 
         private List<AccountOperationBase> _readOperations;
 
