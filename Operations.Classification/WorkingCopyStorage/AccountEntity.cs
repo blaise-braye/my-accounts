@@ -1,6 +1,6 @@
 using System;
 
-namespace Operations.Classification.WpfUi.Data
+namespace Operations.Classification.WorkingCopyStorage
 {
     public class AccountEntity
     {

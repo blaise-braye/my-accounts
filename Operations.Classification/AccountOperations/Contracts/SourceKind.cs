@@ -6,6 +6,6 @@ namespace Operations.Classification.AccountOperations.Contracts
         FortisCsvArchive,
         FortisCsvExport,
         SodexoCsvExport,
-        InternalExport
+        InternalCsvExport
     }
 }

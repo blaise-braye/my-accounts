@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.WorkingCopyStorage;
 
-namespace Operations.Classification.WpfUi.Tests.Data.Accounts
+namespace Operations.Classification.Tests.Features.Accounts
 {
     [TestFixture(Category = "UnitTest")]
     public class WhenDeletingAccount

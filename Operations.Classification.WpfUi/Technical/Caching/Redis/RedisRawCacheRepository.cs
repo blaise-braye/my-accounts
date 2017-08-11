@@ -55,7 +55,10 @@ namespace Operations.Classification.WpfUi.Technical.Caching.Redis
             var servers = _connection.GetEndPoints(true).Select(e => _connection.GetServer(e));
             foreach (var server in servers)
             {
-                await server.FlushAllDatabasesAsync();
+                if (server.IsConnected)
+                {
+                    await server.FlushAllDatabasesAsync();
+                }
             }
         }
     }

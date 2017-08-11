@@ -3,7 +3,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.WpfUi.Data
+namespace Operations.Classification.WorkingCopyStorage
 {
     public interface IWorkingCopy
     {
@@ -13,9 +13,9 @@ namespace Operations.Classification.WpfUi.Data
 
         IFileSystem Fs { get; }
 
-        string GetAccountOperationsDirectory(string accountName);
-
         Task<bool> CreateFolderIfDoesNotExistsYet(string workingCopyRoot);
+
+        string GetAbsolutePath(params object[] relativePathChain);
     }
 
     public class WorkingCopy : IWorkingCopy
@@ -47,23 +47,19 @@ namespace Operations.Classification.WpfUi.Data
             return true;
         }
 
-        public string GetAccountOperationsDirectory(string accountName)
-        {
-            return GetAbsolutePath(accountName, "operations");
-        }
-
-        private string GetAbsolutePath(params string[] relativePathChain)
+        public string GetAbsolutePath(params object[] relativePathChain)
         {
             var rootedPath = relativePathChain.Aggregate(
                 Root,
                 (rootedPathStep, relativePath) =>
                 {
-                    if (!relativePath.StartsWith("./"))
+                    var rawRelativePath = relativePath.ToString().Replace('\\', '/');
+                    if (!rawRelativePath.StartsWith("./"))
                     {
-                        relativePath = "./" + relativePath;
+                        rawRelativePath = @"./" + relativePath;
                     }
 
-                    return Path.Combine(rootedPathStep, relativePath);
+                    return Path.Combine(rootedPathStep, rawRelativePath);
                 });
             var absoluteRootedPath = Path.GetFullPath(rootedPath);
             return absoluteRootedPath;

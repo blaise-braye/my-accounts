@@ -9,7 +9,7 @@ using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.GeoLoc;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.WorkingCopyStorage;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
@@ -48,12 +48,13 @@ namespace Operations.Classification.WpfUi
             IFileSystem fs = new FileSystem();
             var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
 
-            var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
+            var accountCommandQueue = new AccountCommandQueue(workingCopy);
+            var operationsRepository = new OperationsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer, accountCommandQueue);
             var accountsRepository = new AccountsRepository(workingCopy);
 
             BusyIndicator = new BusyIndicatorViewModel();
-            TransactionsManager = new TransactionsManager(BusyIndicator, fs, transactionsRepository);
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, TransactionsManager);
+            OperationsManager = new OperationsManager(BusyIndicator, fs, operationsRepository, accountCommandQueue);
+            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, OperationsManager);
 
             GmcManager = new GmcManager(BusyIndicator);
             _settingsManager = new SettingsManager();
@@ -89,7 +90,7 @@ namespace Operations.Classification.WpfUi
 
         public GmcManager GmcManager { get; }
 
-        public TransactionsManager TransactionsManager { get; }
+        public OperationsManager OperationsManager { get; }
 
         public SettingsManager SettingsManager => _settingsManager;
 
@@ -126,6 +127,7 @@ namespace Operations.Classification.WpfUi
         private async Task Refresh()
         {
             await CacheProvider.ClearCache();
+            await OperationsManager.ReplayImports(AccountsManager.Accounts);
             await Load();
         }
     }

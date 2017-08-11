@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.WpfUi.Data
+namespace Operations.Classification.WorkingCopyStorage
 {
     public interface IAccountsRepository
     {

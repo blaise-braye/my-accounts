@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.WorkingCopyStorage;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Reports;
 using Operations.Classification.WpfUi.Managers.Transactions;
@@ -20,7 +20,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private readonly IAsyncCommand[] _commands;
 
         private readonly AccountsRepository _repository;
-        private readonly ITransactionsManager _transactionsManager;
+        private readonly IOperationsManager _operationsManager;
 
         private ObservableCollection<AccountViewModel> _accounts;
 
@@ -32,11 +32,11 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
         private bool _isLoading;
 
-        public AccountsManager(BusyIndicatorViewModel busyIndicatorViewModel, AccountsRepository repository, ITransactionsManager transactionsManager)
+        public AccountsManager(BusyIndicatorViewModel busyIndicatorViewModel, AccountsRepository repository, IOperationsManager operationsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
             _repository = repository;
-            _transactionsManager = transactionsManager;
+            _operationsManager = operationsManager;
             LoadCommand = new AsyncCommand(LoadAsync, () => !IsEditing);
             BeginNewCommand = new AsyncCommand(BeginNew, () => !IsEditing);
             BeginEditCommand = new AsyncCommand(BeginEdit, () => !IsEditing && CurrentAccount != null);
@@ -174,7 +174,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                 foreach (var entity in await _repository.GetList())
                 {
                     var vm = entity.Map().To<AccountViewModel>();
-                    var operations = await _transactionsManager.GetTransformedUnifiedOperations(entity.Name);
+                    var operations = await _operationsManager.GetTransformedUnifiedOperations(entity.Id);
                     vm.Operations = operations;
 
                     result.Add(vm);

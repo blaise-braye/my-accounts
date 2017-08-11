@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.WorkingCopyStorage;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Collections.Filters;
@@ -21,16 +21,17 @@ using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Transactions
 {
-    public class TransactionsManager : ViewModelBase, ITransactionsManager
+    public class OperationsManager : ViewModelBase, IOperationsManager
     {
         private const string UnifiedAccountOperationsByNameRoute = "/UnifiedAccountOperations/{0}";
-        private static readonly ILog _log = LogManager.GetLogger(typeof(TransactionsManager));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(OperationsManager));
         private readonly CompositeFilter _anyFilter;
 
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly OpenFileDialog _ofd;
         private readonly SaveFileDialog _sfd;
-        private readonly ITransactionsRepository _transactionsRepository;
+        private readonly IOperationsRepository _operationsRepository;
+        private readonly AccountCommandQueue _accountCommandQueue;
 
         private bool _autoDetectSourceKind;
         private AccountViewModel _currentAccount;
@@ -46,11 +47,12 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private List<UnifiedAccountOperationModel> _operations;
         private SourceKind? _sourceKind;
 
-        public TransactionsManager(BusyIndicatorViewModel busyIndicator, IFileSystem fileSystem, ITransactionsRepository transactionsRepository)
+        public OperationsManager(BusyIndicatorViewModel busyIndicator, IFileSystem fileSystem, IOperationsRepository operationsRepository, AccountCommandQueue accountCommandQueue)
         {
             _busyIndicator = busyIndicator;
             Fs = fileSystem;
-            _transactionsRepository = transactionsRepository;
+            _operationsRepository = operationsRepository;
+            _accountCommandQueue = accountCommandQueue;
             BeginImportCommand = new RelayCommand(BeginImport);
             BeginExportCommand = new RelayCommand(BeginExport);
             BeginDataQualityAnalysisCommand = new AsyncCommand(BeginDataQualityAnalysis);
@@ -175,16 +177,28 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private FileBase Fb => Fs.File;
 
-        public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(string accountName)
+        public async Task<List<UnifiedAccountOperation>> GetTransformedUnifiedOperations(Guid accountId)
         {
-            var result = await GetCacheEntry(accountName).GetOrAddAsync(
-                () => _transactionsRepository.GetTransformedUnifiedOperations(accountName));
+            var result = await GetCacheEntry(accountId).GetOrAddAsync(
+                () => _operationsRepository.GetAll(accountId));
             return result;
         }
 
-        private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(string accountName)
+        public async Task ReplayImports(IList<AccountViewModel> accounts)
         {
-            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountName));
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Replaying imports"))
+            {
+                foreach (var account in accounts)
+                {
+                    var commands = await _accountCommandQueue.GetAll(account.Id);
+                    await _operationsRepository.ReplayCommand(account.Id, commands);
+                }
+            }
+        }
+
+        private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(Guid accountId)
+        {
+            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountId));
         }
 
         private void OnAnyFilterInvalidated(object sender, EventArgs e)
@@ -200,7 +214,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         private async Task BeginDataQualityAnalysis()
         {
-            var operations = await GetTransformedUnifiedOperations(CurrentAccount.Name);
+            var operations = await GetTransformedUnifiedOperations(CurrentAccount.Id);
 
             var doublonsByOperationId = operations.GroupBy(d => d.OperationId).Where(g => g.Count() > 1).SelectMany(g => g);
 
@@ -221,42 +235,50 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             int[] previousOperationId = null;
             foreach (var fortisOperation in fortisOperations)
             {
-                var operationIdParts = fortisOperation.OperationId.Split('-');
-                var operationYear = int.Parse(operationIdParts[0]);
-                var operationYearNumber = int.Parse(operationIdParts[1]);
-
-                if (previousOperationId != null)
+                var operationIdParts = fortisOperation.OperationId.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                if (operationIdParts.Length == 2)
                 {
-                    var prevOpYear = previousOperationId[0];
-                    var prevOpYearNumber = previousOperationId[1];
-                    var sequenceAsExpectated = true;
-                    if (operationYear == prevOpYear + 1)
+                    var operationYear = int.Parse(operationIdParts[0]);
+                    var operationYearNumber = int.Parse(operationIdParts[1]);
+
+                    if (previousOperationId != null)
                     {
-                        if (operationYearNumber != 1)
+                        var prevOpYear = previousOperationId[0];
+                        var prevOpYearNumber = previousOperationId[1];
+                        var sequenceAsExpectated = true;
+                        if (operationYear == prevOpYear + 1)
+                        {
+                            if (operationYearNumber != 1)
+                            {
+                                sequenceAsExpectated = false;
+                            }
+                        }
+                        else if (operationYear == prevOpYear)
+                        {
+                            if (operationYearNumber != prevOpYearNumber + 1)
+                            {
+                                sequenceAsExpectated = false;
+                            }
+                        }
+                        else
                         {
                             sequenceAsExpectated = false;
                         }
-                    }
-                    else if (operationYear == prevOpYear)
-                    {
-                        if (operationYearNumber != prevOpYearNumber + 1)
+
+                        if (!sequenceAsExpectated)
                         {
-                            sequenceAsExpectated = false;
+                            _log.Error(
+                                $"operation id sequence mismatch (previous {string.Join("-", previousOperationId)}, current {string.Join("-", operationIdParts)}");
                         }
-                    }
-                    else
-                    {
-                        sequenceAsExpectated = false;
                     }
 
-                    if (!sequenceAsExpectated)
-                    {
-                        _log.Error(
-                            $"operation id sequence mismatch (previous {string.Join("-", previousOperationId)}, current {string.Join("-", operationIdParts)}");
-                    }
+                    previousOperationId = new[] { operationYear, operationYearNumber };
                 }
-
-                previousOperationId = new[] { operationYear, operationYearNumber };
+                else
+                {
+                    _log.Error(
+                        $"operation id format suspicious : {fortisOperation.OperationId}");
+                }
             }
 
             Operations = result.Project()?.To<UnifiedAccountOperationModel>()?.ToList();
@@ -285,10 +307,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                             JsonConvert.DeserializeObject<List<UnifiedAccountOperation>>(JsonConvert.SerializeObject(operations));
                         foreach (var clonedOperation in clonedOperations)
                         {
-                            clonedOperation.SourceKind = AccountOperations.Contracts.SourceKind.InternalExport;
+                            clonedOperation.SourceKind = AccountOperations.Contracts.SourceKind.InternalCsvExport;
                         }
 
-                        await _transactionsRepository.Export(ExportFilePath, clonedOperations.Cast<AccountOperationBase>().ToList());
+                        await _operationsRepository.Export(ExportFilePath, clonedOperations.Cast<AccountOperationBase>().ToList());
                     }
                 }
 
@@ -339,9 +361,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
                             using (var fs = Fb.OpenRead(file))
                             {
-                                if (await _transactionsRepository.Import(account.Name, fs, sourceKind))
+                                var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
+                                if (await _operationsRepository.RequestImportExecution(importCommand, fs))
                                 {
-                                    await GetCacheEntry(account.Name).DeleteAsync();
+                                    await GetCacheEntry(account.Id).DeleteAsync();
                                     someImportSucceeded = true;
                                 }
                             }
@@ -350,7 +373,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
                     if (someImportSucceeded)
                     {
-                        var operations = await GetTransformedUnifiedOperations(CurrentAccount.Name);
+                        var operations = await GetTransformedUnifiedOperations(CurrentAccount.Id);
                         CurrentAccount.Operations = operations;
                         OnAccountViewModelReceived(CurrentAccount);
                     }

@@ -1,11 +1,11 @@
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using Moq;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.WorkingCopyStorage;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.NUnit3;
 
-namespace Operations.Classification.WpfUi.Tests.Data.Accounts
+namespace Operations.Classification.Tests.Features.Accounts
 {
     public class AccountsRepositoryAutoDataAttribute : AutoDataAttribute
     {

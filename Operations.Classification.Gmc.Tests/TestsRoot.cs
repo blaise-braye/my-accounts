@@ -16,7 +16,6 @@ namespace Operations.Classification.Gmc.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            
             SetupLogger();
             SetupEnvironmentSettings();
         }

@@ -28,7 +28,7 @@
             </TabItem>
             <TabItem Header="transactions"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <transactions:TransactionsFileManagerView DataContext="{Binding TransactionsManager}" />
+                <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManager}" />
             </TabItem>
             <TabItem Header="gmc"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -97,13 +97,13 @@
             </controls:Flyout>
             <controls:Flyout Header="Import command parameters" Position="Right"
                              IsModal="True"
-                             IsOpen="{Binding TransactionsManager.IsImporting, Mode=TwoWay}">
-                <transactions:ImportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
+                             IsOpen="{Binding OperationsManager.IsImporting, Mode=TwoWay}">
+                <transactions:ImportOperationsView Width="350" DataContext="{Binding OperationsManager}" />
             </controls:Flyout>
             <controls:Flyout Header="Export command parameters" Position="Right"
                              IsModal="True"
-                             IsOpen="{Binding TransactionsManager.IsExporting, Mode=TwoWay}">
-                <transactions:ExportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
+                             IsOpen="{Binding OperationsManager.IsExporting, Mode=TwoWay}">
+                <transactions:ExportOperationsView Width="350" DataContext="{Binding OperationsManager}" />
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>

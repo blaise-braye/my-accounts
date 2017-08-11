@@ -16,22 +16,18 @@ namespace Operations.Classification.AccountOperations
 {
     public interface ICsvAccountOperationManager
     {
-        IList<AccountOperationBase> Read(string file, SourceKind sourceKind);
+        FileStructureMetadata GetDefaultFileMetadata(SourceKind sourceKind);
 
-        IEnumerable<AccountOperationBase> Read(Stream stream, SourceKind sourceKind);
+        Task<IList<AccountOperationBase>> ReadAsync(string file, FileStructureMetadata structureMetadata);
 
-        Task<IList<AccountOperationBase>> ReadAsync(string file, SourceKind sourceKind);
-
-        Task<List<AccountOperationBase>> ReadAsync(Stream stream, SourceKind sourceKind);
-
-        void Write(string targetFile, IList<AccountOperationBase> operations);
+        Task<List<AccountOperationBase>> ReadAsync(Stream stream, FileStructureMetadata structureMetadata);
 
         Task WriteAsync(string targetFile, IList<AccountOperationBase> operations);
     }
 
     public class CsvAccountOperationManager : ICsvAccountOperationManager
     {
-        private static readonly Dictionary<SourceKind, CsvConfiguration> _csvConfigurations = CreateCsvConfigurations();
+        private static readonly Dictionary<SourceKind, CsvConfiguration> _defaultCsvConfigurations = CreateDefaultCsvConfigurations();
 
         public static SourceKind DetectFileSourceKindFromFileName(string file)
         {
@@ -58,12 +54,12 @@ namespace Operations.Classification.AccountOperations
 
         public static SourceKind DetectSourceKindFromFileContent(string file)
         {
-            var supportedSourceKinds = _csvConfigurations.Keys.Except(new[] { SourceKind.Unknwon });
+            var supportedSourceKinds = _defaultCsvConfigurations.Keys.Except(new[] { SourceKind.Unknwon });
 
             var result = supportedSourceKinds.Select(
                     sourceKind =>
                     {
-                        var config = _csvConfigurations[sourceKind];
+                        var config = _defaultCsvConfigurations[sourceKind];
 
                         FileStream fs = null;
                         StreamReader sr = null;
@@ -103,17 +99,28 @@ namespace Operations.Classification.AccountOperations
             return result;
         }
 
-        public Task<IList<AccountOperationBase>> ReadAsync(string file, SourceKind sourceKind)
+        public FileStructureMetadata GetDefaultFileMetadata(SourceKind sourceKind)
         {
-            return Task.Run(() => Read(file, sourceKind));
+            var metadata = new FileStructureMetadata { SourceKind = sourceKind };
+
+            if (_defaultCsvConfigurations.ContainsKey(sourceKind))
+            {
+                var defaultConfig = _defaultCsvConfigurations[sourceKind];
+                metadata.Encoding = defaultConfig.Encoding.WebName;
+                metadata.Culture = defaultConfig.CultureInfo.Name;
+            }
+
+            return metadata;
         }
 
-        public IList<AccountOperationBase> Read(string file, SourceKind sourceKind)
+        public Task<IList<AccountOperationBase>> ReadAsync(string file, FileStructureMetadata structureMetadata)
         {
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Read(fs, sourceKind).ToList();
-            }
+            return Task.Run(() => Read(file, structureMetadata));
+        }
+
+        public Task<List<AccountOperationBase>> ReadAsync(Stream stream, FileStructureMetadata structureMetadata)
+        {
+            return Task.Run(() => Read(stream, structureMetadata).ToList());
         }
 
         public Task WriteAsync(string targetFile, IList<AccountOperationBase> operations)
@@ -121,7 +128,7 @@ namespace Operations.Classification.AccountOperations
             return Task.Run(() => Write(targetFile, operations));
         }
 
-        public void Write(string targetFile, IList<AccountOperationBase> operations)
+        private static void Write(string targetFile, IList<AccountOperationBase> operations)
         {
             if (operations.Count == 0)
             {
@@ -136,7 +143,7 @@ namespace Operations.Classification.AccountOperations
                     "All operations are expected to be of same source kind and same type");
             }
 
-            var config = _csvConfigurations[sourceKind];
+            var config = _defaultCsvConfigurations[sourceKind];
 
             FileStream fs = null;
             StreamWriter sw = null;
@@ -159,15 +166,19 @@ namespace Operations.Classification.AccountOperations
             }
         }
 
-        public Task<List<AccountOperationBase>> ReadAsync(Stream stream, SourceKind sourceKind)
+        private static IList<AccountOperationBase> Read(string file, FileStructureMetadata structureMetadata)
         {
-            return Task.Run(() => Read(stream, sourceKind).ToList());
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Read(fs, structureMetadata).ToList();
+            }
         }
 
-        public IEnumerable<AccountOperationBase> Read(Stream stream, SourceKind sourceKind)
+        private static IEnumerable<AccountOperationBase> Read(Stream stream, FileStructureMetadata structureMetadata)
         {
-            var config = _csvConfigurations[sourceKind];
-            using (var textReader = new StreamReader(stream, config.Encoding))
+            SourceKind sourceKind = structureMetadata.SourceKind;
+            var config = CreateCsvConfiguration(structureMetadata);
+            using (var textReader = new StreamReader(stream, config.Encoding, true, 1024, true))
             using (var reader = new CsvReader(textReader, config))
             {
                 while (reader.Read())
@@ -183,7 +194,7 @@ namespace Operations.Classification.AccountOperations
                         case SourceKind.SodexoCsvExport:
                             record = reader.GetRecord<SodexoOperation>();
                             break;
-                        case SourceKind.InternalExport:
+                        case SourceKind.InternalCsvExport:
                             record = reader.GetRecord<UnifiedAccountOperation>();
                             break;
                         default:
@@ -197,56 +208,81 @@ namespace Operations.Classification.AccountOperations
             }
         }
 
-        private static Dictionary<SourceKind, CsvConfiguration> CreateCsvConfigurations()
+        private static CsvConfiguration CreateCsvConfiguration(FileStructureMetadata fileStructureMetadata)
         {
-            var export = new CsvConfiguration();
-            export.RegisterClassMap<FortisOperationExportCsvMap>();
-            var ansiEncoding = Encoding.GetEncoding(1252);
-            export.Encoding = ansiEncoding;
-            export.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
-            export.Delimiter = ";";
-            export.QuoteAllFields = false;
-            export.TrimFields = true;
-            export.TrimHeaders = true;
-            export.WillThrowOnMissingField = false;
+            var csvConfiguration = CreateDefaultCsvConfiguration(fileStructureMetadata.SourceKind);
+            csvConfiguration.CultureInfo = CultureInfo.GetCultureInfo(fileStructureMetadata.Culture);
+            csvConfiguration.Encoding = Encoding.GetEncoding(fileStructureMetadata.Encoding);
+            return csvConfiguration;
+        }
 
-            var archive = new CsvConfiguration();
-            archive.RegisterClassMap<FortisOperationArchiveCsvMap>();
-            archive.Encoding = Encoding.UTF8;
-            archive.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
-            archive.Delimiter = ";";
-            archive.QuoteAllFields = true;
-            archive.TrimFields = true;
-            archive.TrimHeaders = true;
-            archive.WillThrowOnMissingField = false;
-
-            var sodexoExport = new CsvConfiguration();
-            sodexoExport.RegisterClassMap<SodexoOperationCsvMap>();
-            sodexoExport.Encoding = Encoding.UTF8;
-            sodexoExport.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
-            sodexoExport.Delimiter = ";";
-            sodexoExport.QuoteAllFields = true;
-            sodexoExport.TrimFields = true;
-            sodexoExport.TrimHeaders = true;
-            sodexoExport.WillThrowOnMissingField = false;
-
-            var internalExport = new CsvConfiguration();
-            sodexoExport.Encoding = Encoding.UTF8;
-            internalExport.Encoding = ansiEncoding;
-            sodexoExport.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
-            internalExport.Delimiter = ";";
-            internalExport.QuoteAllFields = false;
-            internalExport.TrimFields = true;
-            internalExport.TrimHeaders = true;
-            internalExport.WillThrowOnMissingField = false;
-
-            return new Dictionary<SourceKind, CsvConfiguration>
+        private static CsvConfiguration CreateDefaultCsvConfiguration(SourceKind sourceKind)
+        {
+            var configuration = new CsvConfiguration();
+            switch (sourceKind)
             {
-                { SourceKind.FortisCsvExport, export },
-                { SourceKind.FortisCsvArchive, archive },
-                { SourceKind.SodexoCsvExport, sodexoExport },
-                { SourceKind.InternalExport, internalExport }
-            };
+                case SourceKind.FortisCsvArchive:
+                    configuration.RegisterClassMap<FortisOperationArchiveCsvMap>();
+                    configuration.Encoding = Encoding.UTF8;
+                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.Delimiter = ";";
+                    configuration.QuoteAllFields = true;
+                    configuration.TrimFields = true;
+                    configuration.TrimHeaders = true;
+                    configuration.WillThrowOnMissingField = false;
+                    break;
+                case SourceKind.FortisCsvExport:
+                    configuration.RegisterClassMap<FortisOperationExportCsvMap>();
+                    var ansiEncoding = Encoding.GetEncoding(1252);
+                    configuration.Encoding = ansiEncoding;
+                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.Delimiter = ";";
+                    configuration.QuoteAllFields = false;
+                    configuration.TrimFields = true;
+                    configuration.TrimHeaders = true;
+                    configuration.WillThrowOnMissingField = false;
+                    break;
+                case SourceKind.SodexoCsvExport:
+                    configuration.RegisterClassMap<SodexoOperationCsvMap>();
+                    configuration.Encoding = Encoding.UTF8;
+                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.Delimiter = ";";
+                    configuration.QuoteAllFields = true;
+                    configuration.TrimFields = true;
+                    configuration.TrimHeaders = true;
+                    configuration.WillThrowOnMissingField = false;
+                    break;
+                case SourceKind.InternalCsvExport:
+                    configuration.RegisterClassMap<UnifiedAccountOperationCsvMap>();
+                    configuration.Encoding = Encoding.UTF8;
+                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.Delimiter = ";";
+                    configuration.QuoteAllFields = true;
+                    configuration.TrimFields = true;
+                    configuration.TrimHeaders = true;
+                    configuration.WillThrowOnMissingField = false;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sourceKind), sourceKind, null);
+            }
+
+            return configuration;
+        }
+
+        private static Dictionary<SourceKind, CsvConfiguration> CreateDefaultCsvConfigurations()
+        {
+            var supported = new[]
+                {
+                    SourceKind.FortisCsvExport,
+                    SourceKind.FortisCsvArchive,
+                    SourceKind.SodexoCsvExport,
+                    SourceKind.InternalCsvExport
+                };
+
+            var result = supported.Select(key => new { Key = key, Value = CreateDefaultCsvConfiguration(key) })
+                .ToDictionary(i => i.Key, i => i.Value);
+
+            return result;
         }
     }
 }
