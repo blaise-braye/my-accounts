@@ -18,6 +18,7 @@ using Microsoft.Practices.ServiceLocation;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.WorkingCopyStorage;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
@@ -42,6 +43,8 @@ namespace Operations.Classification.WpfUi
                     cfg.CreateMap<UnifiedAccountOperation, UnifiedAccountOperationModel>();
                     cfg.CreateMap<Properties.Settings, SettingsModel>();
                     cfg.CreateMap<SettingsModel, Properties.Settings>();
+
+                    cfg.CreateMap<ImportCommand, ImportCommandModel>();
                 });
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);

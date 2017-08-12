@@ -46,7 +46,7 @@ namespace Operations.Classification.Tests.Steps
             var importCommand = new ImportCommand(_context.AccountId);
             table.FillInstance(importCommand);
             
-            await _context.OperationsRepository.RequestImportExecution(
+            await _context.ImportManager.RequestImportExecution(
                 importCommand,
                 new MemoryStream(_context.AnOperationsFile));
         }
@@ -54,17 +54,17 @@ namespace Operations.Classification.Tests.Steps
         [When(@"I change the last import command such that")]
         public async Task WhenIChangeTheLastImportCommandSuchThat(Table table)
         {
-            var imports = await _context.AccountCommandQueue.GetAll(_context.AccountId);
+            var imports = await _context.AccountCommandRepository.GetAll(_context.AccountId);
             var lastImportCommand = imports.Last();
             table.FillInstance(lastImportCommand);
-            await _context.AccountCommandQueue.Replace(lastImportCommand);
+            await _context.AccountCommandRepository.Replace(lastImportCommand);
         }
 
         [When(@"I replay the entire reflog of operations")]
         public async Task WhenIReplayTheEntireReflogOfOperations()
         {
-            var imports = await _context.AccountCommandQueue.GetAll(_context.AccountId);
-            await _context.OperationsRepository.ReplayCommand(_context.AccountId, imports);
+            var imports = await _context.AccountCommandRepository.GetAll(_context.AccountId);
+            await _context.ImportManager.ReplayCommand(_context.AccountId, imports);
         }
         
         [Given(@"I have read the following fortis operations from archive files")]

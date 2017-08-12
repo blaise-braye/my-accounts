@@ -18,16 +18,20 @@ namespace Operations.Classification.Tests.Steps
                 new PlaceInfoResolver(PlaceProvider.Load(new PlacesRepository())));
             WorkingCopy = new WorkingCopy(new MockFileSystem(), @"c:\WorkingCopy");
             
-            AccountCommandQueue = new AccountCommandQueue(WorkingCopy);
-            OperationsRepository = new OperationsRepository(WorkingCopy, CsvAccountOperationManager, Transformer, AccountCommandQueue);
+            AccountCommandRepository = new AccountCommandRepository(WorkingCopy);
+            OperationsRepository = new OperationsRepository(WorkingCopy, CsvAccountOperationManager, Transformer);
+            ImportManager = new ImportManager(AccountCommandRepository, OperationsRepository);
+
             AccountId = Guid.NewGuid();
         }
+
+        public ImportManager ImportManager { get; set; }
 
         public Guid AccountId { get; set; }
 
         public IOperationsRepository OperationsRepository { get; }
 
-        public IAccountCommandQueue AccountCommandQueue { get; }
+        public IAccountCommandRepository AccountCommandRepository { get; }
 
         public IWorkingCopy WorkingCopy { get; }
 

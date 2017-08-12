@@ -17,72 +17,21 @@ namespace Operations.Classification.WorkingCopyStorage
         private static readonly ILog _logger = LogManager.GetLogger(typeof(OperationsRepository));
         private readonly ICsvAccountOperationManager _csvAccountOperationManager;
         private readonly UnifiedAccountOperationPatternTransformer _transactionPatternMapper;
-        private readonly IAccountCommandQueue _accountCommandQueue;
         private readonly IWorkingCopy _workingCopy;
 
         public OperationsRepository(
             IWorkingCopy workingCopy,
             ICsvAccountOperationManager csvAccountOperationManager,
-            UnifiedAccountOperationPatternTransformer transactionPatternMapper,
-            IAccountCommandQueue accountCommandQueue)
+            UnifiedAccountOperationPatternTransformer transactionPatternMapper)
         {
             _workingCopy = workingCopy;
             _csvAccountOperationManager = csvAccountOperationManager;
             _transactionPatternMapper = transactionPatternMapper;
-            _accountCommandQueue = accountCommandQueue;
         }
 
         private IFileSystem Fs => _workingCopy.Fs;
 
         private FileBase Fb => Fs.File;
-
-        public async Task<bool> RequestImportExecution(ImportCommand importCommand, Stream sourceData)
-        {
-            try
-            {
-                if (!sourceData.CanSeek)
-                {
-                    var seekableStream = new MemoryStream();
-                    await sourceData.CopyToAsync(seekableStream);
-                    sourceData = seekableStream;
-                    sourceData.Seek(0, SeekOrigin.Begin);
-                }
-
-                if (await ExecuteImport(importCommand, sourceData))
-                {
-                    sourceData.Seek(0, SeekOrigin.Begin);
-                    await _accountCommandQueue.Enqueue(importCommand, sourceData);
-                }
-            }
-            catch (Exception exn)
-            {
-                _logger.Error("import failed", exn);
-            }
-
-            return true;
-        }
-
-        public async Task<bool> ReplayCommand(Guid accountId, List<ImportCommand> importCommands)
-        {
-            if (importCommands.Any(a => a.AccountId != accountId))
-            {
-                throw new InvalidOperationException("the import must be strictly related to one account name");
-            }
-
-            Clear(accountId);
-
-            var result = true;
-
-            foreach (var importCommand in importCommands)
-            {
-                using (var sourceData = await _accountCommandQueue.OpenAttachment(importCommand))
-                {
-                    result &= await ExecuteImport(importCommand, sourceData);
-                }
-            }
-
-            return result;
-        }
 
         public Task Export(string filePath, IList<AccountOperationBase> operations)
         {
@@ -131,12 +80,7 @@ namespace Operations.Classification.WorkingCopyStorage
             }
         }
 
-        private string GetAccountOperationsDirectory(Guid accountId)
-        {
-            return _workingCopy.GetAbsolutePath(accountId, "operations");
-        }
-
-        private async Task<bool> ExecuteImport(ImportCommand importCommand, Stream sourceData)
+        public async Task<bool> ExecuteImport(ImportCommand importCommand, Stream sourceData)
         {
             try
             {
@@ -186,6 +130,11 @@ namespace Operations.Classification.WorkingCopyStorage
             }
 
             return true;
+        }
+
+        private string GetAccountOperationsDirectory(Guid accountId)
+        {
+            return _workingCopy.GetAbsolutePath(accountId, "operations");
         }
 
         private async Task<ReadAndFilterNewImportDataOnlyResult> ReadAndFilterNewImportDataOnly(

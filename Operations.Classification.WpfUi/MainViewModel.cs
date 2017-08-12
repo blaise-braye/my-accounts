@@ -12,6 +12,7 @@ using Operations.Classification.GeoLoc;
 using Operations.Classification.WorkingCopyStorage;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
@@ -48,21 +49,27 @@ namespace Operations.Classification.WpfUi
             IFileSystem fs = new FileSystem();
             var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
 
-            var accountCommandQueue = new AccountCommandQueue(workingCopy);
-            var operationsRepository = new OperationsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer, accountCommandQueue);
+            var accountCommandRepository = new AccountCommandRepository(workingCopy);
+            var operationsRepository = new OperationsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
+            var importManager = new ImportManager(accountCommandRepository, operationsRepository);
             var accountsRepository = new AccountsRepository(workingCopy);
 
             BusyIndicator = new BusyIndicatorViewModel();
-            OperationsManager = new OperationsManager(BusyIndicator, fs, operationsRepository, accountCommandQueue);
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, OperationsManager);
 
+            ImportsManagerViewModel = new ImportsManagerViewModel(importManager);
+            OperationsManager = new OperationsManager(BusyIndicator, fs, operationsRepository, importManager);
+            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, OperationsManager, ImportsManagerViewModel);
             GmcManager = new GmcManager(BusyIndicator);
             _settingsManager = new SettingsManager();
-            LoadCommand = new AsyncCommand(Load);
-            RefreshCommand = new AsyncCommand(Refresh);
+
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
 
-            if (IsInDesignMode)
+            if (!IsInDesignMode)
+            {
+                LoadCommand = new AsyncCommand(Load);
+                RefreshCommand = new AsyncCommand(Refresh);
+            }
+            else
             {
                 AccountsManager.Accounts.Add(
                     new AccountViewModel
@@ -89,6 +96,8 @@ namespace Operations.Classification.WpfUi
         public AccountsManager AccountsManager { get; }
 
         public GmcManager GmcManager { get; }
+
+        public ImportsManagerViewModel ImportsManagerViewModel { get; }
 
         public OperationsManager OperationsManager { get; }
 

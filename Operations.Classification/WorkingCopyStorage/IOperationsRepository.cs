@@ -11,12 +11,10 @@ namespace Operations.Classification.WorkingCopyStorage
     {
         Task<List<UnifiedAccountOperation>> GetAll(Guid accountId);
 
-        Task<bool> RequestImportExecution(ImportCommand importCommand, Stream sourceData);
-
         Task Export(string filePath, IList<AccountOperationBase> operations);
 
-        Task<bool> ReplayCommand(Guid accountId, List<ImportCommand> importCommands);
-
         void Clear(Guid accountId);
+
+        Task<bool> ExecuteImport(ImportCommand importCommand, Stream sourceData);
     }
 }

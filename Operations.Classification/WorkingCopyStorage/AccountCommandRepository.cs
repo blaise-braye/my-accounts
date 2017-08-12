@@ -9,31 +9,20 @@ using Newtonsoft.Json;
 
 namespace Operations.Classification.WorkingCopyStorage
 {
-    public interface IAccountCommandQueue
+    public class AccountCommandRepository : IAccountCommandRepository
     {
-        Task<List<ImportCommand>> GetAll(Guid accountId);
-
-        Task<bool> Enqueue(ImportCommand importCommand, Stream attachment);
-
-        Task<bool> Replace(ImportCommand importCommand);
-
-        Task<Stream> OpenAttachment(ImportCommand importCommand);
-    }
-
-    public class AccountCommandQueue : IAccountCommandQueue
-    {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(AccountCommandQueue));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(AccountCommandRepository));
 
         private readonly IWorkingCopy _workingCopy;
 
-        public AccountCommandQueue(IWorkingCopy workingCopy)
+        public AccountCommandRepository(IWorkingCopy workingCopy)
         {
             _workingCopy = workingCopy;
         }
 
         private IFileSystem Fs => _workingCopy.Fs;
 
-        public async Task<bool> Enqueue(ImportCommand importCommand, Stream attachment)
+        public async Task<bool> Add(ImportCommand importCommand, Stream attachment)
         {
             var accountId = importCommand.AccountId;
             await EnsureRefLogStructureIsClean(accountId);

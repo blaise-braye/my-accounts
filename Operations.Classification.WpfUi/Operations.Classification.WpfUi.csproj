@@ -128,6 +128,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Managers\Imports\ImportCommandModel.cs" />
+    <Compile Include="Managers\Imports\ImportsManagerViewModel.cs" />
+    <Compile Include="Managers\Imports\ImportsManagerView.xaml.cs">
+      <DependentUpon>ImportsManagerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterViewModel.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml.cs">
       <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
@@ -182,7 +187,7 @@
     <Compile Include="Managers\Integration\GererMesComptes\BasicTransactionModel.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\GmcManager.cs" />
     <Compile Include="MainViewModel.cs" />
-    <Compile Include="Managers\Transactions\ImportOperationsView.xaml.cs">
+    <Compile Include="Managers\Imports\ImportOperationsView.xaml.cs">
       <DependentUpon>ImportOperationsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Managers\Transactions\OperationsManager.cs" />
@@ -217,6 +222,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Managers\Imports\ImportsManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Managers\Integration\GererMesComptes\GmcManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -233,7 +242,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Managers\Transactions\ImportOperationsView.xaml">
+    <Page Include="Managers\Imports\ImportOperationsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -107,10 +107,12 @@
     <Compile Include="AccountOperations\Fortis\FortisOperationArchiveCsvMap.cs" />
     <Compile Include="AccountOperations\Contracts\AccountOperationBase.cs" />
     <Compile Include="WorkingCopyStorage\AccountEntity.cs" />
+    <Compile Include="WorkingCopyStorage\IAccountCommandRepository.cs" />
     <Compile Include="WorkingCopyStorage\ImportCommand.cs" />
     <Compile Include="WorkingCopyStorage\AccountsRepository.cs" />
+    <Compile Include="WorkingCopyStorage\ImportManager.cs" />
     <Compile Include="WorkingCopyStorage\IOperationsRepository.cs" />
-    <Compile Include="WorkingCopyStorage\AccountCommandQueue.cs" />
+    <Compile Include="WorkingCopyStorage\AccountCommandRepository.cs" />
     <Compile Include="WorkingCopyStorage\OperationsRepository.cs" />
     <Compile Include="WorkingCopyStorage\WorkingCopy.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />

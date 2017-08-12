@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Operations.Classification.WorkingCopyStorage;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Reports;
 using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Input;
@@ -22,6 +23,8 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private readonly AccountsRepository _repository;
         private readonly IOperationsManager _operationsManager;
 
+        private readonly IImportsManager _importsManager;
+
         private ObservableCollection<AccountViewModel> _accounts;
 
         private AccountViewModel _currentAccount;
@@ -32,11 +35,16 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
         private bool _isLoading;
 
-        public AccountsManager(BusyIndicatorViewModel busyIndicatorViewModel, AccountsRepository repository, IOperationsManager operationsManager)
+        public AccountsManager(
+            BusyIndicatorViewModel busyIndicatorViewModel,
+            AccountsRepository repository,
+            IOperationsManager operationsManager,
+            IImportsManager importsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
             _repository = repository;
             _operationsManager = operationsManager;
+            _importsManager = importsManager;
             LoadCommand = new AsyncCommand(LoadAsync, () => !IsEditing);
             BeginNewCommand = new AsyncCommand(BeginNew, () => !IsEditing);
             BeginEditCommand = new AsyncCommand(BeginEdit, () => !IsEditing && CurrentAccount != null);
@@ -176,6 +184,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                     var vm = entity.Map().To<AccountViewModel>();
                     var operations = await _operationsManager.GetTransformedUnifiedOperations(entity.Id);
                     vm.Operations = operations;
+                    vm.Imports = await _importsManager.GetImports(entity.Id);
 
                     result.Add(vm);
                 }

@@ -23,7 +23,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 {
     public class OperationsManager : ViewModelBase, IOperationsManager
     {
-        private const string UnifiedAccountOperationsByNameRoute = "/UnifiedAccountOperations/{0}";
+        private const string UnifiedAccountOperationsByAccountRoute = "/UnifiedAccountOperations/{0}";
         private static readonly ILog _log = LogManager.GetLogger(typeof(OperationsManager));
         private readonly CompositeFilter _anyFilter;
 
@@ -31,7 +31,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private readonly OpenFileDialog _ofd;
         private readonly SaveFileDialog _sfd;
         private readonly IOperationsRepository _operationsRepository;
-        private readonly AccountCommandQueue _accountCommandQueue;
+        private readonly IImportManager _importManager;
 
         private bool _autoDetectSourceKind;
         private AccountViewModel _currentAccount;
@@ -47,12 +47,12 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private List<UnifiedAccountOperationModel> _operations;
         private SourceKind? _sourceKind;
 
-        public OperationsManager(BusyIndicatorViewModel busyIndicator, IFileSystem fileSystem, IOperationsRepository operationsRepository, AccountCommandQueue accountCommandQueue)
+        public OperationsManager(BusyIndicatorViewModel busyIndicator, IFileSystem fileSystem, IOperationsRepository operationsRepository, IImportManager importManager)
         {
             _busyIndicator = busyIndicator;
             Fs = fileSystem;
             _operationsRepository = operationsRepository;
-            _accountCommandQueue = accountCommandQueue;
+            _importManager = importManager;
             BeginImportCommand = new RelayCommand(BeginImport);
             BeginExportCommand = new RelayCommand(BeginExport);
             BeginDataQualityAnalysisCommand = new AsyncCommand(BeginDataQualityAnalysis);
@@ -137,7 +137,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         public AccountViewModel CurrentAccount
         {
             get => _currentAccount;
-            set => Set(nameof(CurrentAccount), ref _currentAccount, value);
+            private set => Set(nameof(CurrentAccount), ref _currentAccount, value);
         }
 
         public RelayCommand SelectFilesToImportCommand { get; }
@@ -190,15 +190,15 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             {
                 foreach (var account in accounts)
                 {
-                    var commands = await _accountCommandQueue.GetAll(account.Id);
-                    await _operationsRepository.ReplayCommand(account.Id, commands);
+                    var commands = await _importManager.GetAll(account.Id);
+                    await _importManager.ReplayCommand(account.Id, commands);
                 }
             }
         }
 
         private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(Guid accountId)
         {
-            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByNameRoute, accountId));
+            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByAccountRoute, accountId));
         }
 
         private void OnAnyFilterInvalidated(object sender, EventArgs e)
@@ -362,7 +362,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                             using (var fs = Fb.OpenRead(file))
                             {
                                 var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
-                                if (await _operationsRepository.RequestImportExecution(importCommand, fs))
+                                if (await _importManager.RequestImportExecution(importCommand, fs))
                                 {
                                     await GetCacheEntry(account.Id).DeleteAsync();
                                     someImportSucceeded = true;
