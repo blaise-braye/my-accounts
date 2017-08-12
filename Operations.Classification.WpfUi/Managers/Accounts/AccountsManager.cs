@@ -23,7 +23,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private readonly AccountsRepository _repository;
         private readonly IOperationsManager _operationsManager;
 
-        private readonly IImportsManager _importsManager;
+        private readonly IImportsManagerViewModel _importsManager;
 
         private ObservableCollection<AccountViewModel> _accounts;
 
@@ -39,7 +39,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             BusyIndicatorViewModel busyIndicatorViewModel,
             AccountsRepository repository,
             IOperationsManager operationsManager,
-            IImportsManager importsManager)
+            IImportsManagerViewModel importsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
             _repository = repository;

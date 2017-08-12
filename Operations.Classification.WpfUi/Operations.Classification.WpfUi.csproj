@@ -128,6 +128,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Managers\Accounts\Models\AccountDataInvalidated.cs" />
     <Compile Include="Managers\Imports\ImportCommandModel.cs" />
     <Compile Include="Managers\Imports\ImportsManagerViewModel.cs" />
     <Compile Include="Managers\Imports\ImportsManagerView.xaml.cs">

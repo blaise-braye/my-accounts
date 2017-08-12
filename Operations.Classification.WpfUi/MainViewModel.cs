@@ -56,13 +56,14 @@ namespace Operations.Classification.WpfUi
 
             BusyIndicator = new BusyIndicatorViewModel();
 
-            ImportsManagerViewModel = new ImportsManagerViewModel(importManager);
-            OperationsManager = new OperationsManager(BusyIndicator, fs, operationsRepository, importManager);
+            ImportsManagerViewModel = new ImportsManagerViewModel(BusyIndicator, fs, importManager);
+            OperationsManager = new OperationsManager(BusyIndicator, operationsRepository, importManager);
             AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, OperationsManager, ImportsManagerViewModel);
             GmcManager = new GmcManager(BusyIndicator);
             _settingsManager = new SettingsManager();
 
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
+            MessengerInstance.Register<AccountDataInvalidated>(this, OnCurrentAccountDataInvalidated);
 
             if (!IsInDesignMode)
             {
@@ -131,6 +132,11 @@ namespace Operations.Classification.WpfUi
                 await AccountsManager.LoadCommand.ExecuteAsync(null);
                 await GmcManager.InitializeAsync(AccountsManager.Accounts);
             }
+        }
+
+        private void OnCurrentAccountDataInvalidated(AccountDataInvalidated obj)
+        {
+            RefreshCommand.Execute(null);
         }
 
         private async Task Refresh()

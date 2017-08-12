@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
-             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.OperationsManager}"
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.ImportsManagerViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding CommitImportCommand}">
+                    Command="{Binding BeginImportCommand}">
                 <Rectangle Width="24" Height="24">
                     <Rectangle.Fill>
                         <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />

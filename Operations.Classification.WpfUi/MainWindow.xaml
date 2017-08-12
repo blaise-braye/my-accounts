@@ -102,8 +102,8 @@
             </controls:Flyout>
             <controls:Flyout Header="Import command parameters" Position="Right"
                              IsModal="True"
-                             IsOpen="{Binding OperationsManager.IsImporting, Mode=TwoWay}">
-                <transactions:ImportOperationsView Width="350" DataContext="{Binding OperationsManager}" />
+                             IsOpen="{Binding ImportsManagerViewModel.IsImporting, Mode=TwoWay}">
+                <transactions:ImportOperationsView Width="350" DataContext="{Binding ImportsManagerViewModel}" />
             </controls:Flyout>
             <controls:Flyout Header="Export command parameters" Position="Right"
                              IsModal="True"

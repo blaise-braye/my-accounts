@@ -12,15 +12,6 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    ToolTip="Import operations"
-                    Command="{Binding BeginImportCommand}">
-                <Rectangle Width="24" Height="24">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Button>
-            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
                     ToolTip="Export filtered operations"
                     Command="{Binding BeginExportCommand}">
                 <Rectangle Width="24" Height="24">
