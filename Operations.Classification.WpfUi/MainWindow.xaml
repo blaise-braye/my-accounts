@@ -27,13 +27,13 @@
             <TabItem Header="accounts">
                 <accounts:AccountsView DataContext="{Binding AccountsManager}" />
             </TabItem>
-            <TabItem Header="transactions"
-                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManagerViewModel}" />
-            </TabItem>
             <TabItem Header="imports"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <imports:ImportsManagerView DataContext="{Binding ImportsManagerViewModel}" />
+            </TabItem>
+            <TabItem Header="transactions"
+                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManagerViewModel}" />
             </TabItem>
             <TabItem Header="gmc"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
