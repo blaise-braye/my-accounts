@@ -19,7 +19,7 @@ namespace Operations.Classification.AccountOperations.Unified
 
         private readonly AccountToUnifiedOperationMapper _mapper;
 
-        private readonly List<UnifiedAccountOperationPatternMapping> _patterns;
+        private readonly UnifiedAccountOperationMapping[] _patterns;
 
         private readonly PlaceInfoResolver _placeInfoResolver;
 
@@ -45,10 +45,20 @@ namespace Operations.Classification.AccountOperations.Unified
 
         public UnifiedAccountOperation Apply(AccountOperationBase source, UnifiedAccountOperation target)
         {
-            var tuple =
-                _patterns.Where(p => p.SourceKind == source.SourceKind)
-                    .Select(p => new { Pattern = p, Match = p.CompiledExpression.Match(source) })
-                    .SingleOrDefault(m => m.Match.Success);
+            var tuple = _patterns
+                .SelectMany(p => p.PatternMappings.Select(patternMapping => new
+                {
+                    patternMapping,
+                    p.CompiledOperationIdPattern
+                }))
+                .Where(p => p.patternMapping.SourceKind == source.SourceKind)
+                .Select(p => new
+                {
+                    p.patternMapping,
+                    p.CompiledOperationIdPattern,
+                    Match = p.patternMapping.CompiledExpression.Match(source)
+                })
+                .SingleOrDefault(p => p.Match.Success);
 
             if (tuple == null)
             {
@@ -59,7 +69,7 @@ namespace Operations.Classification.AccountOperations.Unified
 
             AddSourcePropertiesToSymbols(source, symbols);
 
-            var pattern = tuple.Pattern;
+            var pattern = tuple.patternMapping;
             var groupNames = pattern.CompiledExpression.GetGroupNames();
             var match = tuple.Match;
 
@@ -125,6 +135,11 @@ namespace Operations.Classification.AccountOperations.Unified
                 }
             }
 
+            if (!tuple.CompiledOperationIdPattern.IsMatch(target.OperationId))
+            {
+                target.OperationId = string.Empty;
+            }
+
             return target;
         }
 
@@ -138,11 +153,11 @@ namespace Operations.Classification.AccountOperations.Unified
             }
         }
 
-        private static List<UnifiedAccountOperationPatternMapping> LoadPatterns()
+        private static UnifiedAccountOperationMapping[] LoadPatterns()
         {
-            var fortisPatterns = JsonConvert.DeserializeObject<List<UnifiedAccountOperationPatternMapping>>(Resources.FortisUnifiedAccountPatternMappings);
-            var sodexoPatterns = JsonConvert.DeserializeObject<List<UnifiedAccountOperationPatternMapping>>(Resources.SodexoUnifiedAccountPatternMappings);
-            return fortisPatterns.Union(sodexoPatterns).ToList();
+            var fortisPatterns = JsonConvert.DeserializeObject<UnifiedAccountOperationMapping>(Resources.FortisUnifiedAccountPatternMappings);
+            var sodexoPatterns = JsonConvert.DeserializeObject<UnifiedAccountOperationMapping>(Resources.SodexoUnifiedAccountPatternMappings);
+            return new[] { fortisPatterns, sodexoPatterns };
         }
 
         private object EvaluateBinding(Dictionary<string, object> symbols, string binding)

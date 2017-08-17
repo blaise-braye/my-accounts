@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.WpfUi.Managers.Imports;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 {
@@ -17,6 +19,8 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
         private string _name;
 
         private List<UnifiedAccountOperation> _operations;
+
+        private List<ImportCommandGridModel> _imports;
 
         public AccountViewModel()
         {
@@ -61,6 +65,18 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
             set
             {
                 if (Set(nameof(Operations), ref _operations, value))
+                {
+                    RefreshStatus();
+                }
+            }
+        }
+
+        public List<ImportCommandGridModel> Imports
+        {
+            get => _imports;
+            set
+            {
+                if (Set(nameof(Imports), ref _imports, value))
                 {
                     RefreshStatus();
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,8 @@ using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
 using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.GeoLoc;
+using Operations.Classification.GererMesComptes;
+using Operations.Classification.Managers.Imports;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -18,20 +18,58 @@ namespace Operations.Classification.Tests.Steps
     [Binding]
     public class ClassificationSteps
     {
-        private readonly CsvAccountOperationManager _csvAccountOperationManager = new CsvAccountOperationManager();
+        private readonly ClassificationStepsContext _context;
 
-        private readonly UnifiedAccountOperationPatternTransformer _transformer =
-            new UnifiedAccountOperationPatternTransformer(
-                new PlaceInfoResolver(PlaceProvider.Load(new PlacesRepository())));
+        public ClassificationSteps(ClassificationStepsContext context)
+        {
+            _context = context;
+        }
 
-        private List<AccountOperationBase> _readOperations;
+        [Given(@"I have an operations file with the following '(.*)' content")]
+        public void GivenIHaveAnOperationsFileWithTheFollowingContent(string encoding, string content)
+        {
+            var utf8Bytes = Encoding.UTF8.GetBytes(content);
+            var encodingBytes = Encoding.Convert(
+                Encoding.UTF8, Encoding.GetEncoding(encoding), utf8Bytes);
+            _context.AnOperationsFile = encodingBytes;
+        }
 
-        private List<UnifiedAccountOperation> _unifiedOperations;
+        [Given(@"I have an empty operations repository")]
+        public void GivenIHaveAnEmptyOperationsRepository()
+        {
+            _context.OperationsRepository.Clear(_context.AccountId);
+        }
+
+        [When(@"I import the operations file with following parameters")]
+        public async Task WhenIImportTheOperationsFileWithFollowingParameters(Table table)
+        {
+            var importCommand = new ImportCommand(_context.AccountId);
+            table.FillInstance(importCommand);
+            
+            await _context.ImportManager.RequestImportExecution(
+                importCommand,
+                new MemoryStream(_context.AnOperationsFile));
+        }
+
+        [When(@"I change the last import command such that")]
+        public async Task WhenIChangeTheLastImportCommandSuchThat(Table table)
+        {
+            var imports = await _context.AccountCommandRepository.GetAll(_context.AccountId);
+            var lastImportCommand = imports.Last();
+            table.FillInstance(lastImportCommand);
+            await _context.AccountCommandRepository.Replace(lastImportCommand);
+        }
+
+        [When(@"I replay the entire reflog of operations")]
+        public async Task WhenIReplayTheEntireReflogOfOperations()
+        {
+            await _context.ImportManager.ReplayCommands(_context.AccountId);
+        }
         
         [Given(@"I have read the following fortis operations from archive files")]
         public void GivenIHaveReadTheFollowingFortisOperationsFromArchiveFiles(Table table)
         {
-            _readOperations = table.CreateSet<FortisOperation>().Select(
+            _context.ReadOperations = table.CreateSet<FortisOperation>().Select(
                 o =>
                 {
                     o.SourceKind = SourceKind.FortisCsvArchive;
@@ -42,7 +80,7 @@ namespace Operations.Classification.Tests.Steps
         [Given(@"I have read the following fortis operations from export files")]
         public void GivenIHaveReadTheFollowingFortisOperationsFromExportFiles(Table table)
         {
-            _readOperations = table.CreateSet<FortisOperation>().Select(
+            _context.ReadOperations = table.CreateSet<FortisOperation>().Select(
                 o =>
                 {
                     o.SourceKind = SourceKind.FortisCsvExport;
@@ -55,7 +93,7 @@ namespace Operations.Classification.Tests.Steps
         {
             var rawStream = new MemoryStream(Encoding.UTF8.GetBytes(multilineText));
             var operationManager = new CsvAccountOperationManager();
-            _readOperations = await operationManager.ReadAsync(rawStream, SourceKind.SodexoCsvExport);
+            _context.ReadOperations = await operationManager.ReadAsync(rawStream, operationManager.GetDefaultFileMetadata(SourceKind.SodexoCsvExport));
         }
 
         [Then(@"File '(.*)' exists")]
@@ -68,11 +106,11 @@ namespace Operations.Classification.Tests.Steps
         [Then(@"pattern detection accuracy is higher that (.*) %")]
         public void ThenPatternDetectionAccuracyIsHigherThat(double minAccuracy)
         {
-            var patternDetected = _unifiedOperations.Where(p => !string.IsNullOrEmpty(p.PatternName)).ToList();
+            var patternDetected = _context.UnifiedOperations.Where(p => !string.IsNullOrEmpty(p.PatternName)).ToList();
             var detectedCount = patternDetected.Count;
-            var total = _unifiedOperations.Count;
+            var total = _context.UnifiedOperations.Count;
             var detectedPercentage = 100.0 * detectedCount / total;
-            foreach (var op in _unifiedOperations.Where(p => string.IsNullOrEmpty(p.PatternName)))
+            foreach (var op in _context.UnifiedOperations.Where(p => string.IsNullOrEmpty(p.PatternName)))
                 Console.WriteLine($@"{op.SourceKind} {op.OperationId} {op.Note}");
 
             Assert.That(detectedPercentage, Is.GreaterThanOrEqualTo(minAccuracy));
@@ -81,13 +119,20 @@ namespace Operations.Classification.Tests.Steps
         [Then(@"the operations data is")]
         public void ThenTheOperationsDataIs(Table table)
         {
-            table.CompareToSet(_unifiedOperations);
+            table.CompareToSet(_context.UnifiedOperations);
+        }
+
+        [Then(@"the imported operation data is")]
+        public async Task ThenTheImportedOperationDataIs(Table table)
+        {
+            var operations = await _context.OperationsRepository.GetAll(_context.AccountId);
+            table.CompareToSet(operations);
         }
 
         [Then(@"the read fortis operations are")]
         public void ThenTheReadFortisOperationsAre(Table table)
         {
-            table.CompareToSet(_readOperations.Cast<FortisOperation>());
+            table.CompareToSet(_context.ReadOperations.Cast<FortisOperation>());
         }
         
         [When(@"I Filter the details where number is higher than '(.*)'")]
@@ -95,12 +140,12 @@ namespace Operations.Classification.Tests.Steps
         {
             if (!string.IsNullOrEmpty(number))
             {
-                _unifiedOperations = _unifiedOperations.Where(t => string.CompareOrdinal(t.OperationId, number) > 0).ToList();
+                _context.UnifiedOperations = _context.UnifiedOperations.Where(t => string.CompareOrdinal(t.OperationId, number) > 0).ToList();
             }
         }
 
         [When(@"I parse the details of the files '(.*)'")]
-        public void WhenIParseTheDetailsOfTheFiles(string filePath)
+        public async Task WhenIParseTheDetailsOfTheFiles(string filePath)
         {
             string[] files = { filePath };
 
@@ -110,9 +155,17 @@ namespace Operations.Classification.Tests.Steps
                 files = Directory.GetFiles(filePath, "*.csv");
             }
 
-            _unifiedOperations =
-                files.SelectMany(s => _csvAccountOperationManager.Read(s, CsvAccountOperationManager.DetectFileSourceKindFromFileName(s)))
-                    .Select(operation => _transformer.Apply(operation))
+            var readTasks = files.Select(s =>
+            {
+                var sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(s);
+                var fmd = _context.CsvAccountOperationManager.GetDefaultFileMetadata(sourceKind);
+                return _context.CsvAccountOperationManager.ReadAsync(s, fmd);
+            });
+
+            var operationsBatches = await Task.WhenAll(readTasks);
+            _context.UnifiedOperations =
+                operationsBatches.SelectMany(operations => operations)
+                    .Select(operation => _context.Transformer.Apply(operation))
                     .SortByOperationIdDesc()
                     .ToList();
         }
@@ -128,25 +181,30 @@ namespace Operations.Classification.Tests.Steps
 
             var rawStream = new MemoryStream(asciiBytes);
             var operationManager = new CsvAccountOperationManager();
-            _readOperations = await operationManager.ReadAsync(rawStream, SourceKind.FortisCsvExport);
+            _context.ReadOperations = await operationManager.ReadAsync(rawStream, operationManager.GetDefaultFileMetadata(SourceKind.FortisCsvExport));
         }
 
         [When(@"I store the operation details in file '(.*)'")]
         public void WhenIStoreTheOperationDetailsInFile(string targetFilePath)
         {
-            new UnifiedAccountOperationWriter().WriteCsv(targetFilePath, _unifiedOperations);
+            _context.CsvAccountOperationManager.WriteAsync(targetFilePath, _context.UnifiedOperations.Cast<AccountOperationBase>().ToList());
         }
 
         [When(@"I store the operation details in qif file '(.*)'")]
         public async Task WhenIStoreTheOperationDetailsInQifFile(string targetFilePath)
         {
-            await new UnifiedAccountOperationWriter().WriteQif(targetFilePath, _unifiedOperations);
+            var qifData = _context.UnifiedOperations.ToQifData();
+            using (var fs = File.Open(targetFilePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+            using (var sw = new StreamWriter(fs))
+            {
+                await sw.WriteAsync(qifData);
+            }
         }
 
         [When(@"I unify and transform the read operations")]
         public void WhenIUnifyAndTransformTheReadOperations()
         {
-            _unifiedOperations = _readOperations.Select(o => _transformer.Apply(o)).SortByOperationIdDesc().ToList();
+            _context.UnifiedOperations = _context.ReadOperations.Select(o => _context.Transformer.Apply(o)).SortByOperationIdDesc().ToList();
         }
     }
 }

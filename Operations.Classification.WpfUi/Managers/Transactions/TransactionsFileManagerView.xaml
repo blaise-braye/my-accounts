@@ -7,19 +7,10 @@
              xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
              xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
-             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.TransactionsManager}"
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.OperationsManagerViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    ToolTip="Import operations"
-                    Command="{Binding BeginImportCommand}">
-                <Rectangle Width="24" Height="24">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Button>
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
                     ToolTip="Export filtered operations"
                     Command="{Binding BeginExportCommand}">

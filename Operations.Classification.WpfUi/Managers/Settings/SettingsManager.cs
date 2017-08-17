@@ -7,8 +7,7 @@ using System.Windows.Forms;
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-
-using Operations.Classification.WpfUi.Technical.Caching;
+using Operations.Classification.Caching;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 

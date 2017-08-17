@@ -16,8 +16,10 @@ using AutoMapper;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.Managers.Accounts;
+using Operations.Classification.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
@@ -42,6 +44,15 @@ namespace Operations.Classification.WpfUi
                     cfg.CreateMap<UnifiedAccountOperation, UnifiedAccountOperationModel>();
                     cfg.CreateMap<Properties.Settings, SettingsModel>();
                     cfg.CreateMap<SettingsModel, Properties.Settings>();
+
+                    cfg.CreateMap<ImportCommand, ImportCommandGridModel>();
+                    cfg.CreateMap<ImportExecutionImpact, ImportCommandGridModel>()
+                        .ForMember(s => s.LastExecution, opt => opt.MapFrom(s => s.CreationDate))
+                        .ForMember(s => s.Success, opt => opt.MapFrom(s => s.Success))
+                        .ForMember(s => s.NewOperations, opt => opt.MapFrom(s => s.NewOperations))
+                        .ForMember(s => s.AlreadyKnown, opt => opt.MapFrom(s => s.AlreadyKnown))
+                        .ForMember(s => s.NotCompliant, opt => opt.MapFrom(s => s.NotCompliant))
+                        .ForAllOtherMembers(m => m.Ignore());
                 });
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);

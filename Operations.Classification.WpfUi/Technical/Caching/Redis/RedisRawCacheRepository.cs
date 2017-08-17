@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Operations.Classification.Caching;
 using StackExchange.Redis;
 
 namespace Operations.Classification.WpfUi.Technical.Caching.Redis
@@ -45,9 +46,9 @@ namespace Operations.Classification.WpfUi.Technical.Caching.Redis
             return Database.StringSetAsync(cacheKey, rawResult);
         }
 
-        public Task<RedisValue> StringGetAsync(string cacheKey)
+        public async Task<CacheValue> StringGetAsync(string cacheKey)
         {
-            return Database.StringGetAsync(cacheKey);
+            return (string)await Database.StringGetAsync(cacheKey);
         }
 
         public async Task ClearCache()
@@ -55,7 +56,10 @@ namespace Operations.Classification.WpfUi.Technical.Caching.Redis
             var servers = _connection.GetEndPoints(true).Select(e => _connection.GetServer(e));
             foreach (var server in servers)
             {
-                await server.FlushAllDatabasesAsync();
+                if (server.IsConnected)
+                {
+                    await server.FlushAllDatabasesAsync();
+                }
             }
         }
     }

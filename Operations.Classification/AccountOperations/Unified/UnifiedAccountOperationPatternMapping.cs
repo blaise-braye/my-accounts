@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Operations.Classification.AccountOperations.Contracts;
 
 namespace Operations.Classification.AccountOperations.Unified
@@ -26,6 +27,7 @@ namespace Operations.Classification.AccountOperations.Unified
             }
         }
 
+        [JsonIgnore]
         public ObjectExpression CompiledExpression
         {
             get

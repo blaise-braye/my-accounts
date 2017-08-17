@@ -35,7 +35,7 @@ namespace Operations.Classification.Tests.AutoFixtures.Builders
                 case SourceKind.SodexoCsvExport:
                     instance = (AccountOperationBase)context.Resolve(typeof(SodexoOperation));
                     break;
-                case SourceKind.InternalExport:
+                case SourceKind.InternalCsvExport:
                     instance = (AccountOperationBase) context.Resolve(typeof(UnifiedAccountOperation));
                     break;
                 default:

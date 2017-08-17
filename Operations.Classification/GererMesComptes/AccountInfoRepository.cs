@@ -176,7 +176,7 @@ namespace Operations.Classification.GererMesComptes
             return result;
         }
 
-        public Task<AccountInfo> PrepareNew(object initialValues)
+        private Task<AccountInfo> PrepareNew(object initialValues)
         {
             var rawMembersDictionary = initialValues.ToRawMembersDictionary();
             return PrepareNew(rawMembersDictionary);

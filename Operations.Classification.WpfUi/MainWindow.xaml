@@ -10,6 +10,7 @@
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       xmlns:command="http://www.galasoft.ch/mvvmlight"
                       xmlns:settings="clr-namespace:Operations.Classification.WpfUi.Managers.Settings"
+                      xmlns:imports="clr-namespace:Operations.Classification.WpfUi.Managers.Imports"
                       mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
                       Icon="Resources/app_icon.ico"
                       Title="Accounts Operations Manager" d:DesignWidth="900" d:DesignHeight="400">
@@ -28,7 +29,11 @@
             </TabItem>
             <TabItem Header="transactions"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <transactions:TransactionsFileManagerView DataContext="{Binding TransactionsManager}" />
+                <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManagerViewModel}" />
+            </TabItem>
+            <TabItem Header="imports"
+                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <imports:ImportsManagerView DataContext="{Binding ImportsManagerViewModel}" />
             </TabItem>
             <TabItem Header="gmc"
                      Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -97,13 +102,13 @@
             </controls:Flyout>
             <controls:Flyout Header="Import command parameters" Position="Right"
                              IsModal="True"
-                             IsOpen="{Binding TransactionsManager.IsImporting, Mode=TwoWay}">
-                <transactions:ImportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
+                             IsOpen="{Binding ImportsManagerViewModel.IsImporting, Mode=TwoWay}">
+                <transactions:ImportOperationsView Width="350" DataContext="{Binding ImportsManagerViewModel}" />
             </controls:Flyout>
             <controls:Flyout Header="Export command parameters" Position="Right"
                              IsModal="True"
-                             IsOpen="{Binding TransactionsManager.IsExporting, Mode=TwoWay}">
-                <transactions:ExportOperationsView Width="350" DataContext="{Binding TransactionsManager}" />
+                             IsOpen="{Binding OperationsManagerViewModel.IsExporting, Mode=TwoWay}">
+                <transactions:ExportOperationsView Width="350" DataContext="{Binding OperationsManagerViewModel}" />
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>

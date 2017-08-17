@@ -8,14 +8,18 @@ using GalaSoft.MvvmLight;
 
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.Caching;
 using Operations.Classification.GeoLoc;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.Managers.Accounts;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.Managers.Operations;
+using Operations.Classification.Managers.Persistence;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
-using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Controls;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Localization;
@@ -40,28 +44,40 @@ namespace Operations.Classification.WpfUi
 
         public MainViewModel()
         {
+            // Initialize Data layer
+            IFileSystem fs = new FileSystem();
+            var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
+            var accountsRepository = new AccountsRepository(workingCopy);
+            var accountCommandRepository = new AccountCommandRepository(workingCopy);
             var placesRepository = new PlacesRepository();
             var placeProvider = PlaceProvider.Load(placesRepository);
             var placeInfoResolver = new PlaceInfoResolver(placeProvider);
             var operationPatternTransformer = new UnifiedAccountOperationPatternTransformer(placeInfoResolver);
+            var operationsRepository = new OperationsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
 
-            IFileSystem fs = new FileSystem();
-            var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
+            // Initialize Managers
+            var importManager = new ImportManager(accountCommandRepository, operationsRepository);
+            var operationsManager = new OperationsManager(operationsRepository);
 
-            var transactionsRepository = new TransactionsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
-            var accountsRepository = new AccountsRepository(workingCopy);
-
+            // Initialize View Models
             BusyIndicator = new BusyIndicatorViewModel();
-            TransactionsManager = new TransactionsManager(BusyIndicator, fs, transactionsRepository);
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, TransactionsManager);
 
+            ImportsManagerViewModel = new ImportsManagerViewModel(BusyIndicator, fs, importManager);
+
+            OperationsManagerViewModel = new OperationsManagerViewModel(BusyIndicator, operationsManager, importManager);
+            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, operationsManager, importManager);
             GmcManager = new GmcManager(BusyIndicator);
             _settingsManager = new SettingsManager();
-            LoadCommand = new AsyncCommand(Load);
-            RefreshCommand = new AsyncCommand(Refresh);
-            MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
 
-            if (IsInDesignMode)
+            MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
+            MessengerInstance.Register<AccountDataInvalidated>(this, OnCurrentAccountDataInvalidated);
+
+            if (!IsInDesignMode)
+            {
+                LoadCommand = new AsyncCommand(Load);
+                RefreshCommand = new AsyncCommand(Refresh);
+            }
+            else
             {
                 AccountsManager.Accounts.Add(
                     new AccountViewModel
@@ -89,7 +105,9 @@ namespace Operations.Classification.WpfUi
 
         public GmcManager GmcManager { get; }
 
-        public TransactionsManager TransactionsManager { get; }
+        public ImportsManagerViewModel ImportsManagerViewModel { get; }
+
+        public OperationsManagerViewModel OperationsManagerViewModel { get; }
 
         public SettingsManager SettingsManager => _settingsManager;
 
@@ -123,8 +141,14 @@ namespace Operations.Classification.WpfUi
             }
         }
 
+        private void OnCurrentAccountDataInvalidated(AccountDataInvalidated obj)
+        {
+            RefreshCommand.Execute(null);
+        }
+
         private async Task Refresh()
         {
+            await OperationsManagerViewModel.ReplayImports(AccountsManager.Accounts);
             await CacheProvider.ClearCache();
             await Load();
         }

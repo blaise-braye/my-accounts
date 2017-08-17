@@ -118,39 +118,39 @@ this.ScenarioSetup(scenarioInfo);
                         "Reference",
                         "Detail"});
             table3.AddRow(new string[] {
-                        "VE1",
+                        "2017-0010",
                         "PROXIMUS MOBILE BE31435411161155BIC KREDBEBB    VIA MOBILE BANKING COMMUNICATION " +
                             ": 285293318632 EXECUTE LE 05-02 DATE VALEUR : 05/02/2017"});
             table3.AddRow(new string[] {
-                        "VE2",
+                        "2017-0020",
                         "GEVELCO BE05 3701 2392 6075  BIC BBRUBEBBCOMMUNICATION: LOYER RUE DE PASCALE 15 -" +
                             " ETAGE 1  BR AYE - BACQUELAINE DATE VALEUR : 01/02/2017"});
             table3.AddRow(new string[] {
-                        "VE2B",
+                        "2017-0030",
                         "GEVELCO BE05370123926075BIC BBRUBEBB VOTRE REFERENCE : 171828956 COMMUNICATION : " +
                             "LOYER RUE DE PASCALE 15 - ETAGE 1  BR AYE - BACQUELAINE DATE VALEUR : 03/04/2017" +
                             ""});
             table3.AddRow(new string[] {
-                        "VE3",
+                        "2017-0040",
                         "PARTENAMUT BE40310083000663BIC BBRUBEBB    VIA WEB BANKING COMMUNICATION : 170010" +
                             "267366 DATE VALEUR : 23/01/2017"});
             table3.AddRow(new string[] {
-                        "VE3B",
+                        "2017-0050",
                         "PARTENA - MUTUALITE LIBRE BE74 2100 0818 2307  BIC GEBABEBBREFERENCE DONNEUR D\'OR" +
                             "DRE : 5090411H691 COMMUNICATION : /C/ PAIE /0201733339803 DU 10/04/2017 POUR 001" +
                             " PRESTATIONS CHEZ M.BAYET BEN 0201733339803 711041707696 DATE VALEUR : 11/04/201" +
                             "7"});
             table3.AddRow(new string[] {
-                        "VE4",
+                        "2017-0060",
                         "SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L\'ALLEU BE02 3600 9651 844" +
                             "0  BIC BBRUBEBB REFERENCE DONNEUR D\'ORDRE : 1CS0125-01-0000245-1701310102822878 " +
                             "COMMUNICATION : /A/ 1CS0125-01-0000245 DATE VALEUR : 13/01/2017"});
             table3.AddRow(new string[] {
-                        "VE5",
+                        "2017-0070",
                         "BACQUELAINE SYLVIE RUE DU DUC 231150     WOLUWE-SAINT-PIERRE BE70 0013 5026 1925 " +
                             " BIC GEBABEBB PAS DE COMMUNICATION DATE VALEUR : 18/01/2017"});
             table3.AddRow(new string[] {
-                        "VE6",
+                        "2017-0080",
                         "COLINE BRAYE BE89750668924185BIC AXABBE22    VIA WEB BANKING COMMUNICATION : ANNI" +
                             "F PAPA DATE VALEUR : 05/12/2016"});
 #line 20
@@ -169,7 +169,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BIC",
                         "ThirdPartyOperationRef"});
             table4.AddRow(new string[] {
-                        "VE1",
+                        "2017-0010",
                         "PROXIMUS MOBILE",
                         "",
                         "",
@@ -179,7 +179,7 @@ this.ScenarioSetup(scenarioInfo);
                         "KREDBEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VE2",
+                        "2017-0020",
                         "GEVELCO",
                         "",
                         "",
@@ -189,7 +189,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BBRUBEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VE2B",
+                        "2017-0030",
                         "GEVELCO",
                         "",
                         "",
@@ -199,7 +199,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BBRUBEBB",
                         "171828956"});
             table4.AddRow(new string[] {
-                        "VE3",
+                        "2017-0040",
                         "PARTENAMUT",
                         "",
                         "",
@@ -209,7 +209,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BBRUBEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VE3B",
+                        "2017-0050",
                         "PARTENA - MUTUALITE LIBRE",
                         "",
                         "",
@@ -220,7 +220,7 @@ this.ScenarioSetup(scenarioInfo);
                         "GEBABEBB",
                         "5090411H691"});
             table4.AddRow(new string[] {
-                        "VE4",
+                        "2017-0060",
                         "SELLIGENT S.A.",
                         "BRAINE-L\'ALLEU",
                         "AVENUE DE FINLANDE, 21420",
@@ -230,7 +230,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BBRUBEBB",
                         "1CS0125-01-0000245-1701310102822878"});
             table4.AddRow(new string[] {
-                        "VE5",
+                        "2017-0070",
                         "BACQUELAINE SYLVIE",
                         "WOLUWE-SAINT-PIERRE",
                         "RUE DU DUC 231150",
@@ -240,7 +240,7 @@ this.ScenarioSetup(scenarioInfo);
                         "GEBABEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VE6",
+                        "2017-0080",
                         "COLINE BRAYE",
                         "",
                         "",
@@ -267,7 +267,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Reference",
                         "Detail"});
             table5.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "AVEC LA CARTE 6703 04XX XXXX X315 7 CARREFOUR EXPR   1000 BRUS.07-02-2017 EXECUTE" +
                             " LE 07-02 DATE VALEUR : 07/02/2017"});
 #line 45
@@ -281,7 +281,7 @@ this.ScenarioSetup(scenarioInfo);
                         "City",
                         "PatternName"});
             table6.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "CARREFOUR EXPR",
                         "BRUXELLES",
                         "CartPayment"});
@@ -303,7 +303,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Reference",
                         "Detail"});
             table7.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A NUMERO DE MANDAT :43FJ224QUR62Q REFERENCE : 1" +
                             "000265758596 PAYPAL COMMUNICATION : 1000265758596 PAYPAL DATE VALEUR : 02/12/201" +
                             "6"});
@@ -320,7 +320,7 @@ this.ScenarioSetup(scenarioInfo);
                         "ThirdPartyOperationRef",
                         "Communication"});
             table8.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A",
                         "Domiciliation",
                         "43FJ224QUR62Q",
@@ -344,7 +344,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Reference",
                         "Detail"});
             table9.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "COMPTE INTERNE VISA : 17503879 ETAT DE DEPENSES NUMERO 336DATE VALEUR : 12/12/201" +
                             "6"});
 #line 70
@@ -358,7 +358,7 @@ this.ScenarioSetup(scenarioInfo);
                         "PatternName",
                         "Communication"});
             table10.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "17503879",
                         "CreditPayment",
                         "ETAT DE DEPENSES NUMERO 336"});
@@ -381,16 +381,16 @@ this.ScenarioSetup(scenarioInfo);
                         "Detail",
                         "CounterpartyOfTheTransaction"});
             table11.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "COMFORT PACK EXECUTE LE 06-02DATE VALEUR : 01/02/2017",
                         "ANY"});
             table11.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "PERIODE DU 01-02-2017 AU 28-02-2017DETAILS VOIR ANNEXE EXECUTE LE 07-03 DATE VALE" +
                             "UR : 01/03/2017",
                         "ANY"});
             table11.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "EXECUTE LE 07-03 DATE VALEUR : 01/03/2017",
                         "RECTIFICATION VERSEMENT BONUS"});
 #line 82
@@ -404,17 +404,17 @@ this.ScenarioSetup(scenarioInfo);
                         "PatternName",
                         "Communication"});
             table12.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "Fortis",
                         "BankFees",
                         "MONTHLY FEE COMFORT PACK"});
             table12.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "Fortis",
                         "BankFees",
                         "PERIODE DU 01-02-2017 AU 28-02-2017"});
             table12.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "Fortis",
                         "BankFees",
                         "RECTIFICATION VERSEMENT BONUS"});

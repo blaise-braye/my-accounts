@@ -5,10 +5,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using Operations.Classification.WpfUi.Data;
+using Operations.Classification.Managers;
+using Operations.Classification.Managers.Accounts;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.Managers.Operations;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
+using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Reports;
-using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -20,7 +23,9 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private readonly IAsyncCommand[] _commands;
 
         private readonly AccountsRepository _repository;
-        private readonly ITransactionsManager _transactionsManager;
+        private readonly IOperationsManager _operationsManager;
+
+        private readonly IImportManager _importsManager;
 
         private ObservableCollection<AccountViewModel> _accounts;
 
@@ -32,11 +37,16 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
         private bool _isLoading;
 
-        public AccountsManager(BusyIndicatorViewModel busyIndicatorViewModel, AccountsRepository repository, ITransactionsManager transactionsManager)
+        public AccountsManager(
+            BusyIndicatorViewModel busyIndicatorViewModel,
+            AccountsRepository repository,
+            IOperationsManager operationsManager,
+            IImportManager importsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
             _repository = repository;
-            _transactionsManager = transactionsManager;
+            _operationsManager = operationsManager;
+            _importsManager = importsManager;
             LoadCommand = new AsyncCommand(LoadAsync, () => !IsEditing);
             BeginNewCommand = new AsyncCommand(BeginNew, () => !IsEditing);
             BeginEditCommand = new AsyncCommand(BeginEdit, () => !IsEditing && CurrentAccount != null);
@@ -174,8 +184,30 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                 foreach (var entity in await _repository.GetList())
                 {
                     var vm = entity.Map().To<AccountViewModel>();
-                    var operations = await _transactionsManager.GetTransformedUnifiedOperations(entity.Name);
+                    var operations = await _operationsManager.GetTransformedUnifiedOperations(entity.Id);
                     vm.Operations = operations;
+
+                    var imports = await _importsManager.GetAll(entity.Id);
+                    List<ImportCommandGridModel> models = null;
+                    if (imports != null)
+                    {
+                        List<ImportExecutionImpact> impacts = await _importsManager.GetLastExecutionImpact(entity.Id, imports.Select(i => i.Id));
+                        var impactsByCommand = impacts.ToDictionary(i => i.CommandId);
+
+                        models = imports.Project()
+                            .To<ImportCommandGridModel>((source, target) =>
+                            {
+                                if (impactsByCommand.ContainsKey(source.Id))
+                                {
+                                    var lastCommandImpact = impactsByCommand[source.Id];
+                                    lastCommandImpact.Map().To(target);
+                                }
+                            })
+                            .OrderByDescending(i => i.CreationDate)
+                            .ToList();
+                    }
+
+                    vm.Imports = models ?? new List<ImportCommandGridModel>();
 
                     result.Add(vm);
                 }

@@ -40,7 +40,8 @@ namespace Operations.Classification.Tests.Features
             List<AccountOperationBase> operations)
         {
             await operationManager.WriteAsync(_testTempFile, operations);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
@@ -53,7 +54,8 @@ namespace Operations.Classification.Tests.Features
             List<AccountOperationBase> operations)
         {
             await operationManager.WriteAsync(_testTempFile, operations);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
@@ -65,19 +67,21 @@ namespace Operations.Classification.Tests.Features
             List<AccountOperationBase> operations)
         {
             await operationManager.WriteAsync(_testTempFile, operations);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
 
         [Test]
-        [AccountOperationData(SourceKind.InternalExport)]
+        [AccountOperationData(SourceKind.InternalCsvExport)]
         public async Task ThenDeserializationIsConsistentAndOriginalDataIsPreservedWithInternalExport(
             CsvAccountOperationManager operationManager,
             List<AccountOperationBase> operations)
         {
             await operationManager.WriteAsync(_testTempFile, operations);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, operations[0].SourceKind);
+            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
