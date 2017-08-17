@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.WpfUi.Technical.Caching
+namespace Operations.Classification.Caching
 {
     public interface ICacheEntry
     {

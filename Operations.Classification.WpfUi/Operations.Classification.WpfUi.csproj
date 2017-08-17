@@ -129,11 +129,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Managers\Accounts\Models\AccountDataInvalidated.cs" />
-    <Compile Include="Managers\Imports\ImportCommandModel.cs" />
-    <Compile Include="Managers\Imports\ImportsManagerViewModel.cs" />
+    <Compile Include="Managers\Imports\ImportCommandGridModel.cs" />
     <Compile Include="Managers\Imports\ImportsManagerView.xaml.cs">
       <DependentUpon>ImportsManagerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Managers\Imports\ImportsManagerViewModel.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterViewModel.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml.cs">
       <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
@@ -141,10 +141,6 @@
     <Compile Include="Managers\Transactions\ExportOperationsView.xaml.cs">
       <DependentUpon>ExportOperationsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Transactions\IOperationsManager.cs" />
-    <Compile Include="Technical\Caching\ICacheEntryOfT.cs" />
-    <Compile Include="Technical\Caching\IRawCacheRepository.cs" />
-    <Compile Include="Technical\Caching\InMemory\InMemoryRawCacheRepository.cs" />
     <Compile Include="Technical\Caching\Redis\RedisRawCacheRepository.cs" />
     <Compile Include="Technical\Collections\Filters\TextFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSet.cs" />
@@ -155,10 +151,6 @@
     <Compile Include="Managers\Settings\SettingsModel.cs" />
     <Compile Include="Managers\Transactions\UnifiedAccountOperationModel.cs" />
     <Compile Include="Managers\Settings\SettingsManager.cs" />
-    <Compile Include="Technical\Caching\CacheProvider.cs" />
-    <Compile Include="Technical\Caching\ICacheEntry.cs" />
-    <Compile Include="Technical\Caching\JSonCacheEntryOfT.cs" />
-    <Compile Include="Technical\Caching\JSonCacheEntry.cs" />
     <Compile Include="Technical\Collections\Filters\CompositeFilter.cs" />
     <Compile Include="Technical\Collections\Filters\DateRangeFilter.cs" />
     <Compile Include="Technical\Collections\Filters\IFilter.cs" />
@@ -191,7 +183,7 @@
     <Compile Include="Managers\Imports\ImportOperationsView.xaml.cs">
       <DependentUpon>ImportOperationsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Transactions\OperationsManager.cs" />
+    <Compile Include="Managers\Transactions\OperationsManagerViewModel.cs" />
     <Compile Include="Technical\Input\AsyncCommand.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="Managers\Accounts\AccountEditorView.xaml.cs">

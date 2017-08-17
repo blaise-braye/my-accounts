@@ -5,8 +5,9 @@ using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Operations.Classification.Managers;
+using Operations.Classification.Managers.Accounts;
 using Operations.Classification.Tests.AutoFixtures;
-using Operations.Classification.WorkingCopyStorage;
 
 namespace Operations.Classification.Tests.Features.Accounts
 {

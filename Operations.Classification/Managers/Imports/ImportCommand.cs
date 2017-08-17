@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Operations.Classification.AccountOperations.Contracts;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Imports
 {
     public class ImportCommand
     {

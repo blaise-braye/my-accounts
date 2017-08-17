@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.OperationsManager}"
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.OperationsManagerViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">

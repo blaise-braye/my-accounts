@@ -5,7 +5,10 @@ using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.GeoLoc;
-using Operations.Classification.WorkingCopyStorage;
+using Operations.Classification.Managers;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.Managers.Operations;
+using Operations.Classification.Managers.Persistence;
 
 namespace Operations.Classification.Tests.Steps
 {

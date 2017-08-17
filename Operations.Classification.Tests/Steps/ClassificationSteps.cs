@@ -9,7 +9,7 @@ using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Fortis;
 using Operations.Classification.AccountOperations.Unified;
 using Operations.Classification.GererMesComptes;
-using Operations.Classification.WorkingCopyStorage;
+using Operations.Classification.Managers.Imports;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -63,8 +63,7 @@ namespace Operations.Classification.Tests.Steps
         [When(@"I replay the entire reflog of operations")]
         public async Task WhenIReplayTheEntireReflogOfOperations()
         {
-            var imports = await _context.AccountCommandRepository.GetAll(_context.AccountId);
-            await _context.ImportManager.ReplayCommand(_context.AccountId, imports);
+            await _context.ImportManager.ReplayCommands(_context.AccountId);
         }
         
         [Given(@"I have read the following fortis operations from archive files")]

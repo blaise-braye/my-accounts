@@ -3,21 +3,8 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Persistence
 {
-    public interface IWorkingCopy
-    {
-        string Root { get; }
-
-        string SettingsPath { get; }
-
-        IFileSystem Fs { get; }
-
-        Task<bool> CreateFolderIfDoesNotExistsYet(string workingCopyRoot);
-
-        string GetAbsolutePath(params object[] relativePathChain);
-    }
-
     public class WorkingCopy : IWorkingCopy
     {
         public WorkingCopy(IFileSystem fileSystem, string workingFolder)

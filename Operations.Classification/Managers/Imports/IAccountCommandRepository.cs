@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Imports
 {
     public interface IAccountCommandRepository
     {
@@ -13,6 +13,12 @@ namespace Operations.Classification.WorkingCopyStorage
 
         Task<bool> Replace(ImportCommand importCommand);
 
+        Task<bool> Delete(Guid accountId, Guid commandId);
+
         Task<Stream> OpenAttachment(ImportCommand importCommand);
+
+        Task<bool> AddExecutionImpact(Guid accountId, ImportExecutionImpact importCommand);
+
+        Task<List<ImportExecutionImpact>> GetExecutionImpacts(Guid accountId, Guid commandId);
     }
 }

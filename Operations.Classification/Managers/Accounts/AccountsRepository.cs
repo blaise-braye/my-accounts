@@ -7,17 +7,8 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Accounts
 {
-    public interface IAccountsRepository
-    {
-        Task<bool> AddOrUpdate(AccountEntity entity);
-
-        Task<AccountEntity> Find(Guid entityId);
-
-        Task<List<AccountEntity>> GetList();
-    }
-
     public class AccountsRepository : IAccountsRepository
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(AccountsRepository));

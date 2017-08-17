@@ -8,15 +8,18 @@ using GalaSoft.MvvmLight;
 
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.Caching;
 using Operations.Classification.GeoLoc;
-using Operations.Classification.WorkingCopyStorage;
+using Operations.Classification.Managers.Accounts;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.Managers.Operations;
+using Operations.Classification.Managers.Persistence;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
-using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Controls;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Localization;
@@ -41,24 +44,28 @@ namespace Operations.Classification.WpfUi
 
         public MainViewModel()
         {
+            // Initialize Data layer
+            IFileSystem fs = new FileSystem();
+            var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
+            var accountsRepository = new AccountsRepository(workingCopy);
+            var accountCommandRepository = new AccountCommandRepository(workingCopy);
             var placesRepository = new PlacesRepository();
             var placeProvider = PlaceProvider.Load(placesRepository);
             var placeInfoResolver = new PlaceInfoResolver(placeProvider);
             var operationPatternTransformer = new UnifiedAccountOperationPatternTransformer(placeInfoResolver);
-
-            IFileSystem fs = new FileSystem();
-            var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
-
-            var accountCommandRepository = new AccountCommandRepository(workingCopy);
             var operationsRepository = new OperationsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
-            var importManager = new ImportManager(accountCommandRepository, operationsRepository);
-            var accountsRepository = new AccountsRepository(workingCopy);
 
+            // Initialize Managers
+            var importManager = new ImportManager(accountCommandRepository, operationsRepository);
+            var operationsManager = new OperationsManager(operationsRepository);
+
+            // Initialize View Models
             BusyIndicator = new BusyIndicatorViewModel();
 
             ImportsManagerViewModel = new ImportsManagerViewModel(BusyIndicator, fs, importManager);
-            OperationsManager = new OperationsManager(BusyIndicator, operationsRepository, importManager);
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, OperationsManager, ImportsManagerViewModel);
+
+            OperationsManagerViewModel = new OperationsManagerViewModel(BusyIndicator, operationsManager, importManager);
+            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, operationsManager, importManager);
             GmcManager = new GmcManager(BusyIndicator);
             _settingsManager = new SettingsManager();
 
@@ -100,7 +107,7 @@ namespace Operations.Classification.WpfUi
 
         public ImportsManagerViewModel ImportsManagerViewModel { get; }
 
-        public OperationsManager OperationsManager { get; }
+        public OperationsManagerViewModel OperationsManagerViewModel { get; }
 
         public SettingsManager SettingsManager => _settingsManager;
 
@@ -141,8 +148,8 @@ namespace Operations.Classification.WpfUi
 
         private async Task Refresh()
         {
+            await OperationsManagerViewModel.ReplayImports(AccountsManager.Accounts);
             await CacheProvider.ClearCache();
-            await OperationsManager.ReplayImports(AccountsManager.Accounts);
             await Load();
         }
     }

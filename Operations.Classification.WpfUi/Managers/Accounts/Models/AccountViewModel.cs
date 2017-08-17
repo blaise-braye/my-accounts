@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.WorkingCopyStorage;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.WpfUi.Managers.Imports;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 {
@@ -19,7 +20,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
 
         private List<UnifiedAccountOperation> _operations;
 
-        private List<ImportCommand> _imports;
+        private List<ImportCommandGridModel> _imports;
 
         public AccountViewModel()
         {
@@ -70,7 +71,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts.Models
             }
         }
 
-        public List<ImportCommand> Imports
+        public List<ImportCommandGridModel> Imports
         {
             get => _imports;
             set

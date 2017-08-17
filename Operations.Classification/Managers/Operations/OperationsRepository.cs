@@ -9,8 +9,9 @@ using Newtonsoft.Json;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.Managers.Imports;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Operations
 {
     public class OperationsRepository : IOperationsRepository
     {
@@ -80,23 +81,27 @@ namespace Operations.Classification.WorkingCopyStorage
             }
         }
 
-        public async Task<bool> ExecuteImport(ImportCommand importCommand, Stream sourceData)
+        public async Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData)
         {
+            var result = new ImportExecutionImpact { CommandId = importCommand.Id };
+
             try
             {
                 var operationsDirectory = GetAccountOperationsDirectory(importCommand.AccountId);
                 await _workingCopy.CreateFolderIfDoesNotExistsYet(operationsDirectory);
 
                 var filteredData = await ReadAndFilterNewImportDataOnly(importCommand, sourceData);
-                if (filteredData.Operations.Length > 0)
+                result.NotCompliant = filteredData.NotCompliant;
+                result.AlreadyKnown = filteredData.AlreadyKnown;
+                result.NewOperations = filteredData.NewOperations.Length;
+
+                if (filteredData.NewOperations.Length > 0)
                 {
-                    var unifiedAccountOperations = filteredData.Operations
-                        .Select(_transactionPatternMapper.Apply)
-                        .Where(t => !string.IsNullOrEmpty(t.OperationId))
+                    var newOperations = filteredData.NewOperations
                         .OrderByDescending(t => t.OperationId, StringComparer.OrdinalIgnoreCase)
                         .ToList();
 
-                    var jsonOperations = JsonConvert.SerializeObject(unifiedAccountOperations, Formatting.Indented);
+                    var jsonOperations = JsonConvert.SerializeObject(newOperations, Formatting.Indented);
 
                     var filePrefixPath = Path.Combine(operationsDirectory, $"{filteredData.MaxDate:yyyy-MM-dd}");
                     var filePath = $"{filePrefixPath}.json";
@@ -110,7 +115,7 @@ namespace Operations.Classification.WorkingCopyStorage
                     Stream stream = null;
                     try
                     {
-                        stream = Fs.File.OpenWrite(filePath);
+                        stream = Fs.File.Create(filePath);
                         using (var sw = new StreamWriter(stream))
                         {
                             stream = null;
@@ -126,10 +131,11 @@ namespace Operations.Classification.WorkingCopyStorage
             }
             catch (Exception exn)
             {
+                result.Error = exn.Message;
                 _logger.Error("import failed", exn);
             }
 
-            return true;
+            return result;
         }
 
         private string GetAccountOperationsDirectory(Guid accountId)
@@ -146,21 +152,33 @@ namespace Operations.Classification.WorkingCopyStorage
             var tmpLastDate = DateTime.MinValue;
             FileStructureMetadata fileStructureMetadata = GetFileMetadata(importCommand);
 
-            var operationsToImport = (await _csvAccountOperationManager.ReadAsync(sourceData, fileStructureMetadata))
+            var operations = await _csvAccountOperationManager.ReadAsync(sourceData, fileStructureMetadata);
+
+            var result = new ReadAndFilterNewImportDataOnlyResult();
+            var operationsToImport = operations
                 .Select(
                     operation =>
                     {
                         var unifiedOperation = _transactionPatternMapper.Apply(operation);
 
-                        if (unifiedOperation.ValueDate > tmpLastDate)
+                        if (string.IsNullOrEmpty(unifiedOperation.OperationId))
+                        {
+                            result.NotCompliant++;
+                            unifiedOperation = null;
+                        }
+                        else if (!knownOperationsIds.Add(unifiedOperation.OperationId))
+                        {
+                            result.AlreadyKnown++;
+                            unifiedOperation = null;
+                        }
+                        else if (unifiedOperation.ValueDate > tmpLastDate)
                         {
                             tmpLastDate = unifiedOperation.ValueDate;
                         }
 
-                        return new { operation, unifiedOperation };
+                        return unifiedOperation;
                     })
-                .Where(o => knownOperationsIds.Add(o.unifiedOperation.OperationId))
-                .Select(o => o.operation)
+                .Where(o => o != null)
                 .ToArray();
 
             if (tmpLastDate == DateTime.MinValue)
@@ -168,11 +186,9 @@ namespace Operations.Classification.WorkingCopyStorage
                 tmpLastDate = DateTime.Today;
             }
 
-            return new ReadAndFilterNewImportDataOnlyResult
-            {
-                MaxDate = tmpLastDate,
-                Operations = operationsToImport
-            };
+            result.MaxDate = tmpLastDate;
+            result.NewOperations = operationsToImport;
+            return result;
         }
 
         private FileStructureMetadata GetFileMetadata(ImportCommand importCommand)
@@ -196,7 +212,11 @@ namespace Operations.Classification.WorkingCopyStorage
         {
             public DateTime MaxDate { get; set; }
 
-            public AccountOperationBase[] Operations { get; set; }
+            public UnifiedAccountOperation[] NewOperations { get; set; }
+
+            public int NotCompliant { get; set; }
+
+            public int AlreadyKnown { get; set; }
         }
     }
 }

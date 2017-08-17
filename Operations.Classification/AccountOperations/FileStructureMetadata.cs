@@ -1,4 +1,3 @@
-using System.Text;
 using Operations.Classification.AccountOperations.Contracts;
 
 namespace Operations.Classification.AccountOperations

@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using log4net;
 using Operations.Classification.GererMesComptes;
 using QifApi;

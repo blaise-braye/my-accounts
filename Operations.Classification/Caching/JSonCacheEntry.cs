@@ -2,9 +2,8 @@ using System;
 using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
-using StackExchange.Redis;
 
-namespace Operations.Classification.WpfUi.Technical.Caching
+namespace Operations.Classification.Caching
 {
     public class JSonCacheEntry : ICacheEntry
     {
@@ -122,7 +121,7 @@ namespace Operations.Classification.WpfUi.Technical.Caching
             return result;
         }
 
-        private object Deserialize(RedisValue cachedRawResult)
+        private object Deserialize(CacheValue cachedRawResult)
         {
             object result = null;
 

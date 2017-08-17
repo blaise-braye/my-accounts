@@ -78,17 +78,17 @@ this.ScenarioSetup(scenarioInfo);
                         "Reference",
                         "Detail"});
             table1.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "VOTRE ORDRE PERMANENT AU PROFIT DE       01-06          111,00-GEVELCO BE05 3701 " +
                             "2392 6075  BIC BBRUBEBB COMMUNICATION: LOYER RUE DE PASCALE 15 - ETAGE 1  BR AYE" +
                             " - BACQUELAINE DATE VALEUR : 01/06/2016"});
             table1.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "VOTRE ORDRE PERMANENT AU PROFIT DE       01-05          111,74-NOEL DE BURLIN PIE" +
                             "RRE BE44 2100 4308 6745  BIC GEBABEBB COMMUNICATION: LOYER RUE DE PASCALE 15 - E" +
                             "TAGE 1  BR AYE - BACQUELAINE EXECUTE LE 01-05 DATE VALEUR : 01/05/2016"});
             table1.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "VOTRE ORDRE PERMANENT AU PROFIT          01-12            5,00-DU COMPTE 000-0000" +
                             "028-28 DE OXFAM SOLIDARITE ASBL COMMUNICATION: 3209 SOLIDARITY PARTNER DATE VALE" +
                             "UR : 01/12/2011"});
@@ -105,21 +105,21 @@ this.ScenarioSetup(scenarioInfo);
                         "IBAN",
                         "BIC"});
             table2.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "GEVELCO",
                         "PermanentOrder",
                         "LOYER RUE DE PASCALE 15 - ETAGE 1  BR AYE - BACQUELAINE",
                         "BE05 3701 2392 6075",
                         "BBRUBEBB"});
             table2.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "NOEL DE BURLIN PIERRE",
                         "PermanentOrder",
                         "LOYER RUE DE PASCALE 15 - ETAGE 1  BR AYE - BACQUELAINE",
                         "BE44 2100 4308 6745",
                         "GEBABEBB"});
             table2.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "OXFAM SOLIDARITE ASBL",
                         "PermanentOrder",
                         "3209 SOLIDARITY PARTNER",
@@ -143,106 +143,106 @@ this.ScenarioSetup(scenarioInfo);
                         "Reference",
                         "Detail"});
             table3.AddRow(new string[] {
-                        "VED1",
+                        "2017-0001",
                         @"VIREMENT EUROPEEN DE                     25-11        1.111,29+SELLIGENT S.A. AVENUE DE FINLANDE, 2 1420        BRAINE-L'ALLEU BE02 3600 9651 8440  BIC BBRUBEBB REFERENCE DONNEUR D'ORDRE : 1CS0125-01-0000245-1633010083573582 COMMUNICATION : /A/ 1CS0125-01-0000245 DATE VALEUR : 25/11/2016"});
             table3.AddRow(new string[] {
-                        "VED2",
+                        "2017-0002",
                         "VIREMENT EUROPEEN DE                     18-11          111,00+BACQUELAINE SYLVIE" +
                             " RUE DU DUC 23 1150     WOLUWE-SAINT-PIERRE BE70 0013 5026 1925  BIC GEBABEBB PA" +
                             "S DE COMMUNICATION DATE VALEUR : 18/11/2016"});
             table3.AddRow(new string[] {
-                        "VED3",
+                        "2017-0003",
                         "VIREMENT EUROPEEN DE                     12-10           11,00+MUTUALITE LIBERALE" +
                             " LIEGE SOC MUTU RUE DE HERMEE 177 D 4040        HERSTAL BE46 3400 1288 1436  BIC" +
                             " BBRUBEBB REFERENCE DONNEUR D\'ORDRE : 79 COMMUNICATION : 00019161010/2030970/011" +
                             "/014/014/10101"});
             table3.AddRow(new string[] {
-                        "VED4",
+                        "2017-0004",
                         "VIREMENT EUROPEEN DE                     13-05          111,73+LEMON WAY FR763000" +
                             "4025110001118625268 BIC BNPAFRPP REFERENCE DONNEUR D\'ORDRE : KADOLOG-1245 PAS DE" +
                             " COMMUNICATION DATE VALEUR : 13/05/2016"});
             table3.AddRow(new string[] {
-                        "VED5",
+                        "2017-0005",
                         "VIREMENT EUROPEEN DE                     18-02          800,00+BACQUELAINE DANIEL" +
                             " LE ROSAI 11 4052 CHAUDFONTAINE BE58 0011 5220 3079  BIC GEBABEBB COMMUNICATION:" +
                             " RENTE DATE VALEUR : 18/02/2017"});
             table3.AddRow(new string[] {
-                        "VEA3",
+                        "2017-0010",
                         "VIREMENT EUROPEEN A                      08-11           11,46-PROXIMUS MOBILE BE" +
                             "31435411161155 BIC KREDBEBB    VIA WEB BANKING COMMUNICATION : 285293318329 EXEC" +
                             "UTE LE 08-11 DATE VALEUR : 08/11/2016"});
             table3.AddRow(new string[] {
-                        "VEA1",
+                        "2017-0011",
                         "VIREMENT EUROPEEN A                      08-11           11,96-ELECTRABEL BE46000" +
                             "325448336 BIC BPOTBEB1    VIA WEB BANKING COMMUNICATION : 441874258425 EXECUTE L" +
                             "E 08-11 DATE VALEUR : 08/11/2016"});
             table3.AddRow(new string[] {
-                        "VEA2",
+                        "2017-0012",
                         "VIREMENT EUROPEEN A                      08-11          111,00-CENTRE MEDICAL DU " +
                             "VAL SPRL BE10210039862204 BIC GEBABEBB    VIA WEB BANKING COMMUNICATION : KINE S" +
                             "HIRLEY - NILS BRAYE EXECUTE LE 08-11 DATE VALEUR : 08/11/2016"});
             table3.AddRow(new string[] {
-                        "VEA3",
+                        "2017-0013",
                         "VIREMENT EUROPEEN A                      12-11          111,00-PAYPAL EUROPE DE56" +
                             "120700883000443706 BIC DEUTDEDBPAL VIA PC BANKING COMMUNICATION : 91L74R25AM47NY" +
                             "T EXECUTE LE 11-11 DATE VALEUR : 12/11/2014"});
             table3.AddRow(new string[] {
-                        "VEA4",
+                        "2017-0014",
                         "VIREMENT EUROPEEN A                      22-05           11,13-GEOFFRAY LESAGE FR" +
                             "7614707001013081995404823 BIC CCBPFRPPMTZ VIA PC BANKING COMMUNICATION : FOURTOU" +
                             " PARADIZE DATE VALEUR : 22/05/2014"});
             table3.AddRow(new string[] {
-                        "VEA5",
+                        "2017-0015",
                         "VIREMENT EUROPEEN A                      26-03        1.111,00-VERONIQUE THIEBAUT" +
                             " BE20732694113156 BIC CREGBEBB    VIA PC BANKING PAS DE COMMUNICATION DATE VALEU" +
                             "R : 26/03/2014"});
             table3.AddRow(new string[] {
-                        "VEA6",
+                        "2017-0016",
                         "VIREMENT EUROPEEN A                      30-07          111,00-SYNDICAT INTERCOMM" +
                             "UNAL DE FLAINE FR323000100302D741000000079 BIC BDFEFRPPCCT VIA PC BANKING COMMUN" +
                             "ICATION : REGLEMENT FACTURE 1130654 DATE VALEUR : 30/07/2013"});
             table3.AddRow(new string[] {
-                        "VA1",
+                        "2017-0021",
                         "VIREMENT AU COMPTE 001-4427276-78        30-07          111,00-DE INFORIM SPRL VI" +
                             "A PC/WEB BANKING COMMUNICATION: LOYER DU AOUT 2011 - RUE DE LA LOI 16 A 4020 LIE" +
                             "GE - BRAYE EXECUTE LE 30-07 DATE VALEUR : 30/07/2011"});
             table3.AddRow(new string[] {
-                        "VA2",
+                        "2017-0022",
                         "VIREMENT AU COMPTE 001-3502619-25        25-07            1,00-DE SYLVIE BACQUELA" +
                             "INE VIA PC/WEB BANKING COMMUNICATION: MC2 BOOMBOOM H DOMDOM XY EXECUTE LE 25-07 " +
                             "DATE VALEUR : 25/07/2011"});
             table3.AddRow(new string[] {
-                        "VA3",
+                        "2017-0023",
                         "VIREMENT AU COMPTE 001-3502619-25        15-07          111,00-DE SYLVIE BACQUELA" +
                             "INE VIA PC/WEB BANKING COMMUNICATION: PRET JUILLET EXECUTE LE 15-07 DATE VALEUR " +
                             ": 15/07/2011"});
             table3.AddRow(new string[] {
-                        "VA4",
+                        "2017-0024",
                         "VIREMENT AU COMPTE 035-4838807-03        10-07          111,00-DE BRAYE BLAISE VI" +
                             "A PC/WEB BANKING EXECUTE LE 09-07 DATE VALEUR : 10/07/2011"});
             table3.AddRow(new string[] {
-                        "VD1",
+                        "2017-0031",
                         "VIREMENT DU COMPTE 001-3502619-25        29-12          111,00+DE BACQUELAINE SYL" +
                             "VIE LE ROSAI 11 4052 BEAUFAYS SANS COMMUNICATION DATE VALEUR : 29/12/2011"});
             table3.AddRow(new string[] {
-                        "VD2",
+                        "2017-0032",
                         "VIREMENT DU COMPTE 260-0192990-29        21-12          111,06+DE AUTO-SATELLITES" +
                             " SA RUE GUSTAVE BOEL 23A 7100 LA LOUVIERE COMMUNICATION: /A/ PRIME DE FIN D\'ANNE" +
                             "E         31-1 2-2011 A1-82 511417 000232 AUTO-SATEL LITES SA DATE VALEUR : 21/1" +
                             "2/2011"});
             table3.AddRow(new string[] {
-                        "VD3",
+                        "2017-0033",
                         "VIREMENT DU COMPTE 063-4286344-46        23-06           11,00+DE SCHMITZ ALISON " +
                             "RUE DES PEUPLIERS       38 4623 MAGNEE COMMUNICATION: MERCI ET SORRY POUR LE RET" +
                             "ARD     BIZ BIZ DATE VALEUR : 23/06/2011"});
             table3.AddRow(new string[] {
-                        "VM1",
+                        "2017-0041",
                         "VOTRE VIREMENT AVEC DATE-MEMO            05-05          111,00-AU PROFIT DU COMPT" +
                             "E 260-0621922-27 DE BRAYE ANDRE VIA PC/WEB BANKING COMMUNICATION: REMBOURSEMENT " +
                             "800/900 DATE VALEUR : 05/05/2011"});
 #line 29
  testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table3, "Given ");
-#line 52
+#line 57
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -256,7 +256,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BIC",
                         "ThirdPartyOperationRef"});
             table4.AddRow(new string[] {
-                        "VED1",
+                        "2017-0001",
                         "SELLIGENT S.A.",
                         "BRAINE-L\'ALLEU",
                         "AVENUE DE FINLANDE, 2 1420",
@@ -266,7 +266,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BBRUBEBB",
                         "1CS0125-01-0000245-1633010083573582"});
             table4.AddRow(new string[] {
-                        "VED2",
+                        "2017-0002",
                         "BACQUELAINE SYLVIE",
                         "WOLUWE-SAINT-PIERRE",
                         "RUE DU DUC 23 1150",
@@ -276,7 +276,7 @@ this.ScenarioSetup(scenarioInfo);
                         "GEBABEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VED3",
+                        "2017-0003",
                         "MUTUALITE LIBERALE LIEGE SOC MUTU",
                         "HERSTAL",
                         "RUE DE HERMEE 177 D 4040",
@@ -286,7 +286,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BBRUBEBB",
                         "79"});
             table4.AddRow(new string[] {
-                        "VED4",
+                        "2017-0004",
                         "LEMON WAY",
                         "",
                         "",
@@ -296,7 +296,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BNPAFRPP",
                         "KADOLOG-1245"});
             table4.AddRow(new string[] {
-                        "VED5",
+                        "2017-0005",
                         "BACQUELAINE DANIEL LE ROSAI 11 4052",
                         "CHAUDFONTAINE",
                         "",
@@ -306,7 +306,7 @@ this.ScenarioSetup(scenarioInfo);
                         "GEBABEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA3",
+                        "2017-0010",
                         "PROXIMUS MOBILE",
                         "",
                         "",
@@ -316,7 +316,7 @@ this.ScenarioSetup(scenarioInfo);
                         "KREDBEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA1",
+                        "2017-0011",
                         "ELECTRABEL",
                         "",
                         "",
@@ -326,7 +326,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BPOTBEB1",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA2",
+                        "2017-0012",
                         "CENTRE MEDICAL DU VAL SPRL",
                         "",
                         "",
@@ -336,7 +336,7 @@ this.ScenarioSetup(scenarioInfo);
                         "GEBABEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA3",
+                        "2017-0013",
                         "PAYPAL EUROPE",
                         "",
                         "",
@@ -346,7 +346,7 @@ this.ScenarioSetup(scenarioInfo);
                         "DEUTDEDBPAL",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA4",
+                        "2017-0014",
                         "GEOFFRAY LESAGE",
                         "",
                         "",
@@ -356,7 +356,7 @@ this.ScenarioSetup(scenarioInfo);
                         "CCBPFRPPMTZ",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA5",
+                        "2017-0015",
                         "VERONIQUE THIEBAUT",
                         "",
                         "",
@@ -366,7 +366,7 @@ this.ScenarioSetup(scenarioInfo);
                         "CREGBEBB",
                         ""});
             table4.AddRow(new string[] {
-                        "VEA6",
+                        "2017-0016",
                         "SYNDICAT INTERCOMMUNAL DE FLAINE",
                         "",
                         "",
@@ -376,7 +376,7 @@ this.ScenarioSetup(scenarioInfo);
                         "BDFEFRPPCCT",
                         ""});
             table4.AddRow(new string[] {
-                        "VA1",
+                        "2017-0021",
                         "INFORIM SPRL",
                         "",
                         "",
@@ -386,7 +386,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VA2",
+                        "2017-0022",
                         "SYLVIE BACQUELAINE",
                         "",
                         "",
@@ -396,7 +396,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VA3",
+                        "2017-0023",
                         "SYLVIE BACQUELAINE",
                         "",
                         "",
@@ -406,7 +406,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VA4",
+                        "2017-0024",
                         "BRAYE BLAISE",
                         "",
                         "",
@@ -416,7 +416,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VD1",
+                        "2017-0031",
                         "BACQUELAINE SYLVIE",
                         "BEAUFAYS",
                         "LE ROSAI 11 4052",
@@ -426,7 +426,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VD2",
+                        "2017-0032",
                         "AUTO-SATELLITES SA",
                         "LA LOUVIERE",
                         "RUE GUSTAVE BOEL 23A 7100",
@@ -437,7 +437,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VD3",
+                        "2017-0033",
                         "SCHMITZ ALISON",
                         "MAGNEE",
                         "RUE DES PEUPLIERS       38 4623",
@@ -447,7 +447,7 @@ this.ScenarioSetup(scenarioInfo);
                         "",
                         ""});
             table4.AddRow(new string[] {
-                        "VM1",
+                        "2017-0041",
                         "BRAYE ANDRE",
                         "",
                         "",
@@ -456,7 +456,7 @@ this.ScenarioSetup(scenarioInfo);
                         "260-0621922-27",
                         "",
                         ""});
-#line 54
+#line 59
  testRunner.Then("the operations data is", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -467,34 +467,34 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseCartPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CartPayment\'", ((string[])(null)));
-#line 77
+#line 87
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
                         "Detail"});
             table5.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "PAIEMENT PAR CARTE DE BANQUE             27-11           11,95-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 C\'KI LE ROI SPRL  WOLUWE SA 27/11/2016 EXECUTE LE 27-11 DATE V" +
                             "ALEUR : 27/11/2016"});
             table5.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "PAIEMENT PAR CARTE DE BANQUE             26-11           11,05-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 COLRUYT ET ETTERBE 26/11/2016 DATE VALEUR : 26/11/2016"});
             table5.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "PAIEMENT PAR CARTE DE BANQUE             28-11          111,27-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 3088 COLRUYT AUD  AUDERGHEM 28/11/2016 DATE VALEUR : 28/11/201" +
                             "6"});
             table5.AddRow(new string[] {
-                        "Ref4",
+                        "2017-0004",
                         "PAIEMENT PAR CARTE DE BANQUE             26-11           11,18-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 CARREFOUR MARKET  BRUXELLES 26/11/2016 DATE VALEUR : 26/11/201" +
                             "6"});
-#line 78
+#line 88
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table5, "Given ");
-#line 85
+#line 95
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -503,26 +503,26 @@ this.ScenarioSetup(scenarioInfo);
                         "City",
                         "PatternName"});
             table6.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "C\'KI LE ROI SPRL",
                         "WOLUWE-SAINT-LAMBERT",
                         "CartPayment"});
             table6.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "COLRUYT ET",
                         "ETTERBEEK",
                         "CartPayment"});
             table6.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "3088 COLRUYT AUD",
                         "AUDERGHEM",
                         "CartPayment"});
             table6.AddRow(new string[] {
-                        "Ref4",
+                        "2017-0004",
                         "CARREFOUR MARKET",
                         "BRUXELLES",
                         "CartPayment"});
-#line 87
+#line 97
     testRunner.Then("the operations data is", ((string)(null)), table6, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -533,44 +533,44 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseWithdrawal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'Withdrawal\'", ((string[])(null)));
-#line 94
+#line 104
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
                         "Detail"});
             table7.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "RETRAIT D\'ARGENT AUTRES DISTRIBUTEURS    04-11           11,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 BELFIUS37104704   BRAINE L\' 04/11/2016 DATE VALEUR : 04/11/201" +
                             "6"});
             table7.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "RETRAIT D\'ARGENT AUTRES DISTRIBUTEURS    19-11           11,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 BELFIUS35792103   JOURDAN 19/11/2016 DATE VALEUR : 19/11/2016"});
             table7.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "RETRAIT D\'ARGENT AUTRES DISTRIBUTEURS    15-10           11,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 AXA SCHMITZ       FRANCORCH 15/10/2016 DATE VALEUR : 15/10/201" +
                             "6"});
             table7.AddRow(new string[] {
-                        "Ref4",
+                        "2017-0004",
                         "RETRAIT D\'ARGENT AUTRES DISTRIBUTEURS    10-11          111,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 CHAUDFONTAINE     CHAUDFONT 10/11/2016 EXECUTE LE 10-11 DATE V" +
                             "ALEUR : 10/11/2016"});
             table7.AddRow(new string[] {
-                        "Ref5",
+                        "2017-0005",
                         "RETRAIT D\'ARGENT A NOS DISTRIBUTEURS     14-10           11,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 BRAINE L ALLEUD   BRAINE AL 14/10/2016 DATE VALEUR : 14/10/201" +
                             "6"});
             table7.AddRow(new string[] {
-                        "Ref6",
+                        "2017-0006",
                         "RETRAIT D\'ARGENT AUTRES DISTRIBUTEURS    20-02           11,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 CRELAN CASH-MORE  /BEAUFAYS 20/02/2016 DATE VALEUR : 20/02/201" +
                             "6"});
-#line 95
+#line 105
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table7, "Given ");
-#line 104
+#line 114
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -580,42 +580,42 @@ this.ScenarioSetup(scenarioInfo);
                         "PatternName",
                         "Communication"});
             table8.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "",
                         "BRAINE L\'ALLEUD",
                         "Withdrawal",
                         "BELFIUS37104704"});
             table8.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "",
                         "ETTERBEEK",
                         "Withdrawal",
                         "BELFIUS35792103"});
             table8.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "",
                         "FRANCORCHAMPS",
                         "Withdrawal",
                         "AXA SCHMITZ"});
             table8.AddRow(new string[] {
-                        "Ref4",
+                        "2017-0004",
                         "",
                         "CHAUDFONTAINE",
                         "Withdrawal",
                         "CHAUDFONTAINE"});
             table8.AddRow(new string[] {
-                        "Ref5",
+                        "2017-0005",
                         "",
                         "BRAINE L\'ALLEUD",
                         "Withdrawal",
                         "BRAINE L ALLEUD"});
             table8.AddRow(new string[] {
-                        "Ref6",
+                        "2017-0006",
                         "",
                         "BEAUFAYS",
                         "Withdrawal",
                         "CRELAN CASH-MORE"});
-#line 106
+#line 116
     testRunner.Then("the operations data is", ((string)(null)), table8, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -626,28 +626,28 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseDomiciliation()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'Domiciliation\'", ((string[])(null)));
-#line 115
+#line 125
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
                         "Detail"});
             table9.AddRow(new string[] {
-                        "Ref0",
+                        "2017-0000",
                         @"PREMIER PRELEVEMENT D'UNE                09-03           11,03-DOMICILIATION EUROPEENNE DE PAYPAL EUROPE S.A.R.L. ET CIE S.C.A NUMERO DE MANDAT : 43FJ224QUR62Q REFERENCE : YYU43FJ29FU3PEAG PAYPAL COMMUNICATION : YYU43FJ29FU3PEAG PAYPAL DATE VALEUR : 09/03/2016"});
             table9.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "DOMICILIATION EUROPEENNE DE              01-06           11,00-PAYPAL EUROPE S.A." +
                             "R.L. ET CIE S.C.A NUMERO DE MANDAT : 43FJ224QUR62Q REFERENCE : YYI43FJ29MWZV2LS " +
                             "PAYPAL COMMUNICATION : YYI43FJ29MWZV2LS PAYPAL DATE VALEUR : 01/06/2016"});
             table9.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "DOMICILIATION EUROPEENNE DE              03-02           11,00-OXFAM SOLIDARITE A" +
                             "SBL NUMERO DE MANDAT : UP003632 REFERENCE : 7242969-1-107-861-10639 COMMUNICATIO" +
                             "N : SDD/7242969/167421/636509 DATE VALEUR : 03/02/2016"});
-#line 116
+#line 126
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table9, "Given ");
-#line 122
+#line 132
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
@@ -658,27 +658,27 @@ this.ScenarioSetup(scenarioInfo);
                         "ThirdPartyOperationRef",
                         "Communication"});
             table10.AddRow(new string[] {
-                        "Ref0",
+                        "2017-0000",
                         "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A",
                         "Domiciliation",
                         "43FJ224QUR62Q",
                         "YYU43FJ29FU3PEAG PAYPAL",
                         "YYU43FJ29FU3PEAG PAYPAL"});
             table10.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "PAYPAL EUROPE S.A.R.L. ET CIE S.C.A",
                         "Domiciliation",
                         "43FJ224QUR62Q",
                         "YYI43FJ29MWZV2LS PAYPAL",
                         "YYI43FJ29MWZV2LS PAYPAL"});
             table10.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "OXFAM SOLIDARITE ASBL",
                         "Domiciliation",
                         "UP003632",
                         "7242969-1-107-861-10639",
                         "SDD/7242969/167421/636509"});
-#line 124
+#line 134
     testRunner.Then("the operations data is", ((string)(null)), table10, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -689,19 +689,19 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseCreditPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CreditPayment\'", ((string[])(null)));
-#line 130
+#line 140
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
                         "Detail"});
             table11.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "PAIEMENT A BANK CARD COMPANY             10-11           11,98-COMPTE INTERNE VIS" +
                             "A : 17503879 ETAT DE DEPENSES NUMERO 306 DATE VALEUR : 10/11/2016"});
-#line 132
+#line 142
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table11, "Given ");
-#line 136
+#line 146
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
@@ -710,11 +710,11 @@ this.ScenarioSetup(scenarioInfo);
                         "PatternName",
                         "Communication"});
             table12.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "17503879",
                         "CreditPayment",
                         "ETAT DE DEPENSES NUMERO 306"});
-#line 138
+#line 148
  testRunner.Then("the operations data is", ((string)(null)), table12, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -725,27 +725,27 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseBankFees()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankFees\'", ((string[])(null)));
-#line 142
+#line 152
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                         "Reference",
                         "Detail"});
             table13.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "REDEVANCE MENSUELLE                      01-10            1,60-COMFORT PACK EXECU" +
                             "TE LE 06-10 DATE VALEUR : 01/10/2016"});
             table13.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "FRAIS MENSUELS D\'EQUIPEMENT              01-12            1,60-PERIODE DU 01-12-2" +
                             "011 AU 31-12-2011 DETAILS VOIR ANNEXE DATE VALEUR : 01/12/2011"});
             table13.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "FRAIS MENSUELS D\'UTILISATION             01-12            1,40-PERIODE DU 01-11-2" +
                             "014 AU 30-11-2014 DETAILS VOIR ANNEXE EXECUTE LE 04-12 DATE VALEUR : 01/12/2014"});
-#line 143
+#line 153
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table13, "Given ");
-#line 149
+#line 159
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
@@ -754,21 +754,21 @@ this.ScenarioSetup(scenarioInfo);
                         "PatternName",
                         "Communication"});
             table14.AddRow(new string[] {
-                        "Ref1",
+                        "2017-0001",
                         "Fortis",
                         "BankFees",
                         "MONTHLY FEE COMFORT PACK"});
             table14.AddRow(new string[] {
-                        "Ref2",
+                        "2017-0002",
                         "Fortis",
                         "BankFees",
                         "MONTHLY FEE COMFORT PACK"});
             table14.AddRow(new string[] {
-                        "Ref3",
+                        "2017-0003",
                         "Fortis",
                         "BankFees",
                         "MONTHLY FEE COMFORT PACK"});
-#line 151
+#line 161
  testRunner.Then("the operations data is", ((string)(null)), table14, "Then ");
 #line hidden
             this.ScenarioCleanup();

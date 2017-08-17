@@ -40,7 +40,7 @@
             </Button>
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
                     ToolTip="delete selected imports"
-                    Command="{Binding DeleteCommand}"
+                    Command="{Binding DeleteImportsCommand}"
                     CommandParameter="{Binding ElementName=ImportsGrid, Path=SelectedItems}">
                 <Rectangle Width="24" Height="24">
                     <Rectangle.Fill>

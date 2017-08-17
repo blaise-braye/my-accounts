@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
-using StackExchange.Redis;
 
-namespace Operations.Classification.WpfUi.Technical.Caching.InMemory
+namespace Operations.Classification.Caching.InMemory
 {
     public class InMemoryRawCacheRepository : IRawCacheRepository, IDisposable
     {
@@ -44,9 +43,9 @@ namespace Operations.Classification.WpfUi.Technical.Caching.InMemory
             return Task.FromResult(true);
         }
 
-        public Task<RedisValue> StringGetAsync(string cacheKey)
+        public Task<CacheValue> StringGetAsync(string cacheKey)
         {
-            var value = RedisValue.Null;
+            var value = CacheValue.Null;
 
             if (_objectCache.Contains(cacheKey))
             {

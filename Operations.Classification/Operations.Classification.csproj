@@ -83,6 +83,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -106,15 +107,28 @@
     <Compile Include="AccountOperations\Fortis\FortisOperation.cs" />
     <Compile Include="AccountOperations\Fortis\FortisOperationArchiveCsvMap.cs" />
     <Compile Include="AccountOperations\Contracts\AccountOperationBase.cs" />
-    <Compile Include="WorkingCopyStorage\AccountEntity.cs" />
-    <Compile Include="WorkingCopyStorage\IAccountCommandRepository.cs" />
-    <Compile Include="WorkingCopyStorage\ImportCommand.cs" />
-    <Compile Include="WorkingCopyStorage\AccountsRepository.cs" />
-    <Compile Include="WorkingCopyStorage\ImportManager.cs" />
-    <Compile Include="WorkingCopyStorage\IOperationsRepository.cs" />
-    <Compile Include="WorkingCopyStorage\AccountCommandRepository.cs" />
-    <Compile Include="WorkingCopyStorage\OperationsRepository.cs" />
-    <Compile Include="WorkingCopyStorage\WorkingCopy.cs" />
+    <Compile Include="Caching\CacheProvider.cs" />
+    <Compile Include="Caching\ICacheEntry.cs" />
+    <Compile Include="Caching\ICacheEntryOfT.cs" />
+    <Compile Include="Caching\InMemory\InMemoryRawCacheRepository.cs" />
+    <Compile Include="Caching\InMemory\NoCache.cs" />
+    <Compile Include="Caching\IRawCacheRepository.cs" />
+    <Compile Include="Caching\JSonCacheEntry.cs" />
+    <Compile Include="Caching\JSonCacheEntryOfT.cs" />
+    <Compile Include="Managers\Accounts\AccountEntity.cs" />
+    <Compile Include="Managers\Accounts\IAccountsRepository.cs" />
+    <Compile Include="Managers\Imports\IAccountCommandRepository.cs" />
+    <Compile Include="Managers\IImportManager.cs" />
+    <Compile Include="Managers\Imports\ImportCommand.cs" />
+    <Compile Include="Managers\Accounts\AccountsRepository.cs" />
+    <Compile Include="Managers\Imports\ImportExecutionImpact.cs" />
+    <Compile Include="Managers\Imports\ImportManager.cs" />
+    <Compile Include="Managers\Operations\IOperationsRepository.cs" />
+    <Compile Include="Managers\Imports\AccountCommandRepository.cs" />
+    <Compile Include="Managers\Operations\OperationsManager.cs" />
+    <Compile Include="Managers\Operations\OperationsRepository.cs" />
+    <Compile Include="Managers\IWorkingCopy.cs" />
+    <Compile Include="Managers\Persistence\WorkingCopy.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="GeoLoc\BelgianPlace.cs" />
     <Compile Include="GeoLoc\BelgianPlaceCsvMap.cs" />

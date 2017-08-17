@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -9,27 +10,20 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using Operations.Classification.AccountOperations;
 using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.WorkingCopyStorage;
+using Operations.Classification.Managers;
+using Operations.Classification.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Technical.Caching;
 using Operations.Classification.WpfUi.Technical.Input;
-using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Imports
 {
-    public interface IImportsManagerViewModel
+    public class ImportsManagerViewModel : ViewModelBase
     {
-        Task<List<ImportCommand>> GetImports(Guid accountId);
-    }
-
-    public class ImportsManagerViewModel : ViewModelBase, IImportsManagerViewModel
-    {
-        private const string ImportsByAccountIdRoute = "/Imports/{0}";
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly IImportManager _importManager;
         private readonly OpenFileDialog _ofd;
         private AccountViewModel _currentAccount;
-        private List<ImportCommandModel> _imports;
+        private List<ImportCommandGridModel> _imports;
         private bool _isImporting;
         private bool _autoDetectSourceKind;
         private string _filePaths;
@@ -44,7 +38,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             BeginImportCommand = new RelayCommand(BeginImport);
             CommitImportCommand = new AsyncCommand(CommitImport);
             SelectFilesToImportCommand = new RelayCommand(SelectFilesToImport);
-
+            DeleteImportsCommand = new AsyncCommand<IEnumerable>(DeleteImports);
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
 
             _ofd = new OpenFileDialog
@@ -54,7 +48,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             };
         }
 
-        public List<ImportCommandModel> Imports
+        public List<ImportCommandGridModel> Imports
         {
             get => _imports;
             private set => Set(nameof(Imports), ref _imports, value);
@@ -74,9 +68,9 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         public RelayCommand BeginEditCommand { get; set; }
 
-        public AsyncCommand<IList<ImportCommandModel>> BeginDownloadCommand { get; set; }
+        public AsyncCommand<IList<ImportCommandGridModel>> BeginDownloadCommand { get; set; }
 
-        public AsyncCommand<IList<ImportCommandModel>> DeleteCommand { get; set; }
+        public AsyncCommand<IEnumerable> DeleteImportsCommand { get; }
 
         public string FilePaths
         {
@@ -111,21 +105,6 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         private FileBase Fb => Fs.File;
 
-        public async Task<List<ImportCommand>> GetImports(Guid accountId)
-        {
-            var result = await GetCacheEntry(accountId).GetOrAddAsync(
-                () => _importManager.GetAll(accountId));
-            return result;
-        }
-
-        private static ICacheEntry<List<ImportCommand>> GetCacheEntry(Guid accountId)
-        {
-            return CacheProvider.GetJSonCacheEntry<List<ImportCommand>>(
-                string.Format(
-                    ImportsByAccountIdRoute,
-                    accountId));
-        }
-
         private void OnAccountViewModelReceived(AccountViewModel currentAccount)
         {
             _currentAccount = currentAccount;
@@ -134,10 +113,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         private void RefreshImports()
         {
-            var imports = _currentAccount?.Imports?.AsEnumerable();
-
-            Imports = imports.Project().To<ImportCommandModel>()
-                .OrderByDescending(i => i.CreationDate).ToList();
+            Imports = _currentAccount?.Imports;
         }
 
         private void BeginImport()
@@ -191,7 +167,6 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                                 var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
                                 if (await _importManager.RequestImportExecution(importCommand, fs))
                                 {
-                                    await GetCacheEntry(account.Id).DeleteAsync();
                                     someImportSucceeded = true;
                                 }
                             }
@@ -219,6 +194,21 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             if (_ofd.ShowDialog() == true)
             {
                 FilePaths = string.Join(",", _ofd.FileNames);
+            }
+        }
+
+        private async Task DeleteImports(IEnumerable arg)
+        {
+            var lst = arg?.OfType<ImportCommandGridModel>().ToList();
+            if (lst?.Count > 0)
+            {
+                var idSet = new HashSet<Guid>(lst.Select(a => a.Id));
+                await _importManager.DeleteImports(lst[0].AccountId, idSet);
+
+                var imports = _currentAccount.Imports.Where(i => !idSet.Contains(i.Id)).ToList();
+                _currentAccount.Imports = imports;
+
+                RefreshImports();
             }
         }
     }

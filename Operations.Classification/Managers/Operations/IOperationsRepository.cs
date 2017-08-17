@@ -4,8 +4,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.AccountOperations.Unified;
+using Operations.Classification.Managers.Imports;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Operations
 {
     public interface IOperationsRepository
     {
@@ -15,6 +16,6 @@ namespace Operations.Classification.WorkingCopyStorage
 
         void Clear(Guid accountId);
 
-        Task<bool> ExecuteImport(ImportCommand importCommand, Stream sourceData);
+        Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData);
     }
 }

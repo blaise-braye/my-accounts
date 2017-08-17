@@ -5,11 +5,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using Operations.Classification.WorkingCopyStorage;
+using Operations.Classification.Managers;
+using Operations.Classification.Managers.Accounts;
+using Operations.Classification.Managers.Imports;
+using Operations.Classification.Managers.Operations;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Reports;
-using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -23,7 +25,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
         private readonly AccountsRepository _repository;
         private readonly IOperationsManager _operationsManager;
 
-        private readonly IImportsManagerViewModel _importsManager;
+        private readonly IImportManager _importsManager;
 
         private ObservableCollection<AccountViewModel> _accounts;
 
@@ -39,7 +41,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             BusyIndicatorViewModel busyIndicatorViewModel,
             AccountsRepository repository,
             IOperationsManager operationsManager,
-            IImportsManagerViewModel importsManager)
+            IImportManager importsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
             _repository = repository;
@@ -184,7 +186,28 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                     var vm = entity.Map().To<AccountViewModel>();
                     var operations = await _operationsManager.GetTransformedUnifiedOperations(entity.Id);
                     vm.Operations = operations;
-                    vm.Imports = await _importsManager.GetImports(entity.Id);
+
+                    var imports = await _importsManager.GetAll(entity.Id);
+                    List<ImportCommandGridModel> models = null;
+                    if (imports != null)
+                    {
+                        List<ImportExecutionImpact> impacts = await _importsManager.GetLastExecutionImpact(entity.Id, imports.Select(i => i.Id));
+                        var impactsByCommand = impacts.ToDictionary(i => i.CommandId);
+
+                        models = imports.Project()
+                            .To<ImportCommandGridModel>((source, target) =>
+                            {
+                                if (impactsByCommand.ContainsKey(source.Id))
+                                {
+                                    var lastCommandImpact = impactsByCommand[source.Id];
+                                    lastCommandImpact.Map().To(target);
+                                }
+                            })
+                            .OrderByDescending(i => i.CreationDate)
+                            .ToList();
+                    }
+
+                    vm.Imports = models ?? new List<ImportCommandGridModel>();
 
                     result.Add(vm);
                 }

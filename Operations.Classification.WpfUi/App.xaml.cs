@@ -8,6 +8,10 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
+using Operations.Classification.Caching;
+using Operations.Classification.Caching.InMemory;
+using Operations.Classification.WpfUi.Properties;
+using Operations.Classification.WpfUi.Technical.Caching.Redis;
 using Operations.Classification.WpfUi.Technical.Localization;
 
 namespace Operations.Classification.WpfUi
@@ -17,18 +21,36 @@ namespace Operations.Classification.WpfUi
     /// </summary>
     public partial class App
     {
-        private readonly ILog _log = LogManager.GetLogger(typeof(App));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(App));
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             SetupLogging();
             SetupExceptionHandlers();
+            SetupCache();
             ApplicationCulture.ResetCulture();
 
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement),
                 new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+        }
+
+        private static void SetupCache()
+        {
+            IRawCacheRepository repository;
+
+            if (string.IsNullOrEmpty(Settings.Default.RedisConnectionString))
+            {
+                repository = new InMemoryRawCacheRepository();
+            }
+            else
+            {
+                repository = new RedisRawCacheRepository(Settings.Default.RedisConnectionString);
+            }
+
+            CacheProvider.Init(repository);
+            _log.Info($"Cache provider initialized, working with repository {repository.GetType()}");
         }
 
         private static void SetupLogging()

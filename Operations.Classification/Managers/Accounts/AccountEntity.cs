@@ -1,6 +1,6 @@
 using System;
 
-namespace Operations.Classification.WorkingCopyStorage
+namespace Operations.Classification.Managers.Accounts
 {
     public class AccountEntity
     {
