@@ -4,10 +4,12 @@ namespace Operations.Classification.WpfUi.Managers.Settings
 {
     public class SettingsModel : ObservableObject
     {
-        private bool _hideAmounts;
-        private string _workingFolder;
         private string _culture;
+        private string _gmcPassword;
+        private string _gmcUserName;
+        private bool _hideAmounts;
         private string _uiCulture;
+        private string _workingFolder;
 
         public string WorkingFolder
         {
@@ -31,6 +33,18 @@ namespace Operations.Classification.WpfUi.Managers.Settings
         {
             get => _uiCulture;
             set => Set(nameof(UiCulture), ref _uiCulture, value);
+        }
+
+        public string GmcUserName
+        {
+            get => _gmcUserName;
+            set { Set(() => GmcUserName, ref _gmcUserName, value); }
+        }
+
+        public string GmcPassword
+        {
+            get => _gmcPassword;
+            set { Set(() => GmcPassword, ref _gmcPassword, value); }
         }
     }
 }

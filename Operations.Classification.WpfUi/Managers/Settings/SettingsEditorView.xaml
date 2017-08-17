@@ -28,14 +28,23 @@
                 </Rectangle>
             </Button>
         </StackPanel>
-    <StackPanel>
-        <Label Content="Working folder" Target="{Binding ElementName=TwtWorkingFolder}" />
-        <TextBox Name="TwtWorkingFolder"
+        <StackPanel>
+            <Label Content="Working folder" Target="{Binding ElementName=TwtWorkingFolder}" />
+            <TextBox Name="TwtWorkingFolder"
                  Style="{StaticResource OpenFileMetroTextBox}"
                  controls:TextBoxHelper.Watermark="enter the working folder"
                  controls:TextBoxHelper.ButtonCommand="{Binding SelectWorkingFolderCommand}"
                  Text="{Binding Settings.WorkingFolder}" />
-        <Label Content="Culture" Target="{Binding ElementName=CmbCulture}" />
+            <Label Content="Gmc username" Target="{Binding ElementName=TxtGmcUserName}" />
+            <TextBox Name="TxtGmcUserName"
+                controls:TextBoxHelper.Watermark="enter the gmc user name"
+                Text="{Binding Settings.GmcUserName}" />
+            <Label Content="Gmc password" Target="{Binding ElementName=TxtGmcPassword}" />
+            <PasswordBox Name="TxtGmcPassword"
+                         DataContext="{Binding Settings}"
+                     controls:TextBoxHelper.Watermark="enter the gmc password"
+                     PasswordChanged="TxtGmcPassword_OnPasswordChanged" />
+            <Label Content="Culture" Target="{Binding ElementName=CmbCulture}" />
             <ComboBox ItemsSource="{Binding Cultures}" x:Name="CmbCulture"
                   IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"
                   controls:TextBoxHelper.Watermark="enter the culture, system default will be used if left empty"
@@ -48,8 +57,8 @@
                       SelectedValuePath="Name" DisplayMemberPath="DisplayName"
                       SelectedValue="{Binding Settings.UiCulture}" />
             <controls:ToggleSwitch Header="Hide amounts" IsChecked="{Binding Settings.HideAmounts, Mode=TwoWay}" />
-    </StackPanel>
-        </DockPanel>
+        </StackPanel>
+    </DockPanel>
 </UserControl>
 
 
