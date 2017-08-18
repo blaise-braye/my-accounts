@@ -17,12 +17,12 @@ using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts
 {
-    public class AccountsManager : ViewModelBase
+    public class AccountsManagerViewModel : ViewModelBase
     {
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly IAsyncCommand[] _commands;
 
-        private readonly AccountsRepository _repository;
+        private readonly IAccountsManager _manager;
         private readonly IOperationsManager _operationsManager;
 
         private readonly IImportManager _importsManager;
@@ -37,14 +37,14 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
         private bool _isLoading;
 
-        public AccountsManager(
+        public AccountsManagerViewModel(
             BusyIndicatorViewModel busyIndicatorViewModel,
-            AccountsRepository repository,
+            IAccountsManager manager,
             IOperationsManager operationsManager,
             IImportManager importsManager)
         {
             _busyIndicator = busyIndicatorViewModel;
-            _repository = repository;
+            _manager = manager;
             _operationsManager = operationsManager;
             _importsManager = importsManager;
             LoadCommand = new AsyncCommand(LoadAsync, () => !IsEditing);
@@ -161,7 +161,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                         entity.Id = Guid.NewGuid();
                     }
 
-                    success = await _repository.AddOrUpdate(entity);
+                    success = await _manager.AddOrUpdate(entity);
                     if (success)
                     {
                         account.Id = entity.Id;
@@ -181,7 +181,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                 var currentAccountId = CurrentAccount?.Id;
                 var result = new List<AccountViewModel>();
 
-                foreach (var entity in await _repository.GetList())
+                foreach (var entity in await _manager.GetList())
                 {
                     var vm = entity.Map().To<AccountViewModel>();
                     var operations = await _operationsManager.GetTransformedUnifiedOperations(entity.Id);
@@ -244,7 +244,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
 
             using (_busyIndicator.EncapsulateActiveJobDescription(this, $"Deleting current account ({account.Name})"))
             {
-                if (await _repository.Delete(account.Id))
+                if (await _manager.Delete(account.Id))
                 {
                     var accountIdx = Accounts.IndexOf(account);
                     if (accountIdx >= 0)

@@ -171,7 +171,7 @@
     <Compile Include="Technical\Converters\InvertBoolToVisibilityConverter.cs" />
     <Compile Include="Technical\Collections\SmartCollection.cs" />
     <Compile Include="Technical\Input\AsyncCommandOfT.cs" />
-    <Compile Include="Managers\Accounts\AccountsManager.cs" />
+    <Compile Include="Managers\Accounts\AccountsManagerViewModel.cs" />
     <Compile Include="Managers\Accounts\Models\AccountStatusViewModel.cs" />
     <Compile Include="Managers\Accounts\AccountsView.xaml.cs">
       <DependentUpon>AccountsView.xaml</DependentUpon>

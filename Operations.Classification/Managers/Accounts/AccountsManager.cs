@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Operations.Classification.Caching;
+
+namespace Operations.Classification.Managers.Accounts
+{
+    public interface IAccountsManager
+    {
+        Task<bool> AddOrUpdate(AccountEntity entity);
+
+        Task<IEnumerable<AccountEntity>> GetList();
+
+        Task<bool> Delete(Guid accountId);
+    }
+
+    public class AccountsManager : IAccountsManager
+    {
+        private const string AccountsRoute = "/Accounts";
+        private readonly AccountsRepository _accountsRepository;
+
+        public AccountsManager(AccountsRepository accountsRepository)
+        {
+            _accountsRepository = accountsRepository;
+        }
+
+        public async Task<bool> AddOrUpdate(AccountEntity entity)
+        {
+            var result = await _accountsRepository.AddOrUpdate(entity);
+            if (result)
+            {
+                await GetCacheEntry().DeleteAsync();
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<AccountEntity>> GetList()
+        {
+            var result = await GetCacheEntry().GetOrAddAsync(
+                () => _accountsRepository.GetList());
+
+            return result;
+        }
+
+        public async Task<bool> Delete(Guid accountId)
+        {
+            var result = await _accountsRepository.Delete(accountId);
+            if (result)
+            {
+                await GetCacheEntry().DeleteAsync();
+            }
+
+            return result;
+        }
+
+        private static ICacheEntry<List<AccountEntity>> GetCacheEntry()
+        {
+            return CacheProvider.GetJSonCacheEntry<List<AccountEntity>>(AccountsRoute);
+        }
+    }
+}

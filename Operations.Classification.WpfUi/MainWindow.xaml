@@ -19,24 +19,24 @@
             <command:EventToCommand Command="{Binding Mode=OneWay, Path=LoadCommand}" />
         </i:EventTrigger>
         <i:EventTrigger EventName="Closing">
-            <command:EventToCommand Command="{Binding Mode=OneWay, Path=AccountsManager.CommitEditCommand}" />
+            <command:EventToCommand Command="{Binding Mode=OneWay, Path=AccountsManagerViewModel.CommitEditCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
         <TabControl>
             <TabItem Header="accounts">
-                <accounts:AccountsView DataContext="{Binding AccountsManager}" />
+                <accounts:AccountsView DataContext="{Binding AccountsManagerViewModel}" />
             </TabItem>
             <TabItem Header="imports"
-                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                     Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <imports:ImportsManagerView DataContext="{Binding ImportsManagerViewModel}" />
             </TabItem>
             <TabItem Header="transactions"
-                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                     Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManagerViewModel}" />
             </TabItem>
             <TabItem Header="gmc"
-                     Visibility="{Binding AccountsManager.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+                     Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <gererMesComptes:GmcManagerView DataContext="{Binding GmcManager}" />
             </TabItem>
         </TabControl>
@@ -75,8 +75,8 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
-            <ComboBox ItemsSource="{Binding AccountsManager.Accounts}"
-                      SelectedItem="{Binding AccountsManager.CurrentAccount}"
+            <ComboBox ItemsSource="{Binding AccountsManagerViewModel.Accounts}"
+                      SelectedItem="{Binding AccountsManagerViewModel.CurrentAccount}"
                       DisplayMemberPath="Name"
                       Foreground="WhiteSmoke"
                       BorderThickness="0"
@@ -96,9 +96,9 @@
             </controls:Flyout>
             <controls:Flyout Header="Account editor" Position="Right"
                              IsModal="True"
-                             CloseCommand="{Binding AccountsManager.CommitEditCommand}"
-                             IsOpen="{Binding AccountsManager.IsEditing, Mode=OneWay}">
-                <accounts:AccountEditorView Width="350" DataContext="{Binding AccountsManager}" />
+                             CloseCommand="{Binding AccountsManagerViewModel.CommitEditCommand}"
+                             IsOpen="{Binding AccountsManagerViewModel.IsEditing, Mode=OneWay}">
+                <accounts:AccountEditorView Width="350" DataContext="{Binding AccountsManagerViewModel}" />
             </controls:Flyout>
             <controls:Flyout Header="Import command parameters" Position="Right"
                              IsModal="True"

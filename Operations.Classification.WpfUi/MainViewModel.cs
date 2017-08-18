@@ -58,6 +58,7 @@ namespace Operations.Classification.WpfUi
             // Initialize Managers
             var importManager = new ImportManager(accountCommandRepository, operationsRepository);
             var operationsManager = new OperationsManager(operationsRepository);
+            var accountsManager = new AccountsManager(accountsRepository);
 
             // Initialize View Models
             BusyIndicator = new BusyIndicatorViewModel();
@@ -65,7 +66,7 @@ namespace Operations.Classification.WpfUi
             ImportsManagerViewModel = new ImportsManagerViewModel(BusyIndicator, fs, importManager);
 
             OperationsManagerViewModel = new OperationsManagerViewModel(BusyIndicator, operationsManager, importManager);
-            AccountsManager = new AccountsManager(BusyIndicator, accountsRepository, operationsManager, importManager);
+            AccountsManagerViewModel = new AccountsManagerViewModel(BusyIndicator, accountsManager, operationsManager, importManager);
             GmcManager = new GmcManager(BusyIndicator);
             _settingsManager = new SettingsManager();
 
@@ -79,7 +80,7 @@ namespace Operations.Classification.WpfUi
             }
             else
             {
-                AccountsManager.Accounts.Add(
+                AccountsManagerViewModel.Accounts.Add(
                     new AccountViewModel
                     {
                         Name = "Blaise CC",
@@ -91,7 +92,7 @@ namespace Operations.Classification.WpfUi
                         }
                     });
 
-                AccountsManager.CurrentAccount = AccountsManager.Accounts.First();
+                AccountsManagerViewModel.CurrentAccount = AccountsManagerViewModel.Accounts.First();
             }
         }
 
@@ -101,7 +102,7 @@ namespace Operations.Classification.WpfUi
 
         public IAsyncCommand RefreshCommand { get; }
 
-        public AccountsManager AccountsManager { get; }
+        public AccountsManagerViewModel AccountsManagerViewModel { get; }
 
         public GmcManager GmcManager { get; }
 
@@ -128,16 +129,16 @@ namespace Operations.Classification.WpfUi
         private void OnSettingsUpdated(Properties.Settings obj)
         {
             ApplicationCulture.ResetCulture();
-            AccountsManager.UnifiedOperationsReporter.OnSettingsUpdated();
+            AccountsManagerViewModel.UnifiedOperationsReporter.OnSettingsUpdated();
             Application.Current.UpdateBindingTargets();
         }
 
         private async Task Load()
         {
-            if (AccountsManager.LoadCommand.CanExecute(null))
+            if (AccountsManagerViewModel.LoadCommand.CanExecute(null))
             {
-                await AccountsManager.LoadCommand.ExecuteAsync(null);
-                await GmcManager.InitializeAsync(AccountsManager.Accounts);
+                await AccountsManagerViewModel.LoadCommand.ExecuteAsync(null);
+                await GmcManager.InitializeAsync(AccountsManagerViewModel.Accounts);
             }
         }
 
@@ -148,7 +149,7 @@ namespace Operations.Classification.WpfUi
 
         private async Task Refresh()
         {
-            await OperationsManagerViewModel.ReplayImports(AccountsManager.Accounts);
+            await OperationsManagerViewModel.ReplayImports(AccountsManagerViewModel.Accounts);
             await CacheProvider.ClearCache();
             await Load();
         }

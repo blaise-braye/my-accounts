@@ -116,6 +116,7 @@
     <Compile Include="Caching\JSonCacheEntry.cs" />
     <Compile Include="Caching\JSonCacheEntryOfT.cs" />
     <Compile Include="Managers\Accounts\AccountEntity.cs" />
+    <Compile Include="Managers\Accounts\AccountsManager.cs" />
     <Compile Include="Managers\Accounts\IAccountsRepository.cs" />
     <Compile Include="Managers\Imports\IAccountCommandRepository.cs" />
     <Compile Include="Managers\IImportManager.cs" />
