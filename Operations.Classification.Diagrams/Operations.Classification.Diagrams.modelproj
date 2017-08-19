@@ -34,6 +34,10 @@
     </Validate>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyAccounts.Business\MyAccounts.Business.csproj">
+      <Name>MyAccounts.Business</Name>
+      <Project>{91fb57b2-f839-4d6f-a994-a30fabdbf2ba}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Operations.Classification.Gmc.Tests\Operations.Classification.Gmc.Tests.csproj">
       <Name>Operations.Classification.Gmc.Tests</Name>
       <Project>{079a59ff-71a3-4e6b-827f-be6a6d548d71}</Project>
@@ -42,17 +46,9 @@
       <Name>Operations.Classification.Tests</Name>
       <Project>{5776ffe0-fab6-4bb0-9298-e7e9586280f1}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Operations.Classification.WpfUi.Tests\Operations.Classification.WpfUi.Tests.csproj">
-      <Name>Operations.Classification.WpfUi.Tests</Name>
-      <Project>{4ae93f77-0e6a-4394-b662-f08457397e2d}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Operations.Classification.WpfUi\Operations.Classification.WpfUi.csproj">
       <Name>Operations.Classification.WpfUi</Name>
       <Project>{89aac261-6e53-4d9a-95b3-83d0b442e313}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Operations.Classification\Operations.Classification.csproj">
-      <Name>Operations.Classification</Name>
-      <Project>{adffc68b-0f84-4832-984b-0cd0f463d17e}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />

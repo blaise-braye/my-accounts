@@ -3,13 +3,13 @@
   <layers>
     <layer Id="2d262c42-b444-44d4-b55b-fa84dc507f43" name="Business">
       <childLayers>
-        <layer Id="b884e606-0b42-4115-adec-13b669123ba5" name="Operations.Classification">
+        <layer Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" name="MyAccounts.Business">
           <references>
-            <reference Id="0ebbaebc-6854-4bab-9985-a70d79912761" name="Operations.Classification">
-              <ArtifactNode Label="Operations.Classification" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification/Operations.Classification.csproj)">
+            <reference Id="b4bd49f3-6bf3-4edf-bc1c-ca6442ed883a" name="MyAccounts.Business">
+              <ArtifactNode Label="MyAccounts.Business" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Business/MyAccounts.Business.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
-              <ExpandedNode Id="(Assembly=Operations.Classification)" Label="Operations.Classification.dll" Category="CodeSchema_Assembly">
+              <ExpandedNode Id="(Assembly=MyAccounts.Business)" Label="MyAccounts.Business.dll" Category="CodeSchema_Assembly">
                 <Category Ref="FileSystem.Category.FileOfType.dll" />
                 <LinkCategory Ref="Produces" />
                 <LinkCategory Ref="Represents" />
@@ -65,8 +65,8 @@
         </layer>
         <layer Id="e6b3178a-41f4-40ea-b310-4fda807d3809" name="Operations.Classification.Tests">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="bfa082c4-1f1f-486f-9d62-89d6469935d8" direction="Forward">
-              <layerMoniker Id="b884e606-0b42-4115-adec-13b669123ba5" />
+            <dependencyFromLayerToLayer Id="738d00ba-acc8-47d1-b9e1-e0cac82b6f01" direction="Forward">
+              <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
@@ -82,14 +82,14 @@
             </reference>
           </references>
         </layer>
-        <layer Id="cfa9d6e9-1f0f-4d8f-8697-1f4b191c9caa" name="Operations.Classification.Gmc.Tests">
+        <layer Id="47ac8ab2-df29-4fa4-be6c-8f482951420e" name="Operations.Classification.Gmc.Tests">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="9a86fb96-d90a-4b9f-9670-81d1a5310a14" direction="Forward">
-              <layerMoniker Id="b884e606-0b42-4115-adec-13b669123ba5" />
+            <dependencyFromLayerToLayer Id="95eb3d1e-3f21-4180-ade6-1890b40391d3" direction="Forward">
+              <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="da4c6ebc-dd16-4c64-adbd-03262417f8f0" name="Operations.Classification.Gmc.Tests">
+            <reference Id="9d19c121-e63f-4585-9d05-8a5b4028793a" name="Operations.Classification.Gmc.Tests">
               <ArtifactNode Label="Operations.Classification.Gmc.Tests" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.Gmc.Tests/Operations.Classification.Gmc.Tests.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>

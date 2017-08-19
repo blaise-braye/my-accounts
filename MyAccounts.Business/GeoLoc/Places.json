@@ -1,0 +1,58 @@
+﻿[
+  {
+    "Name": "WOLUWE-SAINT-LAMBERT",
+    "Abbrevs": ["WOLUWE SA", "1200 BRUX", "1200 BRUSS"]
+  },
+  {
+    "Name": "LIEGE",
+    "Abbrevs": ["LIEGE GAL", "LIEGE OUT", "LIEGE 2"]
+  },
+  {
+    "Name": "CHAUDFONTAINE",
+    "Abbrevs": ["CHAUDFONT"]
+  },
+  {
+    "Name": "FRANCORCHAMPS",
+    "Abbrevs": ["FRANCORCH"]
+  },
+  {
+    "Name": "BRAINE L'ALLEUD",
+    "Abbrevs": ["BRAINE AL", "BRAINE L'", "BRAINE-L'ALLEU"]
+  },
+  {
+    "Name": "LA LOUVIERE"
+  },
+  {
+    "Name": "BEAUFAYS",
+    "Streets": ["LE ROSAI"]
+  },
+  {
+    "Name": "BRUXELLES",
+    "Abbrevs": ["BRUX", "1000 BRUX", "1000 BRUS"],
+    "Streets": ["BOLIVARLAAN"]
+  },
+  {
+    "Name": "ZAVENTEM",
+    "Streets": ["LEUVENSESTEENWEG"]
+  },
+  {
+    "Name": "ETTERBEEK",
+    "Abbrevs": ["1040 BRUX", "ETTERBE", "JOURDAN"]
+  },
+  {
+    "Name": "AUDERGHEM",
+    "Abbrevs": ["1160 BRUX"]
+  },
+  {
+    "Name": "WOLUWE-SAINT-PIERRE",
+    "Abbrevs": ["1150 BRUX"]
+  },
+  {
+    "Name": "HASSELT",
+    "Streets": ["KEMPISCHE STEENWEG"]
+  },
+  {
+    "Name": "OLNE",
+    "Streets": ["EN RIVAGNE"]
+  }
+]
