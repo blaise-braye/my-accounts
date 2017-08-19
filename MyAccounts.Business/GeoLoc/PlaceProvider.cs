@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Operations.Classification.Collections;
+using MyAccounts.Business.Collections;
 
-namespace Operations.Classification.GeoLoc
+namespace MyAccounts.Business.GeoLoc
 {
     public class PlaceProvider
     {

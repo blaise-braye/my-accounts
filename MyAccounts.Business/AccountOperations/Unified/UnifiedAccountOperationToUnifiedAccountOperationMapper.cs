@@ -1,6 +1,6 @@
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 
-namespace Operations.Classification.AccountOperations.Unified
+namespace MyAccounts.Business.AccountOperations.Unified
 {
     public class UnifiedAccountOperationToUnifiedAccountOperationMapper : AccountToUnifiedOperationMapperBase
     {

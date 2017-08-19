@@ -1,4 +1,4 @@
-﻿namespace Operations.Classification.GeoLoc
+﻿namespace MyAccounts.Business.GeoLoc
 {
     public class BelgianPlace
     {

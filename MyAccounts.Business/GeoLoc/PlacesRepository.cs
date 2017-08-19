@@ -8,7 +8,7 @@ using log4net;
 using MyAccounts.Business.Properties;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.GeoLoc
+namespace MyAccounts.Business.GeoLoc
 {
     public class PlacesRepository
     {

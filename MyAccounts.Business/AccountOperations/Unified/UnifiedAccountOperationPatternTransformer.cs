@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using FastMember;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.GeoLoc;
 using MyAccounts.Business.Properties;
 using Newtonsoft.Json;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.GeoLoc;
 
-namespace Operations.Classification.AccountOperations.Unified
+namespace MyAccounts.Business.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternTransformer
     {

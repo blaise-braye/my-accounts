@@ -1,6 +1,6 @@
 using System;
 
-namespace Operations.Classification.Managers.Accounts
+namespace MyAccounts.Business.Managers.Accounts
 {
     public class AccountEntity
     {

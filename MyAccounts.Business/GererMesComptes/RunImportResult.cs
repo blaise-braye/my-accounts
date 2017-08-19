@@ -1,4 +1,4 @@
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class RunImportResult
     {

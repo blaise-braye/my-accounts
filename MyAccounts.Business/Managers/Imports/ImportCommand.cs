@@ -1,9 +1,9 @@
 using System;
+using MyAccounts.Business.AccountOperations.Contracts;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Operations.Classification.AccountOperations.Contracts;
 
-namespace Operations.Classification.Managers.Imports
+namespace MyAccounts.Business.Managers.Imports
 {
     public class ImportCommand
     {

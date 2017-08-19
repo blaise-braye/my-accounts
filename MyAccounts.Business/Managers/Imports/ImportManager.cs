@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using Operations.Classification.Caching;
-using Operations.Classification.Managers.Operations;
+using MyAccounts.Business.Caching;
+using MyAccounts.Business.Managers.Operations;
 
-namespace Operations.Classification.Managers.Imports
+namespace MyAccounts.Business.Managers.Imports
 {
     public class ImportManager : IImportManager
     {

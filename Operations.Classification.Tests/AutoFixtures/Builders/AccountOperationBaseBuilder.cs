@@ -1,8 +1,8 @@
 using System;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Fortis;
-using Operations.Classification.AccountOperations.Sodexo;
-using Operations.Classification.AccountOperations.Unified;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Fortis;
+using MyAccounts.Business.AccountOperations.Sodexo;
+using MyAccounts.Business.AccountOperations.Unified;
 using Ploeh.AutoFixture.Kernel;
 
 namespace Operations.Classification.Tests.AutoFixtures.Builders

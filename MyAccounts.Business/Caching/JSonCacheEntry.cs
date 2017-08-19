@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.Caching
+namespace MyAccounts.Business.Caching
 {
     public class JSonCacheEntry : ICacheEntry
     {

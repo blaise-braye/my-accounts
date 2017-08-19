@@ -1,4 +1,4 @@
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 using Operations.Classification.Tests.AutoFixtures.Builders;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.NUnit3;

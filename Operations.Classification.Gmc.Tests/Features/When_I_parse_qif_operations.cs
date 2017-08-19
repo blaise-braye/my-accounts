@@ -2,8 +2,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using FluentAssertions;
+using MyAccounts.Business.GererMesComptes;
 using NUnit.Framework;
-using Operations.Classification.GererMesComptes;
 
 namespace Operations.Classification.Gmc.Tests.Features
 {

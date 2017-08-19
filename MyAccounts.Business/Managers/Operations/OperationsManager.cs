@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.Caching;
-using Operations.Classification.Managers.Imports;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.Business.Caching;
+using MyAccounts.Business.Managers.Imports;
 
-namespace Operations.Classification.Managers.Operations
+namespace MyAccounts.Business.Managers.Operations
 {
     public interface IOperationsManager
     {

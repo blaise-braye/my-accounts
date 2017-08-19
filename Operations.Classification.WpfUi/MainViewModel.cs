@@ -5,15 +5,14 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using GalaSoft.MvvmLight;
-
-using Operations.Classification.AccountOperations;
-using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.Caching;
-using Operations.Classification.GeoLoc;
-using Operations.Classification.Managers.Accounts;
-using Operations.Classification.Managers.Imports;
-using Operations.Classification.Managers.Operations;
-using Operations.Classification.Managers.Persistence;
+using MyAccounts.Business.AccountOperations;
+using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.Business.Caching;
+using MyAccounts.Business.GeoLoc;
+using MyAccounts.Business.Managers.Accounts;
+using MyAccounts.Business.Managers.Imports;
+using MyAccounts.Business.Managers.Operations;
+using MyAccounts.Business.Managers.Persistence;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;

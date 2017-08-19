@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using log4net;
 
-namespace Operations.Classification.Caching
+namespace MyAccounts.Business.Caching
 {
     public class CacheProvider
     {

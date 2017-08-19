@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class HtmlParser
     {

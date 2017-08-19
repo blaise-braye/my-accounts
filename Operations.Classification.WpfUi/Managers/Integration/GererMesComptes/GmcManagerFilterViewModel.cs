@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Operations.Classification.GererMesComptes;
+using MyAccounts.Business.GererMesComptes;
 using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using QifApi.Transactions;
 

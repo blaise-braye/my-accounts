@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Operations.Classification.GeoLoc
+namespace MyAccounts.Business.GeoLoc
 {
     public class Place
     {

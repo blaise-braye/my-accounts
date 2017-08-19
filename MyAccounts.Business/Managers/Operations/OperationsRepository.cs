@@ -5,13 +5,13 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
+using MyAccounts.Business.AccountOperations;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.Business.Managers.Imports;
 using Newtonsoft.Json;
-using Operations.Classification.AccountOperations;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.Managers.Imports;
 
-namespace Operations.Classification.Managers.Operations
+namespace MyAccounts.Business.Managers.Operations
 {
     public class OperationsRepository : IOperationsRepository
     {

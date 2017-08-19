@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-using Operations.Classification.AccountOperations.Unified;
+using MyAccounts.Business.AccountOperations.Unified;
 
 namespace Operations.Classification.WpfUi.Managers.Reports.Models
 {

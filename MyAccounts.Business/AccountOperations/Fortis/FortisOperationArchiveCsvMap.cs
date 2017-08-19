@@ -1,7 +1,7 @@
 using CsvHelper.Configuration;
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 
-namespace Operations.Classification.AccountOperations.Fortis
+namespace MyAccounts.Business.AccountOperations.Fortis
 {
     public sealed class FortisOperationArchiveCsvMap : CsvClassMap<FortisOperation>
     {

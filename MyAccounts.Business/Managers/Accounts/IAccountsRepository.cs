@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.Managers.Accounts
+namespace MyAccounts.Business.Managers.Accounts
 {
     public interface IAccountsRepository
     {

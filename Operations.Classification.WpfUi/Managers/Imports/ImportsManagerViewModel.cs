@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
-using Operations.Classification.AccountOperations;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.Managers;
-using Operations.Classification.Managers.Imports;
+using MyAccounts.Business.AccountOperations;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.Managers;
+using MyAccounts.Business.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Input;
 
@@ -151,7 +151,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                     {
                         foreach (var file in files)
                         {
-                            var sourceKind = AccountOperations.Contracts.SourceKind.Unknwon;
+                            var sourceKind = MyAccounts.Business.AccountOperations.Contracts.SourceKind.Unknwon;
 
                             if (AutoDetectSourceKind)
                             {

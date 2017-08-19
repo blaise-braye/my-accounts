@@ -3,10 +3,10 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using MyAccounts.Business.Managers;
+using MyAccounts.Business.Managers.Accounts;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Operations.Classification.Managers;
-using Operations.Classification.Managers.Accounts;
 using Operations.Classification.Tests.AutoFixtures;
 
 namespace Operations.Classification.Tests.Features.Accounts

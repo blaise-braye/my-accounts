@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
-using Operations.Classification.AccountOperations;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.GeoLoc;
-using Operations.Classification.Managers;
-using Operations.Classification.Managers.Imports;
-using Operations.Classification.Managers.Operations;
-using Operations.Classification.Managers.Persistence;
+using MyAccounts.Business.AccountOperations;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.Business.GeoLoc;
+using MyAccounts.Business.Managers;
+using MyAccounts.Business.Managers.Imports;
+using MyAccounts.Business.Managers.Operations;
+using MyAccounts.Business.Managers.Persistence;
 
 namespace Operations.Classification.Tests.Steps
 {

@@ -1,6 +1,6 @@
 using CsvHelper.Configuration;
 
-namespace Operations.Classification.GeoLoc
+namespace MyAccounts.Business.GeoLoc
 {
     public sealed class BelgianPlaceCsvMap : CsvClassMap<BelgianPlace>
     {

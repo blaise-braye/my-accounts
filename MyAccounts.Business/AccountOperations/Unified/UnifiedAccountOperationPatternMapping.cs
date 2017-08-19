@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using MyAccounts.Business.AccountOperations.Contracts;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Operations.Classification.AccountOperations.Contracts;
 
-namespace Operations.Classification.AccountOperations.Unified
+namespace MyAccounts.Business.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternMapping
     {

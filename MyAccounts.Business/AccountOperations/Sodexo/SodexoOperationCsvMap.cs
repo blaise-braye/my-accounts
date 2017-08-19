@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 
-namespace Operations.Classification.AccountOperations.Sodexo
+namespace MyAccounts.Business.AccountOperations.Sodexo
 {
     public sealed class SodexoOperationCsvMap : CsvClassMap<SodexoOperation>
     {

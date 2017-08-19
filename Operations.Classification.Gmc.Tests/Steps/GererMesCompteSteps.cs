@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using MyAccounts.Business.GererMesComptes;
 using NUnit.Framework;
-using Operations.Classification.GererMesComptes;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 

@@ -8,7 +8,7 @@ using log4net;
 using QifApi;
 using QifApi.Transactions;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class OperationsRepository
     {

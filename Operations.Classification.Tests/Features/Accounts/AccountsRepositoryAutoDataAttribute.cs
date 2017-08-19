@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using Moq;
-using Operations.Classification.Managers;
+using MyAccounts.Business.Managers;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.NUnit3;
 

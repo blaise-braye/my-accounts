@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
-using Operations.Classification.GererMesComptes;
+using MyAccounts.Business.GererMesComptes;
 using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Controls;
 

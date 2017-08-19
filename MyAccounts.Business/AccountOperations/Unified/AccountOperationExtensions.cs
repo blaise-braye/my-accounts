@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Operations.Classification.AccountOperations.Unified
+namespace MyAccounts.Business.AccountOperations.Unified
 {
     public static class UnifiedAccountOperationExtensions
     {

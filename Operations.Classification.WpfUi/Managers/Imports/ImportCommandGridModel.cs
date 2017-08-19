@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GalaSoft.MvvmLight;
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 
 namespace Operations.Classification.WpfUi.Managers.Imports
 {

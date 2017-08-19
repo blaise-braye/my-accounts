@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
+using MyAccounts.Business.Managers.Accounts;
 using NUnit.Framework;
-using Operations.Classification.Managers.Accounts;
 
 namespace Operations.Classification.Tests.Features.Accounts
 {

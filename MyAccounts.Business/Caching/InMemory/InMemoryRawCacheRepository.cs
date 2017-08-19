@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Operations.Classification.Caching.InMemory
+namespace MyAccounts.Business.Caching.InMemory
 {
     public class InMemoryRawCacheRepository : IRawCacheRepository, IDisposable
     {

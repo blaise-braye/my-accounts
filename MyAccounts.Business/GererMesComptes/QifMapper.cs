@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Operations.Classification.AccountOperations.Unified;
+using MyAccounts.Business.AccountOperations.Unified;
 using QifApi;
 using QifApi.Config;
 using QifApi.Transactions;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public static class QifMapper
     {

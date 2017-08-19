@@ -2,9 +2,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
+using MyAccounts.Business.AccountOperations;
+using MyAccounts.Business.AccountOperations.Contracts;
 using NUnit.Framework;
-using Operations.Classification.AccountOperations;
-using Operations.Classification.AccountOperations.Contracts;
 using Operations.Classification.Tests.AutoFixtures.Customizations;
 
 namespace Operations.Classification.Tests.Features

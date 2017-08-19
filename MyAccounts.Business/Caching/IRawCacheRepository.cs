@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Operations.Classification.Caching
+namespace MyAccounts.Business.Caching
 {
     public interface IRawCacheRepository
     {

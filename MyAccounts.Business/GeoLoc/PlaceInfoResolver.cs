@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Operations.Classification.GeoLoc
+namespace MyAccounts.Business.GeoLoc
 {
     public class PlaceInfoResolver
     {

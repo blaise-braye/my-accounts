@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.Managers.Imports
+namespace MyAccounts.Business.Managers.Imports
 {
     public interface IAccountCommandRepository
     {

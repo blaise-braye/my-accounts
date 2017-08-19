@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.Managers
+namespace MyAccounts.Business.Managers
 {
     public interface IWorkingCopy
     {

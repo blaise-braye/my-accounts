@@ -1,6 +1,6 @@
 using CsvHelper.Configuration;
 
-namespace Operations.Classification.AccountOperations.Unified
+namespace MyAccounts.Business.AccountOperations.Unified
 {
     public sealed class UnifiedAccountOperationCsvMap : CsvClassMap<UnifiedAccountOperation>
     {

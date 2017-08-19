@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QifApi.Transactions;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class TransactionDeltaSet : IEnumerable<TransactionDelta>
     {

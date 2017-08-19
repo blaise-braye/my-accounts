@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using Operations.Classification.AccountOperations.Unified;
+using MyAccounts.Business.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Reports.Models;
 using OxyPlot;

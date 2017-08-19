@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Fortis;
-using Operations.Classification.AccountOperations.Sodexo;
-using Operations.Classification.AccountOperations.Unified;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Fortis;
+using MyAccounts.Business.AccountOperations.Sodexo;
+using MyAccounts.Business.AccountOperations.Unified;
 
-namespace Operations.Classification.AccountOperations
+namespace MyAccounts.Business.AccountOperations
 {
     public interface ICsvAccountOperationManager
     {

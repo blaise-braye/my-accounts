@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.Caching
+namespace MyAccounts.Business.Caching
 {
     public class JSonCacheEntry<TValue> : JSonCacheEntry, ICacheEntry<TValue>
     {

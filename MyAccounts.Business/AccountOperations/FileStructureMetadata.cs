@@ -1,6 +1,6 @@
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 
-namespace Operations.Classification.AccountOperations
+namespace MyAccounts.Business.AccountOperations
 {
     public class FileStructureMetadata
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.Managers.Imports
+namespace MyAccounts.Business.Managers.Imports
 {
     public class AccountCommandRepository : IAccountCommandRepository
     {

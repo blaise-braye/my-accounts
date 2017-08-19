@@ -3,7 +3,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Operations.Classification.Managers.Persistence
+namespace MyAccounts.Business.Managers.Persistence
 {
     public class WorkingCopy : IWorkingCopy
     {

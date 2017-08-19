@@ -1,4 +1,4 @@
-namespace Operations.Classification.AccountOperations.Contracts
+namespace MyAccounts.Business.AccountOperations.Contracts
 {
     public enum SourceKind
     {

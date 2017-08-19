@@ -6,10 +6,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using log4net;
+using MyAccounts.Business.Extensions;
 using Newtonsoft.Json.Linq;
-using Operations.Classification.Extensions;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class AccountInfoRepository
     {

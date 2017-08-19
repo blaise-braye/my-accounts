@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.Managers.Imports;
+using MyAccounts.Business.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Managers.Imports;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts.Models

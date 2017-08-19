@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Operations.Classification.Collections
+namespace MyAccounts.Business.Collections
 {
     public class Trie
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FastMember;
 
-namespace Operations.Classification.Extensions
+namespace MyAccounts.Business.Extensions
 {
     public static class ObjectExtensions
     {

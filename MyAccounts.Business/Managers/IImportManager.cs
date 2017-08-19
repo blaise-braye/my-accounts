@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Operations.Classification.Managers.Imports;
+using MyAccounts.Business.Managers.Imports;
 
-namespace Operations.Classification.Managers
+namespace MyAccounts.Business.Managers
 {
     public interface IImportManager
     {

@@ -1,4 +1,4 @@
-﻿namespace Operations.Classification.WpfUi.Managers.Transactions
+﻿namespace Operations.Classification.WpfUi.Managers.Imports
 {
     /// <summary>
     ///     Interaction logic for ImportOperationsView.xaml

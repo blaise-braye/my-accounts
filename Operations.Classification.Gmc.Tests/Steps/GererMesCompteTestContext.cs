@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Operations.Classification.GererMesComptes;
+using MyAccounts.Business.GererMesComptes;
 using QifApi;
 
 namespace Operations.Classification.Gmc.Tests.Steps

@@ -1,7 +1,7 @@
 ﻿using System;
-using Operations.Classification.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Contracts;
 
-namespace Operations.Classification.AccountOperations.Sodexo
+namespace MyAccounts.Business.AccountOperations.Sodexo
 {
     public class SodexoOperation : AccountOperationBase
     {

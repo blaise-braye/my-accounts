@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using log4net;
 using log4net.Util;
+using MyAccounts.Business.Extensions;
 using Newtonsoft.Json.Linq;
-using Operations.Classification.Extensions;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class QifDataImportWorker
     {

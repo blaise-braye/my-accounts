@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using FastMember;
 using Newtonsoft.Json.Linq;
 
-namespace Operations.Classification.AccountOperations.Unified
+namespace MyAccounts.Business.AccountOperations.Unified
 {
     public class ObjectExpression
     {

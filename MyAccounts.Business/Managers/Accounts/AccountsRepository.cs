@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.Managers.Accounts
+namespace MyAccounts.Business.Managers.Accounts
 {
     public class AccountsRepository : IAccountsRepository
     {

@@ -15,9 +15,9 @@
 using AutoMapper;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using Operations.Classification.AccountOperations.Unified;
-using Operations.Classification.Managers.Accounts;
-using Operations.Classification.Managers.Imports;
+using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.Business.Managers.Accounts;
+using MyAccounts.Business.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;

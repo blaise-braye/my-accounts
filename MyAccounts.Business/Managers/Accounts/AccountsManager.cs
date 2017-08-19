@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Operations.Classification.Caching;
+using MyAccounts.Business.Caching;
 
-namespace Operations.Classification.Managers.Accounts
+namespace MyAccounts.Business.Managers.Accounts
 {
     public interface IAccountsManager
     {

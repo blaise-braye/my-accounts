@@ -1,7 +1,7 @@
 using System;
 using QifApi.Transactions;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class TransactionDelta
     {

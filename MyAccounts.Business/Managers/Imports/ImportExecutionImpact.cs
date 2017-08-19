@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Operations.Classification.Managers.Imports
+namespace MyAccounts.Business.Managers.Imports
 {
     public class ImportExecutionImpact
     {

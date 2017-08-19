@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
-using Operations.Classification.AccountOperations.Contracts;
-using Operations.Classification.AccountOperations.Unified;
+using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.AccountOperations.Unified;
 
-namespace Operations.Classification.AccountOperations.Fortis
+namespace MyAccounts.Business.AccountOperations.Fortis
 {
     public class FortisToUnifiedAccountOperationMapper : AccountToUnifiedOperationMapperBase<FortisOperation>
     {

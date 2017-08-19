@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Operations.Classification.GererMesComptes
+namespace MyAccounts.Business.GererMesComptes
 {
     public class ObjectFields
     {
