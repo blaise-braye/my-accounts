@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.Business.IO;
 using MyAccounts.Business.Managers.Imports;
 using Newtonsoft.Json;
 
@@ -32,8 +32,6 @@ namespace MyAccounts.Business.Managers.Operations
 
         private IFileSystem Fs => _workingCopy.Fs;
 
-        private FileBase Fb => Fs.File;
-
         public Task Export(string filePath, IList<AccountOperationBase> operations)
         {
             return _csvAccountOperationManager.WriteAsync(filePath, operations);
@@ -44,15 +42,15 @@ namespace MyAccounts.Business.Managers.Operations
             var result = new List<UnifiedAccountOperation>();
 
             var operationsDirectory = GetAccountOperationsDirectory(accountId);
-            if (Fs.Directory.Exists(operationsDirectory))
+            if (Fs.DirectoryExists(operationsDirectory))
             {
-                var files = Fs.Directory.GetFiles(operationsDirectory, "*.json").OrderBy(f => Fs.File.GetCreationTime(f));
+                var files = Fs.DirectoryGetFiles(operationsDirectory, "*.json").OrderBy(f => Fs.FileGetCreationTime(f));
                 foreach (var file in files)
                 {
                     Stream stream = null;
                     try
                     {
-                        stream = Fs.File.OpenRead(file);
+                        stream = Fs.FileOpenRead(file);
                         using (var sr = new StreamReader(stream))
                         {
                             stream = null;
@@ -75,9 +73,9 @@ namespace MyAccounts.Business.Managers.Operations
         public void Clear(Guid accountId)
         {
             var operationsDirectory = GetAccountOperationsDirectory(accountId);
-            if (Fs.Directory.Exists(operationsDirectory))
+            if (Fs.DirectoryExists(operationsDirectory))
             {
-                Fs.Directory.Delete(operationsDirectory, true);
+                Fs.DirectoryDelete(operationsDirectory, true);
             }
         }
 
@@ -107,7 +105,7 @@ namespace MyAccounts.Business.Managers.Operations
                     var filePath = $"{filePrefixPath}.json";
 
                     var counter = 1;
-                    while (Fb.Exists(filePath))
+                    while (Fs.FileExists(filePath))
                     {
                         filePath = $"{filePrefixPath}.{counter}.json";
                     }
@@ -115,7 +113,7 @@ namespace MyAccounts.Business.Managers.Operations
                     Stream stream = null;
                     try
                     {
-                        stream = Fs.File.Create(filePath);
+                        stream = Fs.FileCreate(filePath);
                         using (var sw = new StreamWriter(stream))
                         {
                             stream = null;

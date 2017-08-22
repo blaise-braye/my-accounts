@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
@@ -10,6 +9,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Contracts;
+using MyAccounts.Business.IO;
 using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
@@ -103,8 +103,6 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         private IFileSystem Fs { get; }
 
-        private FileBase Fb => Fs.File;
-
         private void OnAccountViewModelReceived(AccountViewModel currentAccount)
         {
             _currentAccount = currentAccount;
@@ -131,15 +129,15 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                     var files = new HashSet<string>();
                     foreach (var path in paths)
                     {
-                        if ((Fb.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+                        if (Fs.IsDirectoy(path))
                         {
-                            var dirFiles = Directory.GetFiles(path, "*.csv");
+                            var dirFiles = Fs.DirectoryGetFiles(path, "*.csv");
                             foreach (var dirFile in dirFiles)
                             {
                                 files.Add(dirFile);
                             }
                         }
-                        else if (Fb.Exists(path))
+                        else if (Fs.FileExists(path))
                         {
                             files.Add(path);
                         }
@@ -162,7 +160,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                                 sourceKind = SourceKind.Value;
                             }
 
-                            using (var fs = Fb.OpenRead(file))
+                            using (var fs = Fs.FileOpenRead(file))
                             {
                                 var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
                                 if (await _importManager.RequestImportExecution(importCommand, fs))

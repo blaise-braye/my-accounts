@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
+using MyAccounts.Business.IO;
 using Newtonsoft.Json;
 
 namespace MyAccounts.Business.Managers.Accounts
@@ -24,12 +24,10 @@ namespace MyAccounts.Business.Managers.Accounts
 
         private IFileSystem Fs => _workingCopy.Fs;
 
-        private FileBase Fb => Fs.File;
-
         public async Task<List<AccountEntity>> GetList()
         {
             List<AccountEntity> list;
-            if (!Fb.Exists(_workingCopy.SettingsPath))
+            if (!Fs.FileExists(_workingCopy.SettingsPath))
             {
                 list = new List<AccountEntity>();
             }
@@ -37,7 +35,7 @@ namespace MyAccounts.Business.Managers.Accounts
             {
                 try
                 {
-                    using (var destinationStream = Fb.OpenRead(_workingCopy.SettingsPath))
+                    using (var destinationStream = Fs.FileOpenRead(_workingCopy.SettingsPath))
                     using (var sw = new StreamReader(destinationStream))
                     {
                         var rawSettings = await sw.ReadToEndAsync();
@@ -101,7 +99,7 @@ namespace MyAccounts.Business.Managers.Accounts
             try
             {
                 Monitor.Enter(_writeLock);
-                using (var destinationStream = Fb.Create(_workingCopy.SettingsPath))
+                using (var destinationStream = Fs.FileCreate(_workingCopy.SettingsPath))
                 using (var sw = new StreamWriter(destinationStream))
                 {
                     await sw.WriteAsync(rawJson);

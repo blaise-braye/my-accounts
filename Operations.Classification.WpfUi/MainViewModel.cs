@@ -1,5 +1,4 @@
 using System;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -44,7 +43,7 @@ namespace Operations.Classification.WpfUi
         public MainViewModel()
         {
             // Initialize Data layer
-            IFileSystem fs = new FileSystem();
+            var fs = new MyAccounts.Business.IO.FileSystem();
             var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
             var accountsRepository = new AccountsRepository(workingCopy);
             var accountCommandRepository = new AccountCommandRepository(workingCopy);

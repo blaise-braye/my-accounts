@@ -1,7 +1,7 @@
-using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using Moq;
 using MyAccounts.Business.Managers;
+using Operations.Classification.Tests.AutoFixtures;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.NUnit3;
 
@@ -18,11 +18,12 @@ namespace Operations.Classification.Tests.Features.Accounts
             var fixture = new Fixture();
 
             var fs = new MockFileSystem();
-            fixture.Inject<IFileSystem>(fs);
+            var libfs = new FileSystemAdapter(fs);
+            fixture.Inject<MyAccounts.Business.IO.IFileSystem>(libfs);
             fixture.Inject<IMockFileDataAccessor>(fs);
 
             var mock = new Mock<IWorkingCopy>();
-            mock.Setup(w => w.Fs).Returns(fs);
+            mock.Setup(w => w.Fs).Returns(libfs);
             var settingsPath = fixture.Create<string>();
             mock.Setup(w => w.SettingsPath).Returns(settingsPath);
             fixture.Inject(mock.Object);

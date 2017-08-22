@@ -1,4 +1,3 @@
-using System.IO.Abstractions;
 using System.Threading.Tasks;
 
 namespace MyAccounts.Business.Managers
@@ -9,7 +8,7 @@ namespace MyAccounts.Business.Managers
 
         string SettingsPath { get; }
 
-        IFileSystem Fs { get; }
+        IO.IFileSystem Fs { get; }
 
         Task<bool> CreateFolderIfDoesNotExistsYet(string workingCopyRoot);
 

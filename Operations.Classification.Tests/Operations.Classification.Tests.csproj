@@ -127,6 +127,7 @@
     <Compile Include="AutoFixtures\Builders\AccountOperationBaseBuilder.cs" />
     <Compile Include="AutoFixtures\Customizations\AccountOperationDataAttribute.cs" />
     <Compile Include="AutoFixtures\Builders\DateBuilder.cs" />
+    <Compile Include="AutoFixtures\FileSystemAdapter.cs" />
     <Compile Include="AutoFixtures\Wrapper.cs" />
     <Compile Include="Features\Accounts\AccountsRepositoryAutoDataAttribute.cs" />
     <Compile Include="Features\Accounts\WhenAddOrUpdateAccount.cs" />

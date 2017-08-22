@@ -9,6 +9,7 @@ using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Imports;
 using MyAccounts.Business.Managers.Operations;
 using MyAccounts.Business.Managers.Persistence;
+using Operations.Classification.Tests.AutoFixtures;
 
 namespace Operations.Classification.Tests.Steps
 {
@@ -19,7 +20,7 @@ namespace Operations.Classification.Tests.Steps
             CsvAccountOperationManager = new CsvAccountOperationManager();
             Transformer = new UnifiedAccountOperationPatternTransformer(
                 new PlaceInfoResolver(PlaceProvider.Load(new PlacesRepository())));
-            WorkingCopy = new WorkingCopy(new MockFileSystem(), @"c:\WorkingCopy");
+            WorkingCopy = new WorkingCopy(new FileSystemAdapter(new MockFileSystem()), @"c:\WorkingCopy");
             
             AccountCommandRepository = new AccountCommandRepository(WorkingCopy);
             OperationsRepository = new OperationsRepository(WorkingCopy, CsvAccountOperationManager, Transformer);

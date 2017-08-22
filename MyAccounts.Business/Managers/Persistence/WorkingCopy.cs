@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using MyAccounts.Business.IO;
 
 namespace MyAccounts.Business.Managers.Persistence
 {
@@ -22,10 +22,10 @@ namespace MyAccounts.Business.Managers.Persistence
 
         public async Task<bool> CreateFolderIfDoesNotExistsYet(string folder)
         {
-            if (!Fs.Directory.Exists(folder))
+            if (!Fs.DirectoryExists(folder))
             {
-                Fs.Directory.CreateDirectory(folder);
-                while (!Fs.Directory.Exists(folder))
+                Fs.DirectoryCreate(folder);
+                while (!Fs.DirectoryExists(folder))
                 {
                     await Task.Yield();
                 }

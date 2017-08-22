@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
+using MyAccounts.Business.IO;
 using Newtonsoft.Json;
 
 namespace MyAccounts.Business.Managers.Imports
@@ -39,7 +39,7 @@ namespace MyAccounts.Business.Managers.Imports
 
             string attachmentsPath = GetCommandAttachmentFilePath(importCommand);
 
-            using (var sTarget = Fs.File.Create(attachmentsPath))
+            using (var sTarget = Fs.FileCreate(attachmentsPath))
             {
                 await attachment.CopyToAsync(sTarget);
             }
@@ -80,9 +80,9 @@ namespace MyAccounts.Business.Managers.Imports
                 await PersistReflog(accountId, importCommands);
 
                 string attachmentsPath = GetCommandAttachmentFilePath(accountId, commandId);
-                if (Fs.File.Exists(attachmentsPath))
+                if (Fs.FileExists(attachmentsPath))
                 {
-                    Fs.File.Delete(attachmentsPath);
+                    Fs.FileDelete(attachmentsPath);
                 }
 
                 return true;
@@ -99,7 +99,7 @@ namespace MyAccounts.Business.Managers.Imports
             Stream stream = null;
             try
             {
-                stream = Fs.File.OpenRead(reflogFile);
+                stream = Fs.FileOpenRead(reflogFile);
                 using (var sr = new StreamReader(stream))
                 {
                     stream = null;
@@ -121,7 +121,7 @@ namespace MyAccounts.Business.Managers.Imports
         {
             string attachmentsPath = GetCommandAttachmentFilePath(importCommand);
             await EnsureRefLogStructureIsClean(importCommand.AccountId);
-            return Fs.File.OpenRead(attachmentsPath);
+            return Fs.FileOpenRead(attachmentsPath);
         }
 
         public async Task<bool> AddExecutionImpact(Guid accountId, ImportExecutionImpact executionImpact)
@@ -145,8 +145,25 @@ namespace MyAccounts.Business.Managers.Imports
         {
             await EnsureRefLogStructureIsClean(accountId, commandId);
             string execFilePath = GetImportCommandExecutionsFilePath(accountId, commandId);
-            var jsonCommands = Fs.File.ReadAllText(execFilePath);
-            var result = JsonConvert.DeserializeObject<List<ImportExecutionImpact>>(jsonCommands);
+            List<ImportExecutionImpact> result;
+            Stream stream = null;
+            try
+            {
+                stream = Fs.FileOpenRead(execFilePath);
+                using (var sr = new StreamReader(stream))
+                {
+                    stream = null;
+                    var jsonImpact = await sr.ReadToEndAsync();
+                    result = JsonConvert.DeserializeObject<List<ImportExecutionImpact>>(jsonImpact);
+                }
+            }
+            catch (Exception exn)
+            {
+                _logger.Error($"failed to deserialize import execution impact from file {execFilePath}", exn);
+                result = new List<ImportExecutionImpact>();
+                stream?.Dispose();
+            }
+
             return result;
         }
 
@@ -156,7 +173,7 @@ namespace MyAccounts.Business.Managers.Imports
             Stream stream = null;
             try
             {
-                stream = Fs.File.Create(reflogFile);
+                stream = Fs.FileCreate(reflogFile);
                 using (var sw = new StreamWriter(stream))
                 {
                     stream = null;
@@ -177,7 +194,7 @@ namespace MyAccounts.Business.Managers.Imports
             Stream stream = null;
             try
             {
-                stream = Fs.File.Create(executionsFilePath);
+                stream = Fs.FileCreate(executionsFilePath);
                 using (var sw = new StreamWriter(stream))
                 {
                     stream = null;
@@ -200,7 +217,7 @@ namespace MyAccounts.Business.Managers.Imports
             await _workingCopy.CreateFolderIfDoesNotExistsYet(execDirectory);
 
             string execFilePath = GetImportCommandExecutionsFilePath(accountId, commandId);
-            if (!Fs.File.Exists(execFilePath))
+            if (!Fs.FileExists(execFilePath))
             {
                 await PersistCommandExec(accountId, commandId, new List<ImportExecutionImpact>());
             }
@@ -214,7 +231,7 @@ namespace MyAccounts.Business.Managers.Imports
             await _workingCopy.CreateFolderIfDoesNotExistsYet(refLogAttachmentDirectory);
 
             string reflogFile = GetCommandsReflogFilePath(accountId);
-            if (!Fs.File.Exists(reflogFile))
+            if (!Fs.FileExists(reflogFile))
             {
                 await PersistReflog(accountId, new List<ImportCommand>());
             }
