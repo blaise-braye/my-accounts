@@ -32,9 +32,9 @@ namespace MyAccounts.Business.Managers.Operations
 
         private IFileSystem Fs => _workingCopy.Fs;
 
-        public Task Export(string filePath, IList<AccountOperationBase> operations)
+        public Task Export(Stream target, IList<AccountOperationBase> operations)
         {
-            return _csvAccountOperationManager.WriteAsync(filePath, operations);
+            return _csvAccountOperationManager.WriteAsync(target, operations);
         }
 
         public async Task<List<UnifiedAccountOperation>> GetAll(Guid accountId)

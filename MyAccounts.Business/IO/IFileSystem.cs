@@ -27,7 +27,7 @@ namespace MyAccounts.Business.IO
         DateTime FileGetCreationTime(string path);
     }
 
-    public class FileSystem : IFileSystem
+    public class WindowsFileSystem : IFileSystem
     {
         public bool DirectoryExists(string path)
         {

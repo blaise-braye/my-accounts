@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using MyAccounts.Business.Caching;
+using MyAccounts.Business.IO.Caching;
 using MyAccounts.Business.Managers.Operations;
 
 namespace MyAccounts.Business.Managers.Imports
@@ -16,13 +16,15 @@ namespace MyAccounts.Business.Managers.Imports
 
         private static readonly ILog _logger = LogManager.GetLogger(typeof(ImportManager));
 
+        private readonly ICacheProvider _cacheProvider;
         private readonly IAccountCommandRepository _accountCommandRepository;
-        private readonly IOperationsRepository _operationsRepository;
+        private readonly IOperationsManager _operationsManager;
 
-        public ImportManager(IAccountCommandRepository accountCommandRepository, IOperationsRepository operationsRepository)
+        public ImportManager(ICacheProvider cacheProvider, IAccountCommandRepository accountCommandRepository, IOperationsManager operationsManager)
         {
+            _cacheProvider = cacheProvider;
             _accountCommandRepository = accountCommandRepository;
-            _operationsRepository = operationsRepository;
+            _operationsManager = operationsManager;
         }
 
         public async Task<bool> ReplayCommands(Guid accountId)
@@ -38,7 +40,7 @@ namespace MyAccounts.Business.Managers.Imports
                 throw new InvalidOperationException("the import must be strictly related to one account name");
             }
 
-            _operationsRepository.Clear(accountId);
+            await _operationsManager.Clear(accountId);
 
             var result = true;
 
@@ -48,7 +50,7 @@ namespace MyAccounts.Business.Managers.Imports
             {
                 using (var sourceData = await _accountCommandRepository.OpenAttachment(importCommand))
                 {
-                    var importExecutionImpact = await _operationsRepository.ExecuteImport(importCommand, sourceData);
+                    var importExecutionImpact = await _operationsManager.ExecuteImport(importCommand, sourceData);
                     await _accountCommandRepository.AddExecutionImpact(importCommand.AccountId, importExecutionImpact);
                     result &= importExecutionImpact.Success;
                 }
@@ -74,7 +76,7 @@ namespace MyAccounts.Business.Managers.Imports
                 await _accountCommandRepository.Add(importCommand, sourceData);
 
                 sourceData.Seek(0, SeekOrigin.Begin);
-                var executionImportResult = await _operationsRepository.ExecuteImport(importCommand, sourceData);
+                var executionImportResult = await _operationsManager.ExecuteImport(importCommand, sourceData);
                 result = await _accountCommandRepository.AddExecutionImpact(importCommand.AccountId, executionImportResult);
             }
             catch (Exception exn)
@@ -131,17 +133,17 @@ namespace MyAccounts.Business.Managers.Imports
             return result;
         }
 
-        private static ICacheEntry<List<ImportCommand>> GetCacheEntry(Guid accountId)
+        private ICacheEntry<List<ImportCommand>> GetCacheEntry(Guid accountId)
         {
-            return CacheProvider.GetJSonCacheEntry<List<ImportCommand>>(
+            return _cacheProvider.GetJSonCacheEntry<List<ImportCommand>>(
                 string.Format(
                     ImportsByAccountIdRoute,
                     accountId));
         }
 
-        private static ICacheEntry<List<ImportExecutionImpact>> GetCacheEntry(Guid accountId, Guid commandId)
+        private ICacheEntry<List<ImportExecutionImpact>> GetCacheEntry(Guid accountId, Guid commandId)
         {
-            return CacheProvider.GetJSonCacheEntry<List<ImportExecutionImpact>>(
+            return _cacheProvider.GetJSonCacheEntry<List<ImportExecutionImpact>>(
                 string.Format(
                     ImportExecutionImpactByAccountIdAndCommandIdRoute,
                     accountId,

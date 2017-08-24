@@ -18,11 +18,9 @@ namespace MyAccounts.Business.AccountOperations
     {
         FileStructureMetadata GetDefaultFileMetadata(SourceKind sourceKind);
 
-        Task<IList<AccountOperationBase>> ReadAsync(string file, FileStructureMetadata structureMetadata);
+        Task<List<AccountOperationBase>> ReadAsync(Stream sourceStream, FileStructureMetadata structureMetadata);
 
-        Task<List<AccountOperationBase>> ReadAsync(Stream stream, FileStructureMetadata structureMetadata);
-
-        Task WriteAsync(string targetFile, IList<AccountOperationBase> operations);
+        Task WriteAsync(Stream targetStream, IList<AccountOperationBase> operations);
     }
 
     public class CsvAccountOperationManager : ICsvAccountOperationManager
@@ -113,22 +111,17 @@ namespace MyAccounts.Business.AccountOperations
             return metadata;
         }
 
-        public Task<IList<AccountOperationBase>> ReadAsync(string file, FileStructureMetadata structureMetadata)
+        public Task<List<AccountOperationBase>> ReadAsync(Stream sourceStream, FileStructureMetadata structureMetadata)
         {
-            return Task.Run(() => Read(file, structureMetadata));
+            return Task.Run(() => Read(sourceStream, structureMetadata).ToList());
         }
 
-        public Task<List<AccountOperationBase>> ReadAsync(Stream stream, FileStructureMetadata structureMetadata)
+        public Task WriteAsync(Stream targetStream, IList<AccountOperationBase> operations)
         {
-            return Task.Run(() => Read(stream, structureMetadata).ToList());
+            return Task.Run(() => Write(targetStream, operations));
         }
 
-        public Task WriteAsync(string targetFile, IList<AccountOperationBase> operations)
-        {
-            return Task.Run(() => Write(targetFile, operations));
-        }
-
-        private static void Write(string targetFile, IList<AccountOperationBase> operations)
+        private static void Write(Stream targetStream, IList<AccountOperationBase> operations)
         {
             if (operations.Count == 0)
             {
@@ -145,40 +138,18 @@ namespace MyAccounts.Business.AccountOperations
 
             var config = _defaultCsvConfigurations[sourceKind];
 
-            FileStream fs = null;
-            StreamWriter sw = null;
-            try
-            {
-                fs = File.Open(targetFile, FileMode.Create, FileAccess.Write, FileShare.None);
-                sw = new StreamWriter(fs, config.Encoding);
-                fs = null;
-                using (var reader = new CsvWriter(sw, config))
-                {
-                    sw = null;
-                    reader.WriteHeader(type);
-                    reader.WriteRecords(operations);
-                }
-            }
-            finally
-            {
-                sw?.Dispose();
-                fs?.Dispose();
-            }
+            var sw = new StreamWriter(targetStream, config.Encoding);
+            var writer = new CsvWriter(sw, config);
+            writer.WriteHeader(type);
+            writer.WriteRecords(operations);
+            sw.Flush();
         }
 
-        private static IList<AccountOperationBase> Read(string file, FileStructureMetadata structureMetadata)
-        {
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Read(fs, structureMetadata).ToList();
-            }
-        }
-
-        private static IEnumerable<AccountOperationBase> Read(Stream stream, FileStructureMetadata structureMetadata)
+        private static IEnumerable<AccountOperationBase> Read(Stream sourceStream, FileStructureMetadata structureMetadata)
         {
             SourceKind sourceKind = structureMetadata.SourceKind;
             var config = CreateCsvConfiguration(structureMetadata);
-            using (var textReader = new StreamReader(stream, config.Encoding, true, 1024, true))
+            using (var textReader = new StreamReader(sourceStream, config.Encoding, true, 1024, true))
             using (var reader = new CsvReader(textReader, config))
             {
                 while (reader.Read())

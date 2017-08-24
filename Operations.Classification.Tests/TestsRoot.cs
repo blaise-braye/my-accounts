@@ -3,8 +3,6 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
-using MyAccounts.Business.Caching;
-using MyAccounts.Business.Caching.InMemory;
 using NUnit.Framework;
 
 namespace Operations.Classification.Tests
@@ -15,7 +13,6 @@ namespace Operations.Classification.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            CacheProvider.Init(new NoCache());
             SetupLogger();
         }
         

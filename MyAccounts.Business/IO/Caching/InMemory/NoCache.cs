@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace MyAccounts.Business.Caching.InMemory
+namespace MyAccounts.Business.IO.Caching.InMemory
 {
     public class NoCache : IRawCacheRepository
     {

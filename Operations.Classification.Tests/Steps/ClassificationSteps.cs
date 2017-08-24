@@ -35,9 +35,9 @@ namespace Operations.Classification.Tests.Steps
         }
 
         [Given(@"I have an empty operations repository")]
-        public void GivenIHaveAnEmptyOperationsRepository()
+        public async Task GivenIHaveAnEmptyOperationsRepository()
         {
-            _context.OperationsRepository.Clear(_context.AccountId);
+            await _context.OperationsManager.Clear(_context.AccountId);
         }
 
         [When(@"I import the operations file with following parameters")]
@@ -125,7 +125,7 @@ namespace Operations.Classification.Tests.Steps
         [Then(@"the imported operation data is")]
         public async Task ThenTheImportedOperationDataIs(Table table)
         {
-            var operations = await _context.OperationsRepository.GetAll(_context.AccountId);
+            var operations = await _context.OperationsManager.GetTransformedUnifiedOperations(_context.AccountId);
             table.CompareToSet(operations);
         }
 
@@ -159,7 +159,10 @@ namespace Operations.Classification.Tests.Steps
             {
                 var sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(s);
                 var fmd = _context.CsvAccountOperationManager.GetDefaultFileMetadata(sourceKind);
-                return _context.CsvAccountOperationManager.ReadAsync(s, fmd);
+                using (var fs = File.OpenRead(s))
+                {
+                    return _context.CsvAccountOperationManager.ReadAsync(fs, fmd);
+                }
             });
 
             var operationsBatches = await Task.WhenAll(readTasks);
@@ -185,9 +188,12 @@ namespace Operations.Classification.Tests.Steps
         }
 
         [When(@"I store the operation details in file '(.*)'")]
-        public void WhenIStoreTheOperationDetailsInFile(string targetFilePath)
+        public async Task WhenIStoreTheOperationDetailsInFile(string targetFilePath)
         {
-            _context.CsvAccountOperationManager.WriteAsync(targetFilePath, _context.UnifiedOperations.Cast<AccountOperationBase>().ToList());
+            using (var fs = File.Create(targetFilePath))
+            {
+                await _context.CsvAccountOperationManager.WriteAsync(fs, _context.UnifiedOperations.Cast<AccountOperationBase>().ToList());
+            }
         }
 
         [When(@"I store the operation details in qif file '(.*)'")]

@@ -39,9 +39,11 @@ namespace Operations.Classification.Tests.Features
             CsvAccountOperationManager operationManager,
             List<AccountOperationBase> operations)
         {
-            await operationManager.WriteAsync(_testTempFile, operations);
+            var ms = new MemoryStream();
+            await operationManager.WriteAsync(ms, operations);
             var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
+            ms.Seek(0, SeekOrigin.Begin);
+            var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
@@ -53,9 +55,11 @@ namespace Operations.Classification.Tests.Features
             CsvAccountOperationManager operationManager,
             List<AccountOperationBase> operations)
         {
-            await operationManager.WriteAsync(_testTempFile, operations);
+            var ms = new MemoryStream();
+            await operationManager.WriteAsync(ms, operations);
             var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
+            ms.Seek(0, SeekOrigin.Begin);
+            var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
@@ -66,9 +70,11 @@ namespace Operations.Classification.Tests.Features
             CsvAccountOperationManager operationManager,
             List<AccountOperationBase> operations)
         {
-            await operationManager.WriteAsync(_testTempFile, operations);
+            var ms = new MemoryStream();
+            await operationManager.WriteAsync(ms, operations);
             var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
+            ms.Seek(0, SeekOrigin.Begin);
+            var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }
@@ -79,9 +85,11 @@ namespace Operations.Classification.Tests.Features
             CsvAccountOperationManager operationManager,
             List<AccountOperationBase> operations)
         {
-            await operationManager.WriteAsync(_testTempFile, operations);
+            var ms = new MemoryStream();
+            await operationManager.WriteAsync(ms, operations);
             var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
-            var operationsState2 = await operationManager.ReadAsync(_testTempFile, fileStructureMetadata);
+            ms.Seek(0, SeekOrigin.Begin);
+            var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
             operationsState2.ShouldBeEquivalentTo(operations, o => o.IncludingAllRuntimeProperties());
         }

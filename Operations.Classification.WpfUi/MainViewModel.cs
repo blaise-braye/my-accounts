@@ -6,7 +6,6 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Unified;
-using MyAccounts.Business.Caching;
 using MyAccounts.Business.GeoLoc;
 using MyAccounts.Business.Managers.Accounts;
 using MyAccounts.Business.Managers.Imports;
@@ -43,7 +42,7 @@ namespace Operations.Classification.WpfUi
         public MainViewModel()
         {
             // Initialize Data layer
-            var fs = new MyAccounts.Business.IO.FileSystem();
+            var fs = new MyAccounts.Business.IO.WindowsFileSystem();
             var workingCopy = new WorkingCopy(fs, Properties.Settings.Default.WorkingFolder);
             var accountsRepository = new AccountsRepository(workingCopy);
             var accountCommandRepository = new AccountCommandRepository(workingCopy);
@@ -54,19 +53,21 @@ namespace Operations.Classification.WpfUi
             var operationsRepository = new OperationsRepository(workingCopy, new CsvAccountOperationManager(), operationPatternTransformer);
 
             // Initialize Managers
-            var importManager = new ImportManager(accountCommandRepository, operationsRepository);
-            var operationsManager = new OperationsManager(operationsRepository);
-            var accountsManager = new AccountsManager(accountsRepository);
+            var operationsManager = new OperationsManager(App.CacheManager, operationsRepository);
+            var accountsManager = new AccountsManager(App.CacheManager, accountsRepository);
+            var importManager = new ImportManager(App.CacheManager, accountCommandRepository, operationsManager);
 
             // Initialize View Models
+
             BusyIndicator = new BusyIndicatorViewModel();
 
             ImportsManagerViewModel = new ImportsManagerViewModel(BusyIndicator, fs, importManager);
 
             OperationsManagerViewModel = new OperationsManagerViewModel(BusyIndicator, operationsManager, importManager);
             AccountsManagerViewModel = new AccountsManagerViewModel(BusyIndicator, accountsManager, operationsManager, importManager);
-            GmcManager = new GmcManager(BusyIndicator);
-            _settingsManager = new SettingsManager();
+
+            GmcManager = new GmcManager(BusyIndicator, App.CacheManager);
+            _settingsManager = new SettingsManager(App.CacheManager);
 
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
             MessengerInstance.Register<AccountDataInvalidated>(this, OnCurrentAccountDataInvalidated);
@@ -148,7 +149,7 @@ namespace Operations.Classification.WpfUi
         private async Task Refresh()
         {
             await OperationsManagerViewModel.ReplayImports(AccountsManagerViewModel.Accounts);
-            await CacheProvider.ClearCache();
+            await App.CacheManager.ClearCache();
             await Load();
         }
     }

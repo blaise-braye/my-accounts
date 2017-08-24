@@ -12,7 +12,7 @@ namespace MyAccounts.Business.Managers.Operations
     {
         Task<List<UnifiedAccountOperation>> GetAll(Guid accountId);
 
-        Task Export(string filePath, IList<AccountOperationBase> operations);
+        Task Export(Stream target, IList<AccountOperationBase> operations);
 
         void Clear(Guid accountId);
 

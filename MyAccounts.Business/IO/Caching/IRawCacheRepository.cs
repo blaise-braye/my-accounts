@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace MyAccounts.Business.Caching
+namespace MyAccounts.Business.IO.Caching
 {
     public interface IRawCacheRepository
     {

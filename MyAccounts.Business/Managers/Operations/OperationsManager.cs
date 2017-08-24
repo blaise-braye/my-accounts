@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.AccountOperations.Unified;
-using MyAccounts.Business.Caching;
+using MyAccounts.Business.IO.Caching;
 using MyAccounts.Business.Managers.Imports;
 
 namespace MyAccounts.Business.Managers.Operations
@@ -16,17 +17,23 @@ namespace MyAccounts.Business.Managers.Operations
 
         Task<List<UnifiedAccountOperation>> DetectPotentialDuplicates(Guid accountId);
 
-        Task Export(string exportFilePath, List<AccountOperationBase> operations);
+        Task Export(Stream target, List<AccountOperationBase> operations);
+
+        Task Clear(Guid accountId);
+
+        Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData);
     }
 
     public class OperationsManager : IOperationsManager
     {
         private const string UnifiedAccountOperationsByAccountRoute = "/UnifiedAccountOperations/{0}";
         private static readonly ILog _log = LogManager.GetLogger(typeof(ImportManager));
+        private readonly ICacheProvider _cacheProvider;
         private readonly IOperationsRepository _operationsRepository;
 
-        public OperationsManager(IOperationsRepository operationsRepository)
+        public OperationsManager(ICacheProvider cacheProvider, IOperationsRepository operationsRepository)
         {
+            _cacheProvider = cacheProvider;
             _operationsRepository = operationsRepository;
         }
 
@@ -54,8 +61,8 @@ namespace MyAccounts.Business.Managers.Operations
 
             // validate fortis operations sequence number (detect missing operations)
             var fortisOperations = operations.Where(
-                    op => op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvArchive
-                          || op.SourceKind == AccountOperations.Contracts.SourceKind.FortisCsvExport)
+                    op => op.SourceKind == SourceKind.FortisCsvArchive
+                          || op.SourceKind == SourceKind.FortisCsvExport)
                 .OrderBy(op => op.OperationId);
             int[] previousOperationId = null;
             foreach (var fortisOperation in fortisOperations)
@@ -109,14 +116,32 @@ namespace MyAccounts.Business.Managers.Operations
             return result;
         }
 
-        public Task Export(string exportFilePath, List<AccountOperationBase> operations)
+        public Task Export(Stream target, List<AccountOperationBase> operations)
         {
-            return _operationsRepository.Export(exportFilePath, operations);
+            return _operationsRepository.Export(target, operations);
         }
 
-        private static ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(Guid accountId)
+        public async Task Clear(Guid accountId)
         {
-            return CacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByAccountRoute, accountId));
+            _operationsRepository.Clear(accountId);
+            await GetCacheEntry(accountId).DeleteAsync();
+        }
+
+        public async Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData)
+        {
+            var result = await _operationsRepository.ExecuteImport(importCommand, sourceData);
+
+            if (result.Success)
+            {
+                await GetCacheEntry(importCommand.AccountId).DeleteAsync();
+            }
+
+            return result;
+        }
+
+        private ICacheEntry<List<UnifiedAccountOperation>> GetCacheEntry(Guid accountId)
+        {
+            return _cacheProvider.GetJSonCacheEntry<List<UnifiedAccountOperation>>(string.Format(UnifiedAccountOperationsByAccountRoute, accountId));
         }
     }
 }

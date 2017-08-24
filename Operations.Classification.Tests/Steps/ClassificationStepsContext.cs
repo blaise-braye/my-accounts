@@ -5,6 +5,8 @@ using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.GeoLoc;
+using MyAccounts.Business.IO.Caching;
+using MyAccounts.Business.IO.Caching.InMemory;
 using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Imports;
 using MyAccounts.Business.Managers.Operations;
@@ -23,8 +25,11 @@ namespace Operations.Classification.Tests.Steps
             WorkingCopy = new WorkingCopy(new FileSystemAdapter(new MockFileSystem()), @"c:\WorkingCopy");
             
             AccountCommandRepository = new AccountCommandRepository(WorkingCopy);
-            OperationsRepository = new OperationsRepository(WorkingCopy, CsvAccountOperationManager, Transformer);
-            ImportManager = new ImportManager(AccountCommandRepository, OperationsRepository);
+            var operationsRepository = new OperationsRepository(WorkingCopy, CsvAccountOperationManager, Transformer);
+            
+            var cacheManager = new CacheManager(new NoCache());
+            OperationsManager = new OperationsManager(cacheManager, operationsRepository);
+            ImportManager = new ImportManager(cacheManager, AccountCommandRepository, OperationsManager);
 
             AccountId = Guid.NewGuid();
         }
@@ -32,8 +37,8 @@ namespace Operations.Classification.Tests.Steps
         public ImportManager ImportManager { get; set; }
 
         public Guid AccountId { get; set; }
-
-        public IOperationsRepository OperationsRepository { get; }
+        
+        public OperationsManager OperationsManager { get; }
 
         public IAccountCommandRepository AccountCommandRepository { get; }
 

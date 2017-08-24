@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.AccountOperations.Unified;
-using MyAccounts.Business.Caching;
 using MyAccounts.Business.GererMesComptes;
+using MyAccounts.Business.IO.Caching;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Collections;
 using Operations.Classification.WpfUi.Technical.Input;
@@ -18,6 +18,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
     public class GmcManager : ViewModelBase
     {
         private readonly BusyIndicatorViewModel _busyIndicator;
+        private readonly ICacheProvider _cacheProvider;
 
         private Dictionary<Guid, TransactionDeltaSet> _loadedDeltas;
         private AccountViewModel _currentAccount;
@@ -25,9 +26,10 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         private List<BasicTransactionModel> _currentAccountBasicTransactions;
         private TransactionDeltaSet _transactionDelta;
 
-        public GmcManager(BusyIndicatorViewModel busyIndicator)
+        public GmcManager(BusyIndicatorViewModel busyIndicator, ICacheProvider cacheProvider)
         {
             _busyIndicator = busyIndicator;
+            _cacheProvider = cacheProvider;
             Filter = new GmcManagerFilterViewModel();
             Filter.FilterInvalidated += OnFilterInvalidated;
             LocalTransactions = new SmartCollection<BasicTransactionModel>();
@@ -150,7 +152,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         private ICacheEntry<List<TransactionDelta>> GetDeltaCacheEntry(AccountViewModel account)
         {
-            return CacheProvider.GetJSonCacheEntry<List<TransactionDelta>>($"TransactionDeltas/{account.Name}");
+            return _cacheProvider.GetJSonCacheEntry<List<TransactionDelta>>($"TransactionDeltas/{account.Name}");
         }
 
         private void OnAccountViewModelReceived(AccountViewModel currentAccount)

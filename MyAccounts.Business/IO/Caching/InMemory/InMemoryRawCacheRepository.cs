@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace MyAccounts.Business.Caching.InMemory
+namespace MyAccounts.Business.IO.Caching.InMemory
 {
     public class InMemoryRawCacheRepository : IRawCacheRepository, IDisposable
     {
@@ -20,7 +20,7 @@ namespace MyAccounts.Business.Caching.InMemory
 
         public Task<bool> KeyExistsAsync(string cacheKey)
         {
-            var result = _objectCache.TryGetValue(cacheKey, out object value);
+            var result = _objectCache.TryGetValue(cacheKey, out object _);
             return Task.FromResult(result);
         }
 
@@ -28,7 +28,7 @@ namespace MyAccounts.Business.Caching.InMemory
         {
             var result = false;
 
-            var exists = _objectCache.TryGetValue(cacheKey, out object value);
+            var exists = _objectCache.TryGetValue(cacheKey, out object _);
 
             if (exists)
             {

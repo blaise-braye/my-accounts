@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MyAccounts.Business.Caching;
+using MyAccounts.Business.IO.Caching;
 
 namespace MyAccounts.Business.Managers.Accounts
 {
@@ -18,10 +18,12 @@ namespace MyAccounts.Business.Managers.Accounts
     {
         private const string AccountsRoute = "/Accounts";
         private readonly AccountsRepository _accountsRepository;
+        private readonly ICacheProvider _cacheProvider;
 
-        public AccountsManager(AccountsRepository accountsRepository)
+        public AccountsManager(ICacheProvider cacheProvider, AccountsRepository accountsRepository)
         {
             _accountsRepository = accountsRepository;
+            _cacheProvider = cacheProvider;
         }
 
         public async Task<bool> AddOrUpdate(AccountEntity entity)
@@ -54,9 +56,9 @@ namespace MyAccounts.Business.Managers.Accounts
             return result;
         }
 
-        private static ICacheEntry<List<AccountEntity>> GetCacheEntry()
+        private ICacheEntry<List<AccountEntity>> GetCacheEntry()
         {
-            return CacheProvider.GetJSonCacheEntry<List<AccountEntity>>(AccountsRoute);
+            return _cacheProvider.GetJSonCacheEntry<List<AccountEntity>>(AccountsRoute);
         }
     }
 }

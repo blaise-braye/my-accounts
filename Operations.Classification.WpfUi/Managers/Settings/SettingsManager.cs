@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using MyAccounts.Business.Caching;
+using MyAccounts.Business.IO.Caching;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -15,14 +15,16 @@ namespace Operations.Classification.WpfUi.Managers.Settings
 {
     public class SettingsManager : ViewModelBase, IDisposable
     {
+        private readonly ICachemanager _cachemanager;
         private readonly RelayCommand[] _commands;
         private readonly FolderBrowserDialog _fbd;
         private bool _isEditing;
 
         private SettingsModel _settings;
 
-        public SettingsManager()
+        public SettingsManager(ICachemanager cachemanager)
         {
+            _cachemanager = cachemanager;
             BeginEditCommand = new RelayCommand(BeginEdit, () => !IsEditing);
             CommitEditCommand = new RelayCommand(CommitEdit, () => IsEditing);
             ResetDefaultCommand = new AsyncCommand(ResetDefault, () => IsEditing);
@@ -123,7 +125,7 @@ namespace Operations.Classification.WpfUi.Managers.Settings
         private async Task ResetDefault()
         {
             Properties.Settings.Default.Reset();
-            await CacheProvider.ClearCache();
+            await _cachemanager.ClearCache();
             OnSettingsPersisted();
             Settings = Properties.Settings.Default.Map().To<SettingsModel>();
         }

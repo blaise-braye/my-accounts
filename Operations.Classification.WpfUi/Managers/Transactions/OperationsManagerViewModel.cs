@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
@@ -162,7 +163,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                             clonedOperation.SourceKind = SourceKind.InternalCsvExport;
                         }
 
-                        await _operationsManager.Export(ExportFilePath, clonedOperations.Cast<AccountOperationBase>().ToList());
+                        using (var fs = File.Open(ExportFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            await _operationsManager.Export(fs, clonedOperations.Cast<AccountOperationBase>().ToList());
+                        }
                     }
                 }
 

@@ -8,8 +8,8 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
-using MyAccounts.Business.Caching;
-using MyAccounts.Business.Caching.InMemory;
+using MyAccounts.Business.IO.Caching;
+using MyAccounts.Business.IO.Caching.InMemory;
 using Operations.Classification.WpfUi.Properties;
 using Operations.Classification.WpfUi.Technical.Caching.Redis;
 using Operations.Classification.WpfUi.Technical.Localization;
@@ -22,6 +22,8 @@ namespace Operations.Classification.WpfUi
     public partial class App
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(App));
+
+        public static ICachemanager CacheManager { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -49,7 +51,7 @@ namespace Operations.Classification.WpfUi
                 repository = new RedisRawCacheRepository(Settings.Default.RedisConnectionString);
             }
 
-            CacheProvider.Init(repository);
+            CacheManager = new CacheManager(repository);
             _log.Info($"Cache provider initialized, working with repository {repository.GetType()}");
         }
 

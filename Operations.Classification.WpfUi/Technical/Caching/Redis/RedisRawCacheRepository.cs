@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using MyAccounts.Business.Caching;
+using MyAccounts.Business.IO.Caching;
 using StackExchange.Redis;
 
 namespace Operations.Classification.WpfUi.Technical.Caching.Redis
