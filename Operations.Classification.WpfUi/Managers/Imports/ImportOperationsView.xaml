@@ -5,39 +5,64 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
-             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.ImportsManagerViewModel}"
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.ImportsManagerViewModel.Editor}"
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding BeginImportCommand}">
+                    Command="{Binding CommitCommand}">
                 <Rectangle Width="24" Height="24">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsNew}">
+                                    <Setter Property="Fill">
+                                        <Setter.Value>
+                                            <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
                     <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />
+                        <VisualBrush Visual="{StaticResource appbar_edit}" Stretch="Fill" />
                     </Rectangle.Fill>
                 </Rectangle>
             </Button>
         </StackPanel>
         <StackPanel>
-            <Label Content="File path :" Target="{Binding ElementName=TxtFilePath}" />
-            <TextBox Name="TxtFilePath"
-                     Style="{StaticResource OpenFileMetroTextBox}"
-                     controls:TextBoxHelper.Watermark="enter the path of the file(s) to import here"
-                     controls:TextBoxHelper.ButtonCommand="{Binding SelectFilesToImportCommand}"
-                     Text="{Binding FilePaths}" />
+            <StackPanel Visibility="{Binding DisplayFilePaths, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Label Content="File path :" Target="{Binding ElementName=TxtFilePath}" />
+                <TextBox Name="TxtFilePath"
+                         Style="{StaticResource OpenFileMetroTextBox}"
+                         controls:TextBoxHelper.Watermark="enter the path of the file(s) to import here"
+                         controls:TextBoxHelper.ButtonCommand="{Binding SelectFilesToImportCommand}"
+                         Text="{Binding FilePaths}" />
+            </StackPanel>
+            
+            <StackPanel Visibility="{Binding DisplaySourceName, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Label Content="Source name :" Target="{Binding ElementName=TxtSourceName}" />
+                <TextBox Name="TxtSourceName" IsReadOnly="True" Text="{Binding SourceName}" />
+            </StackPanel>
 
-            <Label Target="{Binding ElementName=TxtGmcAccountName}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Source kind : ( " />
-                    <CheckBox IsChecked="{Binding AutoDetectSourceKind, Mode=TwoWay}" Content="Auto detect" />
-                    <TextBlock Text=" )" />
-                </StackPanel>
-            </Label>
-            <ComboBox Name="TxtGmcAccountName"
-                      IsEnabled="{Binding AutoDetectSourceKind, Converter={StaticResource InvertBooleanConverter}, Mode=TwoWay}"
+            <Label Target="{Binding ElementName=CmbSourceKind}" Content="Source kind :" />
+            <ComboBox Name="CmbSourceKind"
                       controls:TextBoxHelper.Watermark="select the source kind"
                       SelectedValue="{Binding SourceKind}"
                       ItemsSource="{Binding SourceKinds}" />
+
+            <Label Target="{Binding ElementName=TxtEncoding}" Content="Encoding :" />
+            <TextBox Name="TxtEncoding"
+                     controls:TextBoxHelper.Watermark="enter the file encoding"
+                     Text="{Binding Encoding}" />
+
+            <Label Content="Culture" Target="{Binding ElementName=CmbCulture}" />
+            <ComboBox ItemsSource="{Binding Cultures}" x:Name="CmbCulture"
+                      IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"
+                      controls:TextBoxHelper.Watermark="enter the culture"
+                      SelectedValuePath="Name" DisplayMemberPath="DisplayName"
+                      SelectedValue="{Binding Culture}" />
         </StackPanel>
     </DockPanel>
 </UserControl>

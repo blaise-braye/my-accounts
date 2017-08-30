@@ -92,8 +92,7 @@ namespace Operations.Classification.Tests.Steps
         public async Task GivenIHaveReadTheFollowingSodexoOperations(string multilineText)
         {
             var rawStream = new MemoryStream(Encoding.UTF8.GetBytes(multilineText));
-            var operationManager = new CsvAccountOperationManager();
-            _context.ReadOperations = await operationManager.ReadAsync(rawStream, operationManager.GetDefaultFileMetadata(SourceKind.SodexoCsvExport));
+            _context.ReadOperations = await _context.CsvAccountOperationManager.ReadAsync(rawStream, FileStructureMetadataFactory.CreateDefault(SourceKind.SodexoCsvExport));
         }
 
         [Then(@"File '(.*)' exists")]
@@ -158,7 +157,7 @@ namespace Operations.Classification.Tests.Steps
             var readTasks = files.Select(s =>
             {
                 var sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(s);
-                var fmd = _context.CsvAccountOperationManager.GetDefaultFileMetadata(sourceKind);
+                var fmd = FileStructureMetadataFactory.CreateDefault(sourceKind);
                 using (var fs = File.OpenRead(s))
                 {
                     return _context.CsvAccountOperationManager.ReadAsync(fs, fmd);
@@ -183,8 +182,7 @@ namespace Operations.Classification.Tests.Steps
                 utf8Bytes);
 
             var rawStream = new MemoryStream(asciiBytes);
-            var operationManager = new CsvAccountOperationManager();
-            _context.ReadOperations = await operationManager.ReadAsync(rawStream, operationManager.GetDefaultFileMetadata(SourceKind.FortisCsvExport));
+            _context.ReadOperations = await _context.CsvAccountOperationManager.ReadAsync(rawStream, FileStructureMetadataFactory.CreateDefault(SourceKind.FortisCsvExport));
         }
 
         [When(@"I store the operation details in file '(.*)'")]

@@ -139,7 +139,11 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private async Task BeginDataQualityAnalysis()
         {
             var result = await _operationsManager.DetectPotentialDuplicates(CurrentAccount.Id);
-            Operations = result.Project()?.To<UnifiedAccountOperationModel>()?.ToList();
+            Operations = result
+                .Project()
+                .To<UnifiedAccountOperationModel>()
+                .OrderByDescending(t => t.OperationId)
+                .ToList();
         }
 
         private void BeginExport()
@@ -184,7 +188,11 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         {
             var operations = GetFilteredAccountOperations();
 
-            Operations = operations.Project().To<UnifiedAccountOperationModel>().ToList();
+            Operations = operations
+                .Project()
+                .To<UnifiedAccountOperationModel>()
+                .OrderByDescending(t => t.OperationId)
+                .ToList();
         }
 
         private IEnumerable<UnifiedAccountOperation> GetFilteredAccountOperations()

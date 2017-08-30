@@ -100,10 +100,23 @@
                              IsOpen="{Binding AccountsManagerViewModel.IsEditing, Mode=OneWay}">
                 <accounts:AccountEditorView Width="350" DataContext="{Binding AccountsManagerViewModel}" />
             </controls:Flyout>
-            <controls:Flyout Header="Import command parameters" Position="Right"
-                             IsModal="True"
-                             IsOpen="{Binding ImportsManagerViewModel.IsImporting, Mode=TwoWay}">
-                <imports:ImportOperationsView Width="350" DataContext="{Binding ImportsManagerViewModel}" />
+            <controls:Flyout Position="Right" IsModal="True"
+                             IsOpen="{Binding ImportsManagerViewModel.IsEditing, Mode=OneWay}">
+                <controls:Flyout.Style>
+                    <Style TargetType="controls:Flyout">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ImportsManagerViewModel.IsNew}" Value="False">
+                                <Setter Property="CloseCommand" Value="{Binding ImportsManagerViewModel.CommitEditCommand}"></Setter>
+                                <Setter Property="Header" Value="Edit import parameters"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ImportsManagerViewModel.IsNew}" Value="True">
+                                <Setter Property="CloseCommand" Value="{Binding ImportsManagerViewModel.CancelEditCommand}"></Setter>
+                                <Setter Property="Header" Value="New import parameters"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </controls:Flyout.Style>
+                <imports:ImportOperationsView Width="350" DataContext="{Binding ImportsManagerViewModel.Editor}" />
             </controls:Flyout>
             <controls:Flyout Header="Export command parameters" Position="Right"
                              IsModal="True"

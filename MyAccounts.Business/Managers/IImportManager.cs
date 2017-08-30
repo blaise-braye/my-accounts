@@ -12,6 +12,8 @@ namespace MyAccounts.Business.Managers
 
         Task<List<ImportCommand>> GetAll(Guid accountId);
 
+        Task<ImportCommand> Get(Guid accountId, Guid importId);
+
         Task DeleteImports(Guid accountId, IEnumerable<Guid> importCommands);
 
         Task<bool> ReplayCommands(Guid accountId);
@@ -21,5 +23,7 @@ namespace MyAccounts.Business.Managers
         Task<List<ImportExecutionImpact>> GetLastExecutionImpact(Guid accountId, IEnumerable<Guid> importCommands);
 
         Task<List<ImportExecutionImpact>> GetExecutionImpacts(Guid accountId, Guid commandId);
+
+        Task<bool> Replace(ImportCommand importCommand);
     }
 }

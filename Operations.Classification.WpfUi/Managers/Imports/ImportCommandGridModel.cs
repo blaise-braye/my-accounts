@@ -12,10 +12,6 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         [ReadOnly(true)]
         public Guid Id { get; set; }
 
-        [Display(AutoGenerateField = false)]
-        [ReadOnly(true)]
-        public Guid AccountId { get; set; }
-
         [ReadOnly(true)]
         public string SourceName { get; set; }
 

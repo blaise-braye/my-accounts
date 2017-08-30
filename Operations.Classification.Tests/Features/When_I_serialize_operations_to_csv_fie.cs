@@ -41,7 +41,7 @@ namespace Operations.Classification.Tests.Features
         {
             var ms = new MemoryStream();
             await operationManager.WriteAsync(ms, operations);
-            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var fileStructureMetadata = FileStructureMetadataFactory.CreateDefault(operations[0].SourceKind);
             ms.Seek(0, SeekOrigin.Begin);
             var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
@@ -57,7 +57,7 @@ namespace Operations.Classification.Tests.Features
         {
             var ms = new MemoryStream();
             await operationManager.WriteAsync(ms, operations);
-            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var fileStructureMetadata = FileStructureMetadataFactory.CreateDefault(operations[0].SourceKind);
             ms.Seek(0, SeekOrigin.Begin);
             var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
@@ -72,7 +72,7 @@ namespace Operations.Classification.Tests.Features
         {
             var ms = new MemoryStream();
             await operationManager.WriteAsync(ms, operations);
-            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var fileStructureMetadata = FileStructureMetadataFactory.CreateDefault(operations[0].SourceKind);
             ms.Seek(0, SeekOrigin.Begin);
             var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 
@@ -87,7 +87,7 @@ namespace Operations.Classification.Tests.Features
         {
             var ms = new MemoryStream();
             await operationManager.WriteAsync(ms, operations);
-            var fileStructureMetadata = operationManager.GetDefaultFileMetadata(operations[0].SourceKind);
+            var fileStructureMetadata = FileStructureMetadataFactory.CreateDefault(operations[0].SourceKind);
             ms.Seek(0, SeekOrigin.Begin);
             var operationsState2 = await operationManager.ReadAsync(ms, fileStructureMetadata);
 

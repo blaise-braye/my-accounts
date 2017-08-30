@@ -15,6 +15,7 @@
 using AutoMapper;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.Managers.Accounts;
 using MyAccounts.Business.Managers.Imports;
@@ -46,6 +47,9 @@ namespace Operations.Classification.WpfUi
                     cfg.CreateMap<SettingsModel, Properties.Settings>();
 
                     cfg.CreateMap<ImportCommand, ImportCommandGridModel>();
+                    cfg.CreateMap<ImportCommand, ImportEditorViewModel>();
+                    cfg.CreateMap<FileStructureMetadata, ImportEditorViewModel>();
+
                     cfg.CreateMap<ImportExecutionImpact, ImportCommandGridModel>()
                         .ForMember(s => s.LastExecution, opt => opt.MapFrom(s => s.CreationDate))
                         .ForMember(s => s.Success, opt => opt.MapFrom(s => s.Success))

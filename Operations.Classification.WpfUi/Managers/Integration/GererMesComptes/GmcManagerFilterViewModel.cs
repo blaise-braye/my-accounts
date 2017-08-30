@@ -71,7 +71,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         public IEnumerable<BasicTransaction> FilterDelta(IEnumerable<TransactionDelta> deltas, Func<TransactionDelta, BasicTransaction> selector)
         {
             var filteredDelta = DeltaFilter.Apply(deltas, d => d.Action);
-            var locals = filteredDelta.Where(d => d.Source != null).Select(selector);
+            var locals = filteredDelta.Select(selector).Where(t => t != null);
             locals = DateFilter.Apply(locals, l => l.Date);
             locals = MemoFilter.Apply(locals, l => l.Memo);
             return locals;

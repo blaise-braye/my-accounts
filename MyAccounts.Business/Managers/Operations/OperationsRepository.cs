@@ -191,7 +191,7 @@ namespace MyAccounts.Business.Managers.Operations
 
         private FileStructureMetadata GetFileMetadata(ImportCommand importCommand)
         {
-            var md = _csvAccountOperationManager.GetDefaultFileMetadata(importCommand.SourceKind);
+            var md = FileStructureMetadataFactory.CreateDefault(importCommand.SourceKind);
 
             if (!string.IsNullOrEmpty(importCommand.Culture))
             {

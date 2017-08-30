@@ -185,7 +185,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 var localViewModels = ProjectToViewModelCollection(locals);
                 LocalTransactions.Reset(localViewModels);
 
-                var remotes = deltas.Where(d => d.Target != null).Select(d => d.Target);
+                var remotes = Filter.FilterDelta(deltas, d => d.Target);
                 var remoteViewModels = ProjectToViewModelCollection(remotes);
                 RemoteTransactions.Reset(remoteViewModels);
             }

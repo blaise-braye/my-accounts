@@ -16,8 +16,6 @@ namespace MyAccounts.Business.AccountOperations
 {
     public interface ICsvAccountOperationManager
     {
-        FileStructureMetadata GetDefaultFileMetadata(SourceKind sourceKind);
-
         Task<List<AccountOperationBase>> ReadAsync(Stream sourceStream, FileStructureMetadata structureMetadata);
 
         Task WriteAsync(Stream targetStream, IList<AccountOperationBase> operations);
@@ -25,7 +23,7 @@ namespace MyAccounts.Business.AccountOperations
 
     public class CsvAccountOperationManager : ICsvAccountOperationManager
     {
-        private static readonly Dictionary<SourceKind, CsvConfiguration> _defaultCsvConfigurations = CreateDefaultCsvConfigurations();
+        internal static readonly Dictionary<SourceKind, CsvConfiguration> DefaultCsvConfigurations = CreateDefaultCsvConfigurations();
 
         public static SourceKind DetectFileSourceKindFromFileName(string file)
         {
@@ -48,67 +46,6 @@ namespace MyAccounts.Business.AccountOperations
             }
 
             return sourceKind;
-        }
-
-        public static SourceKind DetectSourceKindFromFileContent(string file)
-        {
-            var supportedSourceKinds = _defaultCsvConfigurations.Keys.Except(new[] { SourceKind.Unknwon });
-
-            var result = supportedSourceKinds.Select(
-                    sourceKind =>
-                    {
-                        var config = _defaultCsvConfigurations[sourceKind];
-
-                        FileStream fs = null;
-                        StreamReader sr = null;
-                        try
-                        {
-                            fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
-                            sr = new StreamReader(fs);
-                            fs = null;
-                            using (var reader = new CsvReader(sr, config))
-                            {
-                                sr = null;
-
-                                if (reader.Read())
-                                {
-                                    sourceKind = reader.GetField<SourceKind>(nameof(SourceKind));
-                                    if (sourceKind != SourceKind.Unknwon)
-                                    {
-                                        return Tuple.Create(true, sourceKind);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            // ignored
-                            sr?.Dispose();
-                            fs?.Dispose();
-                        }
-
-                        return Tuple.Create(false, SourceKind.Unknwon);
-                    })
-                .Where(t => t.Item1)
-                .Select(t => t.Item2)
-                .DefaultIfEmpty(SourceKind.Unknwon)
-                .FirstOrDefault();
-
-            return result;
-        }
-
-        public FileStructureMetadata GetDefaultFileMetadata(SourceKind sourceKind)
-        {
-            var metadata = new FileStructureMetadata { SourceKind = sourceKind };
-
-            if (_defaultCsvConfigurations.ContainsKey(sourceKind))
-            {
-                var defaultConfig = _defaultCsvConfigurations[sourceKind];
-                metadata.Encoding = defaultConfig.Encoding.WebName;
-                metadata.Culture = defaultConfig.CultureInfo.Name;
-            }
-
-            return metadata;
         }
 
         public Task<List<AccountOperationBase>> ReadAsync(Stream sourceStream, FileStructureMetadata structureMetadata)
@@ -136,7 +73,7 @@ namespace MyAccounts.Business.AccountOperations
                     "All operations are expected to be of same source kind and same type");
             }
 
-            var config = _defaultCsvConfigurations[sourceKind];
+            var config = DefaultCsvConfigurations[sourceKind];
 
             var sw = new StreamWriter(targetStream, config.Encoding);
             var writer = new CsvWriter(sw, config);

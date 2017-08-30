@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,12 +8,12 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using MyAccounts.Business.AccountOperations;
-using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.IO;
 using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Imports
 {
@@ -23,11 +23,9 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         private readonly IImportManager _importManager;
         private readonly OpenFileDialog _ofd;
         private AccountViewModel _currentAccount;
+
+        private ImportEditorViewModel _editor;
         private List<ImportCommandGridModel> _imports;
-        private bool _isImporting;
-        private bool _autoDetectSourceKind;
-        private string _filePaths;
-        private SourceKind? _sourceKind;
 
         public ImportsManagerViewModel(BusyIndicatorViewModel busyIndicator, IFileSystem fileSystem, IImportManager importManager)
         {
@@ -35,11 +33,14 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             _importManager = importManager;
             Fs = fileSystem;
 
-            BeginImportCommand = new RelayCommand(BeginImport);
-            CommitImportCommand = new AsyncCommand(CommitImport);
+            BeginImportCommand = new RelayCommand(BeginNewImport);
+            BeginEditImportsCommand = new AsyncCommand(BeginEditImport);
+            CommitEditCommand = new AsyncCommand(CommitEdit);
+            CancelEditCommand = new RelayCommand(CancelEdit);
             SelectFilesToImportCommand = new RelayCommand(SelectFilesToImport);
-            DeleteImportsCommand = new AsyncCommand<IEnumerable>(DeleteImports);
+            DeleteImportsCommand = new AsyncCommand(DeleteImports);
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
+            SelectedImports = new ObservableCollection<ImportCommandGridModel>();
 
             _ofd = new OpenFileDialog
             {
@@ -51,54 +52,46 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         public List<ImportCommandGridModel> Imports
         {
             get => _imports;
-            private set => Set(nameof(Imports), ref _imports, value);
-        }
-
-        public bool IsImporting
-        {
-            get => _isImporting;
-            set => Set(nameof(IsImporting), ref _isImporting, value);
-        }
-
-        public RelayCommand BeginImportCommand { get; set; }
-
-        public RelayCommand CommitImportCommand { get; }
-
-        public RelayCommand SelectFilesToImportCommand { get; }
-
-        public RelayCommand BeginEditCommand { get; set; }
-
-        public AsyncCommand<IList<ImportCommandGridModel>> BeginDownloadCommand { get; set; }
-
-        public AsyncCommand<IEnumerable> DeleteImportsCommand { get; }
-
-        public string FilePaths
-        {
-            get => _filePaths;
-            set => Set(nameof(FilePaths), ref _filePaths, value);
-        }
-
-        public IEnumerable<SourceKind> SourceKinds => Enum.GetValues(typeof(SourceKind)).Cast<SourceKind>();
-
-        public bool AutoDetectSourceKind
-        {
-            get => _autoDetectSourceKind;
-            set
+            private set
             {
-                if (Set(nameof(AutoDetectSourceKind), ref _autoDetectSourceKind, value))
+                if (Set(nameof(Imports), ref _imports, value))
                 {
-                    if (value)
-                    {
-                        SourceKind = null;
-                    }
+                    SelectedImports.Clear();
                 }
             }
         }
 
-        public SourceKind? SourceKind
+        public ObservableCollection<ImportCommandGridModel> SelectedImports { get; }
+
+        public bool IsEditing => Editor != null;
+
+        public bool IsNew => Editor?.IsNew == true;
+
+        public RelayCommand BeginImportCommand { get; set; }
+
+        public RelayCommand SelectFilesToImportCommand { get; }
+
+        public AsyncCommand BeginEditImportsCommand { get; }
+
+        public AsyncCommand BeginDownloadCommand { get; set; }
+
+        public AsyncCommand CommitEditCommand { get; }
+
+        public RelayCommand CancelEditCommand { get; }
+
+        public AsyncCommand DeleteImportsCommand { get; }
+
+        public ImportEditorViewModel Editor
         {
-            get => _sourceKind;
-            set => Set(nameof(SourceKind), ref _sourceKind, value);
+            get => _editor;
+            set
+            {
+                if (Set(() => Editor, ref _editor, value))
+                {
+                    RaisePropertyChanged(() => IsEditing);
+                    RaisePropertyChanged(() => IsNew);
+                }
+            }
         }
 
         private IFileSystem Fs { get; }
@@ -114,71 +107,147 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             Imports = _currentAccount?.Imports;
         }
 
-        private void BeginImport()
+        private void BeginNewImport()
         {
-            IsImporting = true;
+            if (IsEditing)
+            {
+                throw new InvalidOperationException("An import is already in progress");
+            }
+
+            var editor = new ImportEditorViewModel();
+            SetupEditorCommands(editor);
+            Editor = editor;
         }
 
-        private async Task CommitImport()
+        private async Task BeginEditImport()
         {
-            if (IsImporting)
+            if (IsEditing)
+            {
+                throw new InvalidOperationException("An import found to be in progress");
+            }
+
+            var selection = SelectedImports;
+            if (selection.Count > 0)
+            {
+                var importGridModel = selection[0];
+                ImportCommand import = await _importManager.Get(_currentAccount.Id, importGridModel.Id);
+                var editor = import.Map().To<ImportEditorViewModel>().ResetChangeSet();
+                SetupEditorCommands(editor);
+                Editor = editor;
+            }
+        }
+
+        private async Task CommitEdit()
+        {
+            if (!IsEditing)
+            {
+                throw new InvalidOperationException("no edit in progress, nothing to commit");
+            }
+
+            bool datachanged = false;
+            if (IsNew)
             {
                 using (_busyIndicator.EncapsulateActiveJobDescription(this, "finalizing import"))
                 {
-                    var paths = FilePaths.Split(',');
-                    var files = new HashSet<string>();
-                    foreach (var path in paths)
+                    datachanged = await SaveNewImport();
+                }
+            }
+            else if (Editor.IsDirty())
+            {
+                using (_busyIndicator.EncapsulateActiveJobDescription(this, "committing changes"))
+                {
+                    datachanged = await SaveExistingImport();
+                }
+            }
+
+            if (datachanged)
+            {
+                MessengerInstance.Send(new AccountDataInvalidated());
+                OnAccountViewModelReceived(_currentAccount);
+            }
+
+            Editor = null;
+        }
+
+        private async Task<bool> SaveExistingImport()
+        {
+            if (!Editor.Id.HasValue)
+            {
+                throw new InvalidOperationException("import id must be known");
+            }
+
+            var accountId = Editor.Id;
+            ImportCommand importCommand = await _importManager.Get(_currentAccount.Id, accountId.Value);
+            Editor.FillMetadataFromChangeSet(importCommand);
+
+            var saved = await _importManager.Replace(importCommand);
+            return saved;
+        }
+
+        private async Task<bool> SaveNewImport()
+        {
+            var paths = Editor.FilePaths.Split(',');
+            var files = new HashSet<string>();
+            foreach (var path in paths)
+            {
+                if (Fs.IsDirectoy(path))
+                {
+                    var dirFiles = Fs.DirectoryGetFiles(path, "*.csv");
+                    foreach (var dirFile in dirFiles)
                     {
-                        if (Fs.IsDirectoy(path))
-                        {
-                            var dirFiles = Fs.DirectoryGetFiles(path, "*.csv");
-                            foreach (var dirFile in dirFiles)
-                            {
-                                files.Add(dirFile);
-                            }
-                        }
-                        else if (Fs.FileExists(path))
-                        {
-                            files.Add(path);
-                        }
-                    }
-
-                    var account = _currentAccount;
-                    var someImportSucceeded = false;
-                    if (account != null)
-                    {
-                        foreach (var file in files)
-                        {
-                            var sourceKind = MyAccounts.Business.AccountOperations.Contracts.SourceKind.Unknwon;
-
-                            if (AutoDetectSourceKind)
-                            {
-                                sourceKind = CsvAccountOperationManager.DetectFileSourceKindFromFileName(file);
-                            }
-                            else if (SourceKind.HasValue)
-                            {
-                                sourceKind = SourceKind.Value;
-                            }
-
-                            using (var fs = Fs.FileOpenRead(file))
-                            {
-                                var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
-                                if (await _importManager.RequestImportExecution(importCommand, fs))
-                                {
-                                    someImportSucceeded = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if (someImportSucceeded)
-                    {
-                        MessengerInstance.Send(new AccountDataInvalidated());
-                        OnAccountViewModelReceived(_currentAccount);
+                        files.Add(dirFile);
                     }
                 }
+                else if (Fs.FileExists(path))
+                {
+                    files.Add(path);
+                }
+            }
 
-                IsImporting = false;
+            var account = _currentAccount;
+            var someImportSucceeded = false;
+            var sourceKind = Editor.SourceKind;
+            if (account != null)
+            {
+                foreach (var file in files)
+                {
+                    using (var fs = Fs.FileOpenRead(file))
+                    {
+                        var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
+                        Editor.FillMetadataFromChangeSet(importCommand);
+                        if (await _importManager.RequestImportExecution(importCommand, fs))
+                        {
+                            someImportSucceeded = true;
+                        }
+                    }
+                }
+            }
+
+            return someImportSucceeded;
+        }
+
+        private void CancelEdit()
+        {
+            if (!IsEditing)
+            {
+                throw new InvalidOperationException("no edit in progress, nothing to cancel");
+            }
+
+            Editor = null;
+        }
+
+        private async Task DeleteImports()
+        {
+            var selection = SelectedImports;
+            if (selection.Count > 0)
+            {
+                var idSet = new HashSet<Guid>(selection.Select(a => a.Id));
+                await _importManager.DeleteImports(_currentAccount.Id, idSet);
+
+                var imports = _currentAccount.Imports.Where(i => !idSet.Contains(i.Id)).ToList();
+                _currentAccount.Imports = imports;
+
+                RefreshImports();
             }
         }
 
@@ -191,23 +260,26 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
             if (_ofd.ShowDialog() == true)
             {
-                FilePaths = string.Join(",", _ofd.FileNames);
+                Editor.FilePaths = string.Join(",", _ofd.FileNames);
             }
         }
 
-        private async Task DeleteImports(IEnumerable arg)
+        private void SetupEditorCommands(ImportEditorViewModel editor)
         {
-            var lst = arg?.OfType<ImportCommandGridModel>().ToList();
-            if (lst?.Count > 0)
+            editor.CommitCommand = new AsyncCommand(CommitEdit);
+            editor.ResetDefaultSourceKindMetadataCommand = new RelayCommand(ResetDefaultSourceKindMetadataCommand);
+
+            if (editor.IsNew)
             {
-                var idSet = new HashSet<Guid>(lst.Select(a => a.Id));
-                await _importManager.DeleteImports(lst[0].AccountId, idSet);
-
-                var imports = _currentAccount.Imports.Where(i => !idSet.Contains(i.Id)).ToList();
-                _currentAccount.Imports = imports;
-
-                RefreshImports();
+                editor.SelectFilesToImportCommand = SelectFilesToImportCommand;
             }
+        }
+
+        private void ResetDefaultSourceKindMetadataCommand()
+        {
+            var sourceKind = Editor.SourceKind;
+            var fsmd = FileStructureMetadataFactory.CreateDefault(sourceKind);
+            fsmd.Map().To(Editor);
         }
     }
 }

@@ -117,6 +117,7 @@
     </ApplicationDefinition>
     <Compile Include="Managers\Accounts\Models\AccountDataInvalidated.cs" />
     <Compile Include="Managers\Imports\ImportCommandGridModel.cs" />
+    <Compile Include="Managers\Imports\ImportEditorViewModel.cs" />
     <Compile Include="Managers\Imports\ImportsManagerView.xaml.cs">
       <DependentUpon>ImportsManagerView.xaml</DependentUpon>
     </Compile>
@@ -142,6 +143,9 @@
     <Compile Include="Technical\Collections\Filters\DateRangeFilter.cs" />
     <Compile Include="Technical\Collections\Filters\IFilter.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\TransactionDeltaFilter.cs" />
+    <Compile Include="Technical\Collections\IListItemConverter.cs" />
+    <Compile Include="Technical\Collections\MultiSelectorBehaviours.cs" />
+    <Compile Include="Technical\Collections\TwoListSynchronizer.cs" />
     <Compile Include="Technical\Localization\ApplicationCulture.cs" />
     <Compile Include="Technical\Projections\ItemProjectionBuilder.cs" />
     <Compile Include="Technical\Projections\CollectionProjectionBuilder.cs" />
