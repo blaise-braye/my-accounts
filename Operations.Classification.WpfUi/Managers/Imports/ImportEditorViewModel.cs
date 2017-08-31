@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.AccountOperations.Contracts;
-using MyAccounts.Business.Managers.Imports;
+using Operations.Classification.WpfUi.Technical.ChangeTracking;
 
 namespace Operations.Classification.WpfUi.Managers.Imports
 {
-    public class ImportEditorViewModel : ViewModelBase
+    public class ImportEditorViewModel : ObservableObject, IEditableObject
     {
-        private readonly List<Action<ImportCommand>> _changeSet = new List<Action<ImportCommand>>();
+        private readonly DataTracker _dataTracker = new DataTracker();
 
         private SourceKind _sourceKind;
 
@@ -53,37 +54,19 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         public string SourceName
         {
             get => _sourceName;
-            set
-            {
-                if (Set(() => SourceName, ref _sourceName, value))
-                {
-                    _changeSet.Add(c => c.SourceName = value);
-                }
-            }
+            set => Set(() => SourceName, ref _sourceName, value);
         }
 
         public string Encoding
         {
             get => _encoding;
-            set
-            {
-                if (Set(() => Encoding, ref _encoding, value))
-                {
-                    _changeSet.Add(c => c.Encoding = value);
-                }
-            }
+            set => Set(() => Encoding, ref _encoding, value);
         }
 
         public string Culture
         {
             get => _culture;
-            set
-            {
-                if (Set(() => Culture, ref _culture, value))
-                {
-                    _changeSet.Add(c => c.Culture = value);
-                }
-            }
+            set => Set(() => Culture, ref _culture, value);
         }
 
         public ICommand CommitCommand { get; set; }
@@ -96,23 +79,29 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         public IEnumerable<CultureInfo> Cultures => CultureInfo.GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures).ToList();
 
-        public void FillMetadataFromChangeSet(ImportCommand importCommand)
+        public void FillFromDirtyProperties(object targetData)
         {
-            foreach (var action in _changeSet)
-            {
-                action(importCommand);
-            }
+            _dataTracker.FillFromDirtyProperties(targetData);
         }
 
-        public ImportEditorViewModel ResetChangeSet()
+        public void BeginEdit()
         {
-            _changeSet.Clear();
-            return this;
+            _dataTracker.StartTracking(this);
+        }
+
+        public void EndEdit()
+        {
+            _dataTracker.StopTracking();
+        }
+
+        public void CancelEdit()
+        {
+            _dataTracker.StopTracking();
         }
 
         public bool IsDirty()
         {
-            return _changeSet.Any();
+            return _dataTracker.IsDirty;
         }
     }
 }

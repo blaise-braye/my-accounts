@@ -3,9 +3,9 @@
     /// <summary>
     ///     Interaction logic for ImportOperationsView.xaml
     /// </summary>
-    public partial class ImportOperationsView
+    public partial class ImportEditorView
     {
-        public ImportOperationsView()
+        public ImportEditorView()
         {
             InitializeComponent();
         }

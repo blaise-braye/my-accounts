@@ -131,8 +131,9 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             {
                 var importGridModel = selection[0];
                 ImportCommand import = await _importManager.Get(_currentAccount.Id, importGridModel.Id);
-                var editor = import.Map().To<ImportEditorViewModel>().ResetChangeSet();
+                var editor = import.Map().To<ImportEditorViewModel>();
                 SetupEditorCommands(editor);
+                editor.BeginEdit();
                 Editor = editor;
             }
         }
@@ -166,6 +167,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                 OnAccountViewModelReceived(_currentAccount);
             }
 
+            Editor.EndEdit();
             Editor = null;
         }
 
@@ -178,7 +180,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
             var accountId = Editor.Id;
             ImportCommand importCommand = await _importManager.Get(_currentAccount.Id, accountId.Value);
-            Editor.FillMetadataFromChangeSet(importCommand);
+            Editor.FillFromDirtyProperties(importCommand);
 
             var saved = await _importManager.Replace(importCommand);
             return saved;
@@ -214,7 +216,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                     using (var fs = Fs.FileOpenRead(file))
                     {
                         var importCommand = new ImportCommand(account.Id, Path.GetFileName(file), sourceKind);
-                        Editor.FillMetadataFromChangeSet(importCommand);
+                        Editor.FillFromDirtyProperties(importCommand);
                         if (await _importManager.RequestImportExecution(importCommand, fs))
                         {
                             someImportSucceeded = true;
@@ -233,6 +235,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                 throw new InvalidOperationException("no edit in progress, nothing to cancel");
             }
 
+            Editor.CancelEdit();
             Editor = null;
         }
 

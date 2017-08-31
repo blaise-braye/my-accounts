@@ -44,6 +44,9 @@
     <Reference Include="AutoMapper, Version=6.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.6.1.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="FastMember, Version=1.0.0.9, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.1.0\lib\net40\FastMember.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
       <Private>True</Private>
@@ -89,6 +92,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
     <Reference Include="System.IO.Abstractions, Version=2.0.0.144, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Abstractions.2.0.0.144\lib\net40\System.IO.Abstractions.dll</HintPath>
     </Reference>
@@ -130,6 +134,8 @@
       <DependentUpon>ExportOperationsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Technical\Caching\Redis\RedisRawCacheRepository.cs" />
+    <Compile Include="Technical\ChangeTracking\PropertyState.cs" />
+    <Compile Include="Technical\ChangeTracking\DataTracker.cs" />
     <Compile Include="Technical\Collections\Filters\TextFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSet.cs" />
     <Compile Include="Managers\Reports\UnifiedOperationsReporter.cs" />
@@ -171,8 +177,8 @@
     <Compile Include="Managers\Integration\GererMesComptes\BasicTransactionModel.cs" />
     <Compile Include="Managers\Integration\GererMesComptes\GmcManager.cs" />
     <Compile Include="MainViewModel.cs" />
-    <Compile Include="Managers\Imports\ImportOperationsView.xaml.cs">
-      <DependentUpon>ImportOperationsView.xaml</DependentUpon>
+    <Compile Include="Managers\Imports\ImportEditorView.xaml.cs">
+      <DependentUpon>ImportEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Managers\Transactions\OperationsManagerViewModel.cs" />
     <Compile Include="Technical\Input\AsyncCommand.cs" />
@@ -226,7 +232,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Managers\Imports\ImportOperationsView.xaml">
+    <Page Include="Managers\Imports\ImportEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
