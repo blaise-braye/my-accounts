@@ -60,6 +60,7 @@ namespace Operations.Classification.WpfUi.Technical.Messages
                 }
 
                 _messenger.Unregister(this);
+                _taskBuilder.MarkForDeletion();
                 _taskBuilder = null;
                 _messenger = null;
             }
