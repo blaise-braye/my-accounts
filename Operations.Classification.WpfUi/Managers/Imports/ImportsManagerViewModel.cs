@@ -126,14 +126,26 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                 throw new InvalidOperationException("An import found to be in progress");
             }
 
-            var selection = SelectedImports;
-            if (selection.Count > 0)
+            var selection = SelectedImports.Select(i => i.Id).ToArray();
+            if (selection.Length > 0)
             {
-                var importGridModel = selection[0];
-                ImportCommand import = await _importManager.Get(_currentAccount.Id, importGridModel.Id);
-                var editor = import.Map().To<ImportEditorViewModel>();
-                SetupEditorCommands(editor);
+                var importCommands = await _importManager.Get(_currentAccount.Id, selection);
+                var editor = importCommands[0].Map().To<ImportEditorViewModel>();
+                editor.Ids = selection;
+
+                editor.SourceName = string.Join(";", SelectedImports.Select(i => i.SourceName));
+                editor.IsSourceNameReadOnly = true;
                 editor.BeginEdit();
+
+                if (importCommands.Count > 1)
+                {
+                    foreach (var importCommand in importCommands)
+                    {
+                        editor.UpdateMixedState(importCommand, nameof(importCommand.SourceName));
+                    }
+                }
+
+                SetupEditorCommands(editor);
                 Editor = editor;
             }
         }
@@ -161,28 +173,30 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                 }
             }
 
-            if (datachanged)
-            {
-                MessengerInstance.Send(new AccountDataInvalidated());
-                OnAccountViewModelReceived(_currentAccount);
-            }
-
             Editor.EndEdit();
             Editor = null;
+
+            if (datachanged)
+            {
+                MessengerInstance.Send(new AccountImportDataChanged(_currentAccount.Id));
+            }
         }
 
         private async Task<bool> SaveExistingImport()
         {
-            if (!Editor.Id.HasValue)
+            if (Editor.IsNew)
             {
                 throw new InvalidOperationException("import id must be known");
             }
 
-            var accountId = Editor.Id;
-            ImportCommand importCommand = await _importManager.Get(_currentAccount.Id, accountId.Value);
-            Editor.FillFromDirtyProperties(importCommand);
+            var importId = Editor.Ids;
+            var importCommands = await _importManager.Get(_currentAccount.Id, importId);
+            foreach (var importCommand in importCommands)
+            {
+                Editor.FillFromDirtyProperties(importCommand);
+            }
 
-            var saved = await _importManager.Replace(importCommand);
+            var saved = await _importManager.Replace(importCommands);
             return saved;
         }
 

@@ -25,9 +25,9 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         private string _culture;
 
-        public Guid? Id { get; set; }
+        public Guid[] Ids { get; set; }
 
-        public bool IsNew => !Id.HasValue;
+        public bool IsNew => Ids == null;
 
         public SourceKind SourceKind
         {
@@ -50,6 +50,8 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         public bool DisplayFilePaths => string.IsNullOrEmpty(SourceName);
 
         public bool DisplaySourceName => !string.IsNullOrEmpty(SourceName);
+
+        public bool IsSourceNameReadOnly { get; set; }
 
         public string SourceName
         {
@@ -82,6 +84,11 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         public void FillFromDirtyProperties(object targetData)
         {
             _dataTracker.FillFromDirtyProperties(targetData);
+        }
+
+        public void UpdateMixedState(object sourceData, params string[] toSkip)
+        {
+            _dataTracker.UpdateMixedState(sourceData, toSkip);
         }
 
         public void BeginEdit()

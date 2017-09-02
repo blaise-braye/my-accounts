@@ -24,7 +24,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections
         /// <returns>The list that is acting as the sync list.</returns>
         public static IList GetSynchronizedSelectedItems(DependencyObject dependencyObject)
         {
-            return (IList) dependencyObject.GetValue(SynchronizedSelectedItems);
+            return (IList)dependencyObject.GetValue(SynchronizedSelectedItems);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections
 
         private static SynchronizationManager Get_synchronizationManager(DependencyObject dependencyObject)
         {
-            return (SynchronizationManager) dependencyObject.GetValue(_synchronizationManagerProperty);
+            return (SynchronizationManager)dependencyObject.GetValue(_synchronizationManagerProperty);
         }
 
         private static void Set_synchronizationManager(DependencyObject dependencyObject, SynchronizationManager value)
@@ -115,14 +115,12 @@ namespace Operations.Classification.WpfUi.Technical.Collections
 
             private static IList GetSelectedItemsCollection(Selector selector)
             {
-                var multiSelector = selector as MultiSelector;
-                if (multiSelector != null)
+                if (selector is MultiSelector multiSelector)
                 {
                     return multiSelector.SelectedItems;
                 }
 
-                var box = selector as ListBox;
-                if (box != null)
+                if (selector is ListBox box)
                 {
                     return box.SelectedItems;
                 }

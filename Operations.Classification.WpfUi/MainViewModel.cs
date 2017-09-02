@@ -20,6 +20,7 @@ using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Controls;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Localization;
+using Operations.Classification.WpfUi.Technical.Messages;
 
 namespace Operations.Classification.WpfUi
 {
@@ -38,6 +39,7 @@ namespace Operations.Classification.WpfUi
     public class MainViewModel : ViewModelBase, IDisposable
     {
         private readonly SettingsManager _settingsManager;
+        private readonly AsyncMessageReceiver _asyncMessageReceiver;
 
         public MainViewModel()
         {
@@ -70,7 +72,8 @@ namespace Operations.Classification.WpfUi
             _settingsManager = new SettingsManager(App.CacheManager);
 
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);
-            MessengerInstance.Register<AccountDataInvalidated>(this, OnCurrentAccountDataInvalidated);
+            _asyncMessageReceiver = new AsyncMessageReceiver(MessengerInstance);
+            _asyncMessageReceiver.RegisterAsync<AccountDataInvalidated>(this, data => Refresh());
 
             if (!IsInDesignMode)
             {
@@ -117,6 +120,12 @@ namespace Operations.Classification.WpfUi
             GC.SuppressFinalize(this);
         }
 
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            _asyncMessageReceiver.Cleanup();
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -141,14 +150,8 @@ namespace Operations.Classification.WpfUi
             }
         }
 
-        private void OnCurrentAccountDataInvalidated(AccountDataInvalidated obj)
-        {
-            RefreshCommand.Execute(null);
-        }
-
         private async Task Refresh()
         {
-            await OperationsManagerViewModel.ReplayImports(AccountsManagerViewModel.Accounts);
             await App.CacheManager.ClearCache();
             await Load();
         }

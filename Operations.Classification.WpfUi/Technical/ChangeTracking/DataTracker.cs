@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using FastMember;
 
 namespace Operations.Classification.WpfUi.Technical.ChangeTracking
@@ -9,7 +11,7 @@ namespace Operations.Classification.WpfUi.Technical.ChangeTracking
     {
         private readonly Dictionary<string, PropertyState> _entries = new Dictionary<string, PropertyState>();
         private INotifyPropertyChanged _data;
-        private string[] _trackedProperties;
+        private PropertyInfo[] _trackedProperties;
         private ObjectAccessor _propertyAccessor;
 
         public bool IsTracking => _data != null;
@@ -24,8 +26,7 @@ namespace Operations.Classification.WpfUi.Technical.ChangeTracking
             _trackedProperties = _data
                 .GetType()
                 .GetProperties()
-                .Where(p => p.CanRead)
-                .Select(p => p.Name)
+                .Where(p => p.CanRead && p.CanWrite)
                 .ToArray();
             _propertyAccessor = ObjectAccessor.Create(_data);
 
@@ -50,8 +51,8 @@ namespace Operations.Classification.WpfUi.Technical.ChangeTracking
 
             foreach (var property in _trackedProperties)
             {
-                var propertyState = new PropertyState(property, _propertyAccessor[property]);
-                _entries[property] = propertyState;
+                var propertyState = new PropertyState(property.Name, _propertyAccessor[property.Name], property.PropertyType);
+                _entries[property.Name] = propertyState;
             }
         }
 
@@ -64,19 +65,65 @@ namespace Operations.Classification.WpfUi.Technical.ChangeTracking
                 .Select(p => p.Name)
                 .ToDictionary(p => p);
             var targetPropertyAccessor = ObjectAccessor.Create(targetData);
-            foreach (var propertyState in _entries.Values.Where(e => e.IsDirty))
+            foreach (var propertyState in _entries.Values.Where(e => !e.IsMixed && e.IsDirty))
             {
-                if (targetProperties.ContainsKey(propertyState.Property))
+                if (targetProperties.ContainsKey(propertyState.Name))
                 {
-                    targetPropertyAccessor[propertyState.Property] = propertyState.Value;
+                    targetPropertyAccessor[propertyState.Name] = propertyState.Value;
                 }
             }
+        }
+
+        public void UpdateMixedState(object sourceData, string[] toSkip)
+        {
+            var sourceProperties = sourceData
+                .GetType()
+                .GetProperties()
+                .Where(p => p.CanRead)
+                .Select(p => p.Name)
+                .Where(p => !toSkip.Contains(p))
+                .ToDictionary(p => p);
+            var sourcePropertyAccessor = ObjectAccessor.Create(sourceData);
+            foreach (var propertyState in _entries.Values)
+            {
+                if (sourceProperties.ContainsKey(propertyState.Name))
+                {
+                    var sourceValue = sourcePropertyAccessor[propertyState.Name];
+                    if (!Equals(propertyState.Value, sourceValue))
+                    {
+                        propertyState.IsMixed = true;
+                        propertyState.Value = null;
+                        PauseTracking();
+
+                        object defaultValue = null;
+
+                        if (propertyState.Type.IsValueType)
+                        {
+                            defaultValue = Activator.CreateInstance(propertyState.Type);
+                        }
+
+                        _propertyAccessor[propertyState.Name] = defaultValue;
+                        ResumeTracking();
+                    }
+                }
+            }
+        }
+
+        private void PauseTracking()
+        {
+            _data.PropertyChanged -= DataPropertyChanged;
+        }
+
+        private void ResumeTracking()
+        {
+            _data.PropertyChanged += DataPropertyChanged;
         }
 
         private void DataPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var entry = _entries[e.PropertyName];
             entry.Value = _propertyAccessor[e.PropertyName];
+            entry.IsMixed = false;
         }
     }
 }

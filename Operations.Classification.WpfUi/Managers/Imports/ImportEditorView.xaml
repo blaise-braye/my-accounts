@@ -43,7 +43,7 @@
             
             <StackPanel Visibility="{Binding DisplaySourceName, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Source name :" Target="{Binding ElementName=TxtSourceName}" />
-                <TextBox Name="TxtSourceName" IsReadOnly="True" Text="{Binding SourceName}" />
+                <TextBox Name="TxtSourceName" IsReadOnly="{Binding IsSourceNameReadOnly}" Text="{Binding SourceName}" />
             </StackPanel>
 
             <Label Target="{Binding ElementName=CmbSourceKind}" Content="Source kind :" />

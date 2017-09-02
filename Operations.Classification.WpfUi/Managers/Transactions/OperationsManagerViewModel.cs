@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Technical.Collections.Filters;
 using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Messages;
 using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Transactions
@@ -26,6 +27,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private readonly IOperationsManager _operationsManager;
         private readonly SaveFileDialog _sfd;
         private readonly IImportManager _importManager;
+        private readonly AsyncMessageReceiver _asyncMessageReceiver;
 
         private AccountViewModel _currentAccount;
 
@@ -47,7 +49,6 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             BeginExportCommand = new RelayCommand(BeginExport);
             BeginDataQualityAnalysisCommand = new AsyncCommand(BeginDataQualityAnalysis);
             CommitExportCommand = new AsyncCommand(CommitExport);
-
             _sfd = new SaveFileDialog
             {
                 OverwritePrompt = true,
@@ -56,6 +57,10 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
             SelectTargetFileToExportCommand = new RelayCommand(SelectTargetFileToExport);
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
+
+            _asyncMessageReceiver = new AsyncMessageReceiver(MessengerInstance);
+            _asyncMessageReceiver.RegisterAsync<AccountImportDataChanged>(this, data => ReplayImports(data.AccountId));
+
             DateFilter = new DateRangeFilter();
             NoteFilter = new TextFilter();
             _anyFilter = new CompositeFilter(DateFilter, NoteFilter);
@@ -114,15 +119,23 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             }
         }
 
-        public async Task ReplayImports(IList<AccountViewModel> accounts)
+        public async Task ReplayImports(params Guid[] accountIds)
         {
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Replaying imports"))
             {
-                foreach (var account in accounts)
+                foreach (var accountId in accountIds)
                 {
-                    await _importManager.ReplayCommands(account.Id);
+                    await _importManager.ReplayCommands(accountId);
                 }
+
+                MessengerInstance.Send(new AccountDataInvalidated());
             }
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            _asyncMessageReceiver.Cleanup();
         }
 
         private void OnAnyFilterInvalidated(object sender, EventArgs e)

@@ -105,6 +105,12 @@ namespace MyAccounts.Business.Managers.Imports
             return imports.Find(c => c.Id == importId);
         }
 
+        public async Task<IList<ImportCommand>> Get(Guid accountId, Guid[] importId)
+        {
+            var imports = await GetAll(accountId);
+            return imports.FindAll(i => importId.Contains(i.Id));
+        }
+
         public async Task DeleteImports(Guid accountId, IEnumerable<Guid> importCommands)
         {
             foreach (var commandId in importCommands)
@@ -139,15 +145,21 @@ namespace MyAccounts.Business.Managers.Imports
             return result;
         }
 
-        public async Task<bool> Replace(ImportCommand importCommand)
+        public async Task<bool> Replace(IList<ImportCommand> importCommands)
         {
-            var replaced = await _accountCommandRepository.Replace(importCommand);
-            if (replaced)
+            bool anyreplaced = false;
+
+            foreach (var importCommand in importCommands)
             {
-                await GetCacheEntry(importCommand.AccountId, importCommand.Id).DeleteAsync();
+                var replaced = await _accountCommandRepository.Replace(importCommand);
+                if (replaced)
+                {
+                    anyreplaced = true;
+                    await GetCacheEntry(importCommand.AccountId, importCommand.Id).DeleteAsync();
+                }
             }
 
-            return replaced;
+            return anyreplaced;
         }
 
         private ICacheEntry<List<ImportCommand>> GetCacheEntry(Guid accountId)

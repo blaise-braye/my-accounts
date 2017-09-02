@@ -120,6 +120,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Managers\Accounts\Models\AccountDataInvalidated.cs" />
+    <Compile Include="Managers\Accounts\Models\AccountImportDataChanged.cs" />
     <Compile Include="Managers\Imports\ImportCommandGridModel.cs" />
     <Compile Include="Managers\Imports\ImportEditorViewModel.cs" />
     <Compile Include="Managers\Imports\ImportsManagerView.xaml.cs">
@@ -130,6 +131,7 @@
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml.cs">
       <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Technical\Messages\AsyncMessageReceiver.cs" />
     <Compile Include="Managers\Transactions\ExportOperationsView.xaml.cs">
       <DependentUpon>ExportOperationsView.xaml</DependentUpon>
     </Compile>
@@ -323,6 +325,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
