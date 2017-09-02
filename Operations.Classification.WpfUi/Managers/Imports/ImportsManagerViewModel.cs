@@ -133,12 +133,12 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                 var editor = importCommands[0].Map().To<ImportEditorViewModel>();
                 editor.Ids = selection;
 
-                editor.SourceName = string.Join(";", SelectedImports.Select(i => i.SourceName));
-                editor.IsSourceNameReadOnly = true;
                 editor.BeginEdit();
 
                 if (importCommands.Count > 1)
                 {
+                    editor.SourceName = string.Join(";", SelectedImports.Select(i => i.SourceName));
+                    editor.IsSourceNameReadOnly = true;
                     foreach (var importCommand in importCommands)
                     {
                         editor.UpdateMixedState(importCommand, nameof(importCommand.SourceName));
