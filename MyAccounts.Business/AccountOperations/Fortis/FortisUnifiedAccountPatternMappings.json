@@ -19,7 +19,7 @@
       "Name": "Withdrawal",
       "SourceKind": "FortisCsvArchive",
       "Expression": {
-        "Detail": "^RETRAIT D'ARGENT.{71}XXXX X[0-9]{3} [0-9] (?<CommunicationThenCity>.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
+        "Detail": "^RETRAIT D'ARGENT.{71}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*) [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}.*DATE VALEUR : [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$"
       }
     },
     {

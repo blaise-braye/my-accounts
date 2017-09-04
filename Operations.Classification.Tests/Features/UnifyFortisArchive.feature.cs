@@ -568,6 +568,11 @@ this.ScenarioSetup(scenarioInfo);
                         "RETRAIT D\'ARGENT AUTRES DISTRIBUTEURS    20-02           11,00-AVEC LA CARTE 6703" +
                             " 04XX XXXX X315 7 CRELAN CASH-MORE  /BEAUFAYS 20/02/2016 DATE VALEUR : 20/02/201" +
                             "6"});
+            table7.AddRow(new string[] {
+                        "2017-0007",
+                        "RETRAIT D\'ARGENT A NOS DISTRIBUTEURS     05-11          160,00-AVEC LA CARTE 6703" +
+                            " 04XX XXXX X315 7 BEAUFAYS          BEAUFAYS 05/11/2016 EXECUTE LE 05-11 DATE VA" +
+                            "LEUR : 05/11/2016"});
 #line 105
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table7, "Given ");
 #line 114
@@ -581,40 +586,46 @@ this.ScenarioSetup(scenarioInfo);
                         "Communication"});
             table8.AddRow(new string[] {
                         "2017-0001",
-                        "",
+                        "BELFIUS37104704",
                         "BRAINE L\'ALLEUD",
                         "Withdrawal",
-                        "BELFIUS37104704"});
+                        ""});
             table8.AddRow(new string[] {
                         "2017-0002",
-                        "",
+                        "BELFIUS35792103",
                         "ETTERBEEK",
                         "Withdrawal",
-                        "BELFIUS35792103"});
+                        ""});
             table8.AddRow(new string[] {
                         "2017-0003",
-                        "",
+                        "AXA SCHMITZ",
                         "FRANCORCHAMPS",
                         "Withdrawal",
-                        "AXA SCHMITZ"});
+                        ""});
             table8.AddRow(new string[] {
                         "2017-0004",
-                        "",
+                        "CHAUDFONTAINE",
                         "CHAUDFONTAINE",
                         "Withdrawal",
-                        "CHAUDFONTAINE"});
+                        ""});
             table8.AddRow(new string[] {
                         "2017-0005",
-                        "",
+                        "BRAINE L ALLEUD",
                         "BRAINE L\'ALLEUD",
                         "Withdrawal",
-                        "BRAINE L ALLEUD"});
+                        ""});
             table8.AddRow(new string[] {
                         "2017-0006",
-                        "",
+                        "CRELAN CASH-MORE",
                         "BEAUFAYS",
                         "Withdrawal",
-                        "CRELAN CASH-MORE"});
+                        ""});
+            table8.AddRow(new string[] {
+                        "2017-0007",
+                        "BEAUFAYS",
+                        "BEAUFAYS",
+                        "Withdrawal",
+                        ""});
 #line 116
     testRunner.Then("the operations data is", ((string)(null)), table8, "Then ");
 #line hidden
@@ -626,7 +637,7 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseDomiciliation()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'Domiciliation\'", ((string[])(null)));
-#line 125
+#line 126
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
@@ -645,9 +656,9 @@ this.ScenarioSetup(scenarioInfo);
                         "DOMICILIATION EUROPEENNE DE              03-02           11,00-OXFAM SOLIDARITE A" +
                             "SBL NUMERO DE MANDAT : UP003632 REFERENCE : 7242969-1-107-861-10639 COMMUNICATIO" +
                             "N : SDD/7242969/167421/636509 DATE VALEUR : 03/02/2016"});
-#line 126
+#line 127
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table9, "Given ");
-#line 132
+#line 133
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
@@ -678,7 +689,7 @@ this.ScenarioSetup(scenarioInfo);
                         "UP003632",
                         "7242969-1-107-861-10639",
                         "SDD/7242969/167421/636509"});
-#line 134
+#line 135
     testRunner.Then("the operations data is", ((string)(null)), table10, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -689,7 +700,7 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseCreditPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CreditPayment\'", ((string[])(null)));
-#line 140
+#line 141
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
@@ -699,9 +710,9 @@ this.ScenarioSetup(scenarioInfo);
                         "2017-0001",
                         "PAIEMENT A BANK CARD COMPANY             10-11           11,98-COMPTE INTERNE VIS" +
                             "A : 17503879 ETAT DE DEPENSES NUMERO 306 DATE VALEUR : 10/11/2016"});
-#line 142
+#line 143
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table11, "Given ");
-#line 146
+#line 147
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
@@ -714,7 +725,7 @@ this.ScenarioSetup(scenarioInfo);
                         "17503879",
                         "CreditPayment",
                         "ETAT DE DEPENSES NUMERO 306"});
-#line 148
+#line 149
  testRunner.Then("the operations data is", ((string)(null)), table12, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -725,7 +736,7 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseBankFees()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankFees\'", ((string[])(null)));
-#line 152
+#line 153
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
@@ -743,9 +754,9 @@ this.ScenarioSetup(scenarioInfo);
                         "2017-0003",
                         "FRAIS MENSUELS D\'UTILISATION             01-12            1,40-PERIODE DU 01-11-2" +
                             "014 AU 30-11-2014 DETAILS VOIR ANNEXE EXECUTE LE 04-12 DATE VALEUR : 01/12/2014"});
-#line 153
+#line 154
     testRunner.Given("I have read the following fortis operations from archive files", ((string)(null)), table13, "Given ");
-#line 159
+#line 160
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
@@ -768,7 +779,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Fortis",
                         "BankFees",
                         "MONTHLY FEE COMFORT PACK"});
-#line 161
+#line 162
  testRunner.Then("the operations data is", ((string)(null)), table14, "Then ");
 #line hidden
             this.ScenarioCleanup();

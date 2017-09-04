@@ -110,17 +110,18 @@ Scenario: parse 'Withdrawal'
 	| 2017-0004 | RETRAIT D'ARGENT AUTRES DISTRIBUTEURS    10-11          111,00-AVEC LA CARTE 6703 04XX XXXX X315 7 CHAUDFONTAINE     CHAUDFONT 10/11/2016 EXECUTE LE 10-11 DATE VALEUR : 10/11/2016 |
 	| 2017-0005 | RETRAIT D'ARGENT A NOS DISTRIBUTEURS     14-10           11,00-AVEC LA CARTE 6703 04XX XXXX X315 7 BRAINE L ALLEUD   BRAINE AL 14/10/2016 DATE VALEUR : 14/10/2016                  |
 	| 2017-0006 | RETRAIT D'ARGENT AUTRES DISTRIBUTEURS    20-02           11,00-AVEC LA CARTE 6703 04XX XXXX X315 7 CRELAN CASH-MORE  /BEAUFAYS 20/02/2016 DATE VALEUR : 20/02/2016                  |
-	
+	| 2017-0007 | RETRAIT D'ARGENT A NOS DISTRIBUTEURS     05-11          160,00-AVEC LA CARTE 6703 04XX XXXX X315 7 BEAUFAYS          BEAUFAYS 05/11/2016 EXECUTE LE 05-11 DATE VALEUR : 05/11/2016  |
 	When I unify and transform the read operations
 
     Then the operations data is
-	| OperationId | ThirdParty | City            | PatternName | Communication    |
-	| 2017-0001   |            | BRAINE L'ALLEUD | Withdrawal  | BELFIUS37104704  |
-	| 2017-0002   |            | ETTERBEEK       | Withdrawal  | BELFIUS35792103  |
-	| 2017-0003   |            | FRANCORCHAMPS   | Withdrawal  | AXA SCHMITZ      |
-	| 2017-0004   |            | CHAUDFONTAINE   | Withdrawal  | CHAUDFONTAINE    |
-	| 2017-0005   |            | BRAINE L'ALLEUD | Withdrawal  | BRAINE L ALLEUD  |
-	| 2017-0006   |            | BEAUFAYS        | Withdrawal  | CRELAN CASH-MORE |
+	| OperationId | ThirdParty       | City            | PatternName | Communication |
+	| 2017-0001   | BELFIUS37104704  | BRAINE L'ALLEUD | Withdrawal  |               |
+	| 2017-0002   | BELFIUS35792103  | ETTERBEEK       | Withdrawal  |               |
+	| 2017-0003   | AXA SCHMITZ      | FRANCORCHAMPS   | Withdrawal  |               |
+	| 2017-0004   | CHAUDFONTAINE    | CHAUDFONTAINE   | Withdrawal  |               |
+	| 2017-0005   | BRAINE L ALLEUD  | BRAINE L'ALLEUD | Withdrawal  |               |
+	| 2017-0006   | CRELAN CASH-MORE | BEAUFAYS        | Withdrawal  |               |
+	| 2017-0007   | BEAUFAYS         | BEAUFAYS        | Withdrawal  |               |
 
 Scenario: parse 'Domiciliation'
     Given I have read the following fortis operations from archive files
