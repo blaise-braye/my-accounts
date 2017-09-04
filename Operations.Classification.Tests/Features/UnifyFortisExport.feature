@@ -27,7 +27,7 @@ Scenario: parse 'BankTransfert'
 	| 2017-0060 | SELLIGENT S.A. AVENUE DE FINLANDE, 21420        BRAINE-L'ALLEU BE02 3600 9651 8440  BIC BBRUBEBB REFERENCE DONNEUR D'ORDRE : 1CS0125-01-0000245-1701310102822878 COMMUNICATION : /A/ 1CS0125-01-0000245 DATE VALEUR : 13/01/2017                   |
 	| 2017-0070 | BACQUELAINE SYLVIE RUE DU DUC 231150     WOLUWE-SAINT-PIERRE BE70 0013 5026 1925  BIC GEBABEBB PAS DE COMMUNICATION DATE VALEUR : 18/01/2017                                                                                                       |
 	| 2017-0080 | COLINE BRAYE BE89750668924185BIC AXABBE22    VIA WEB BANKING COMMUNICATION : ANNIF PAPA DATE VALEUR : 05/12/2016                                                                                                                                   |
-	
+		
 	When I unify and transform the read operations
 
 	Then the operations data is
@@ -39,18 +39,27 @@ Scenario: parse 'BankTransfert'
 	| 2017-0050   | PARTENA - MUTUALITE LIBRE |                     |                           | BankTransfert | /C/ PAIE /0201733339803 DU 10/04/2017 POUR 001 PRESTATIONS CHEZ M.BAYET BEN 0201733339803 711041707696 | BE74 2100 0818 2307 | GEBABEBB | 5090411H691                         |
 	| 2017-0060   | SELLIGENT S.A.            | BRAINE-L'ALLEU      | AVENUE DE FINLANDE, 21420 | BankTransfert | /A/ 1CS0125-01-0000245                                                                                 | BE02 3600 9651 8440 | BBRUBEBB | 1CS0125-01-0000245-1701310102822878 |
 	| 2017-0070   | BACQUELAINE SYLVIE        | WOLUWE-SAINT-PIERRE | RUE DU DUC 231150         | BankTransfert |                                                                                                        | BE70 0013 5026 1925 | GEBABEBB |                                     |
-	| 2017-0080   | COLINE BRAYE              |                     |                           | BankTransfert | ANNIF PAPA                                                                                             | BE89750668924185    | AXABBE22 |                                     |
+	| 2017-0080   | COLINE BASIL              |                     |                           | BankTransfert | ANNIF PAPA                                                                                             | BE89750668924185    | AXABBE22 |                                     |
 
 Scenario: parse 'CartPayment'
     Given I have read the following fortis operations from export files
 	| Reference | Detail                                                                                                              |
 	| 2017-0001 | AVEC LA CARTE 6703 04XX XXXX X315 7 CARREFOUR EXPR   1000 BRUS.07-02-2017 EXECUTE LE 07-02 DATE VALEUR : 07/02/2017 |
-
+	| 2017-0002 | AVEC LA CARTE 6703 04XX XXXX X600 0 CARREFOUR EXPRES  BRUXELLES31/08/2017 DATE VALEUR : 31/08/2017                  |
+	| 2017-0010 | AVEC LA CARTE 6703 04XX XXXX X600 0 BEAUFAYS          BEAUFAYS19/08/2017 EXECUTE LE 19-08 DATE VALEUR : 19/08/2017  |
+	| 2017-0020 | AVEC LA CARTE 6703 04XX XXXX X725 6 SNCB BXL          P2M MOBIL14-04-2017 EXECUTE LE 14-04 DATE VALEUR : 14/04/2017 |
+	| 2017-0021 | AVEC LA CARTE 6703 04XX XXXX X725 6 INGENICO          P2M MOBIL14-08-2017 DATE VALEUR : 14/08/2017                  |
+	| 2017-0022 | AVEC LA CARTE 6703 04XX XXXX X725 6 STEPH LAMPION      P2P MOBIL28-06-2017 DATE VALEUR : 28/06/2017                 |
 	When I unify and transform the read operations
 
     Then the operations data is
-	| OperationId | ThirdParty     | City      | PatternName |
-	| 2017-0001   | CARREFOUR EXPR | BRUXELLES | CartPayment |
+	| OperationId | ThirdParty       | City      | PatternName |
+	| 2017-0001   | CARREFOUR EXPR   | BRUXELLES | CartPayment |
+	| 2017-0002   | CARREFOUR EXPRES | BRUXELLES | CartPayment |
+	| 2017-0010   | BEAUFAYS         | BEAUFAYS  | CartPayment |
+	| 2017-0020   | SNCB             | BRUXELLES | CartPayment |
+	| 2017-0021   | INGENICO         |           | CartPayment |
+	| 2017-0022   | STEPH LAMPION    |           | CartPayment |
 
 
 Scenario: parse 'Domiciliation'
@@ -84,8 +93,7 @@ Scenario: parse 'BankFees'
 	| 2017-0001 | COMFORT PACK EXECUTE LE 06-02DATE VALEUR : 01/02/2017                                            | ANY                           |
 	| 2017-0002 | PERIODE DU 01-02-2017 AU 28-02-2017DETAILS VOIR ANNEXE EXECUTE LE 07-03 DATE VALEUR : 01/03/2017 | ANY                           |
 	| 2017-0003 | EXECUTE LE 07-03 DATE VALEUR : 01/03/2017                                                        | RECTIFICATION VERSEMENT BONUS |
-	
-	
+		
 	When I unify and transform the read operations
 
 	Then the operations data is

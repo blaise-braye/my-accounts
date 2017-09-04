@@ -12,7 +12,7 @@
       "Name": "CartPayment",
       "SourceKind": "FortisCsvExport",
       "Expression": {
-        "Detail": "^AVEC LA CARTE.{11}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*?)([0-9]{2}-[0-9]{2}-[0-9]{4}.*|EXECUTE|DATE VALEUR|$)"
+        "Detail": "^AVEC LA CARTE.{11}XXXX X[0-9]{3} [0-9] (?<ThirdPartyThenCity>.*?)(P2P MOBIL|P2M MOBIL)?([0-9]{2}(/|-)[0-9]{2}(/|-)[0-9]{4}.*|EXECUTE|DATE VALEUR|$)"
       }
     },
     {
