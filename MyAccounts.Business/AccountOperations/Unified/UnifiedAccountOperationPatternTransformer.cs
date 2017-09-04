@@ -86,6 +86,10 @@ namespace MyAccounts.Business.AccountOperations.Unified
                     {
                         _unifiedOpAccessors[target, groupName] = input;
                     }
+                    else if (groupName.Equals("PatternNameSuffix"))
+                    {
+                        target.PatternName += input;
+                    }
                     else if (groupName.EndsWith("ThenCity"))
                     {
                         var placeInfo = _placeInfoResolver.ResolveFromEndOfText(input, false);

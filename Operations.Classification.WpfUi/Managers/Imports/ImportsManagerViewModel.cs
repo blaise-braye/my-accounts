@@ -33,6 +33,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             _importManager = importManager;
             Fs = fileSystem;
 
+            ReplayImportsCommand = new RelayCommand(ReplayImports);
             BeginImportCommand = new RelayCommand(BeginNewImport);
             BeginEditImportsCommand = new AsyncCommand(BeginEditImport);
             CommitEditCommand = new AsyncCommand(CommitEdit);
@@ -67,11 +68,13 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         public bool IsNew => Editor?.IsNew == true;
 
-        public RelayCommand BeginImportCommand { get; set; }
+        public RelayCommand BeginImportCommand { get; }
 
         public RelayCommand SelectFilesToImportCommand { get; }
 
         public AsyncCommand BeginEditImportsCommand { get; }
+
+        public RelayCommand ReplayImportsCommand { get; }
 
         public AsyncCommand BeginDownloadCommand { get; set; }
 
@@ -180,6 +183,11 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             {
                 MessengerInstance.Send(new AccountImportDataChanged(_currentAccount.Id));
             }
+        }
+
+        private void ReplayImports()
+        {
+            MessengerInstance.Send(new AccountImportDataChanged(_currentAccount.Id));
         }
 
         private async Task<bool> SaveExistingImport()

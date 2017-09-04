@@ -241,7 +241,7 @@ this.ScenarioSetup(scenarioInfo);
                         ""});
             table4.AddRow(new string[] {
                         "2017-0080",
-                        "COLINE BASIL",
+                        "COLINE BRAYE",
                         "",
                         "",
                         "BankTransfert",
@@ -319,17 +319,17 @@ this.ScenarioSetup(scenarioInfo);
                         "2017-0020",
                         "SNCB",
                         "BRUXELLES",
-                        "CartPayment"});
+                        "CartPaymentP2M"});
             table6.AddRow(new string[] {
                         "2017-0021",
                         "INGENICO",
                         "",
-                        "CartPayment"});
+                        "CartPaymentP2M"});
             table6.AddRow(new string[] {
                         "2017-0022",
                         "STEPH LAMPION",
                         "",
-                        "CartPayment"});
+                        "CartPaymentP2P"});
 #line 55
     testRunner.Then("the operations data is", ((string)(null)), table6, "Then ");
 #line hidden
