@@ -15,19 +15,23 @@
                     <Rectangle.Style>
                         <Style TargetType="Rectangle">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsNew}">
+                                <DataTrigger Binding="{Binding Path=IsNew}" Value="true">
                                     <Setter Property="Fill">
                                         <Setter.Value>
                                             <VisualBrush Visual="{StaticResource appbar_disk_upload}" Stretch="Fill" />
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsNew}" Value="false">
+                                    <Setter Property="Fill">
+                                        <Setter.Value>
+                                            <VisualBrush Visual="{StaticResource appbar_save}" Stretch="Fill" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Rectangle.Style>
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_edit}" Stretch="Fill" />
-                    </Rectangle.Fill>
                 </Rectangle>
             </Button>
         </StackPanel>
