@@ -121,6 +121,7 @@
     </ApplicationDefinition>
     <Compile Include="Managers\Accounts\Models\AccountDataInvalidated.cs" />
     <Compile Include="Managers\Accounts\Models\AccountImportDataChanged.cs" />
+    <Compile Include="Managers\Accounts\Models\AccountsViewModelLoaded.cs" />
     <Compile Include="Managers\Imports\ImportCommandGridModel.cs" />
     <Compile Include="Managers\Imports\ImportEditorViewModel.cs" />
     <Compile Include="Managers\Imports\ImportsManagerView.xaml.cs">
@@ -131,6 +132,14 @@
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml.cs">
       <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Managers\Reports\DashboardFilterViewModel.cs" />
+    <Compile Include="Managers\Reports\DatshboardView.xaml.cs">
+      <DependentUpon>DatshboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\Reports\DirectionFilter.cs" />
+    <Compile Include="Managers\Reports\Models\OperationSetContainer.cs" />
+    <Compile Include="Technical\Collections\Filters\MultiSelectFilter.cs" />
+    <Compile Include="Technical\Collections\Filters\MultiSelectFilterItem.cs" />
     <Compile Include="Technical\Messages\AsyncMessageReceiver.cs" />
     <Compile Include="Managers\Transactions\ExportOperationsView.xaml.cs">
       <DependentUpon>ExportOperationsView.xaml</DependentUpon>
@@ -140,7 +149,7 @@
     <Compile Include="Technical\ChangeTracking\DataTracker.cs" />
     <Compile Include="Technical\Collections\Filters\TextFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSet.cs" />
-    <Compile Include="Managers\Reports\UnifiedOperationsReporter.cs" />
+    <Compile Include="Managers\Reports\DashboardViewModel.cs" />
     <Compile Include="Managers\Settings\SettingsEditorView.xaml.cs">
       <DependentUpon>SettingsEditorView.xaml</DependentUpon>
     </Compile>
@@ -150,7 +159,6 @@
     <Compile Include="Technical\Collections\Filters\CompositeFilter.cs" />
     <Compile Include="Technical\Collections\Filters\DateRangeFilter.cs" />
     <Compile Include="Technical\Collections\Filters\IFilter.cs" />
-    <Compile Include="Managers\Integration\GererMesComptes\TransactionDeltaFilter.cs" />
     <Compile Include="Technical\Collections\IListItemConverter.cs" />
     <Compile Include="Technical\Collections\MultiSelectorBehaviours.cs" />
     <Compile Include="Technical\Collections\TwoListSynchronizer.cs" />
@@ -223,6 +231,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Managers\Reports\DatshboardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

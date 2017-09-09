@@ -1,22 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using MyAccounts.Business.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Reports.Models;
+using Operations.Classification.WpfUi.Managers.Transactions;
+using Operations.Classification.WpfUi.Technical.Input;
+using Operations.Classification.WpfUi.Technical.Messages;
+using Operations.Classification.WpfUi.Technical.Projections;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
 namespace Operations.Classification.WpfUi.Managers.Reports
 {
-    public class UnifiedOperationsReporter : ViewModelBase
+    public class DashboardViewModel : ViewModelBase
     {
+        private readonly BusyIndicatorViewModel _busyIndicator;
+        private readonly AsyncMessageReceiver _asyncMessageReceiver;
         private PlotModel _dailyOperationsModel;
 
         private PlotModel _monthyOperationsModel;
+        private IList<AccountViewModel> _accounts;
+
+        private bool _display;
+        private List<UnifiedAccountOperationModel> _operations;
+        private OperationSetContainer _operationsetContainer;
+
+        public DashboardViewModel(BusyIndicatorViewModel busyIndicator)
+        {
+            _busyIndicator = busyIndicator;
+            Filter = new DashboardFilterViewModel();
+            Filter.FilterInvalidated += async (sender, arg) =>
+            {
+                if (sender == Filter.AccountsFilter)
+                {
+                    await Refresh();
+                }
+                else
+                {
+                    RefreshFilteredOperations();
+                }
+            };
+
+            _asyncMessageReceiver = new AsyncMessageReceiver(MessengerInstance);
+            _asyncMessageReceiver.RegisterAsync<AccountsViewModelLoaded>(this, OnAccountsViewModelLoaded);
+        }
+
+        public bool Display
+        {
+            get => _display;
+            set { Set(() => Display, ref _display, value); }
+        }
+
+        public DashboardFilterViewModel Filter { get; }
 
         public PlotModel DailyOperationsModel
         {
@@ -30,31 +67,18 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             private set => Set(nameof(MonthyOperationsModel), ref _monthyOperationsModel, value);
         }
 
-        public async Task UpdateAccountSelection(List<AccountViewModel> selection)
+        public List<UnifiedAccountOperationModel> Operations
         {
-            var operations = await Task.Run(
-                () =>
-                {
-                    var mixedAccountOperationOperations = selection
-                        .Where(a => a.Operations?.Any() == true)
-                        .SelectMany(account => ComputeOperationsPerDay(account.InitialBalance, account.Operations))
-                        .OrderBy(op => op.Day).ToList();
+            get => _operations;
+            private set => Set(nameof(Operations), ref _operations, value);
+        }
 
-                    var aggregattedDailyOperations = GroupDailyOperations(mixedAccountOperationOperations);
-                    var aggregattedMonthlyOperations = ComputeMonthlyOperations(aggregattedDailyOperations);
-
-                    return new
-                    {
-                        dailyOperations = aggregattedDailyOperations,
-                        monthlyOperations = aggregattedMonthlyOperations
-                    };
-                });
-
-            var dailyOperations = operations.dailyOperations;
-            var monthlyOperations = operations.monthlyOperations;
-
-            DailyOperationsModel = CreateDailyOperationsModel(dailyOperations);
-            MonthyOperationsModel = CreateMonthlyOperationsModel(monthlyOperations);
+        public async Task ResetAccounts(IList<AccountViewModel> accounts)
+        {
+            _accounts = accounts;
+            Display = _accounts?.Any(a => a.Operations.Any()) == true;
+            Filter.AccountsFilter.Initialize(accounts, account => account.Name);
+            await Refresh();
         }
 
         public void OnSettingsUpdated()
@@ -89,6 +113,12 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
                 MonthyOperationsModel = monthyOperationsModel;
             }
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            _asyncMessageReceiver.Cleanup();
         }
 
         private static PlotModel CreateDailyOperationsModel(List<OperationSet> operations)
@@ -233,80 +263,42 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             return series;
         }
 
-        private static List<OperationSet> ComputeOperationsPerDay(decimal initialBalance, List<UnifiedAccountOperation> operations)
+        private Task OnAccountsViewModelLoaded(AccountsViewModelLoaded arg)
         {
-            operations = operations.OrderBy(o => o.ExecutionDate).ToList();
-
-            var seedBpd = new OperationSet(operations[0].ExecutionDate, initialBalance);
-
-            var result = new List<OperationSet> { seedBpd };
-
-            if (operations.Any())
-            {
-                operations
-                    .Aggregate(
-                        seedBpd,
-                        (currentBpd, operation) =>
-                            {
-                                var operationDay = operation.ExecutionDate;
-
-                                while (currentBpd.Day < operationDay.AddDays(-1))
-                                {
-                                    currentBpd = OperationSet.CreateForNextDay(currentBpd);
-                                    result.Add(currentBpd);
-                                }
-
-                                OperationSet nextBpd;
-
-                                if (currentBpd.Day.Equals(operation.ExecutionDate))
-                                {
-                                    nextBpd = currentBpd;
-                                    currentBpd.Add(operation);
-                                }
-                                else
-                                {
-                                    nextBpd = OperationSet.CreateForNextDay(currentBpd);
-                                    nextBpd.Add(operation);
-                                    result.Add(nextBpd);
-                                }
-
-                                return nextBpd;
-                            });
-            }
-
-            return result;
+            return ResetAccounts(arg.Accounts);
         }
 
-        private List<OperationSet> GroupDailyOperations(List<OperationSet> operations)
+        private async Task Refresh()
         {
-            var groupedByDay = operations.GroupBy(op => op.Day);
+            OperationSetContainer operationsetContainer = null;
 
-            var flattifiedDailyOperations = groupedByDay.Select(
-                    grp =>
-                    {
-                        var bpd = new OperationSet(grp.Key, grp.Sum(pd => pd.InitialBalance));
-                        var grpOperations = grp.SelectMany(p => p.Operations);
-                        bpd.AddRange(grpOperations);
-                        return bpd;
-                    }).ToList();
-
-            return flattifiedDailyOperations;
-        }
-
-        private List<OperationSet> ComputeMonthlyOperations(List<OperationSet> dailyOperations)
-        {
-            var result = new List<OperationSet>();
-
-            var groupedByMonth = dailyOperations.OrderBy(db => db.Day).GroupBy(db => new DateTime(db.Day.Year, db.Day.Month, 1));
-            foreach (var grp in groupedByMonth)
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Computing reporting index"))
             {
-                var initialBalance = grp.First().InitialBalance;
-                var operations = grp.SelectMany(b => b.Operations);
-                var osb = new OperationSet(grp.Key, initialBalance).AddRange(operations);
-                result.Add(osb);
+                await Task.Run(() =>
+                {
+                    var filteredAccounts = Filter.AccountsFilter.Apply(_accounts);
+                    operationsetContainer = OperationSetContainer.Compute(filteredAccounts);
+                });
             }
 
-            return result;
+            _operationsetContainer = operationsetContainer;
+            DailyOperationsModel = CreateDailyOperationsModel(operationsetContainer.DailyOperations);
+            MonthyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
+            RefreshFilteredOperations();
+        }
+
+        private void RefreshFilteredOperations()
+        {
+            var filteredDailyOperationSets = Filter.DateRangeFilter.Apply(_operationsetContainer.DailyOperations, op => op.Day);
+            var filteterdOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
+            filteterdOperations = Filter.NoteFilter.Apply(filteterdOperations, o => o.Note);
+            filteterdOperations = Filter.DirectionFilter.Apply(filteterdOperations, o => o.Income, o => o.Outcome);
+            var filteredOperationsVM = filteterdOperations
+                .Project()
+                .To<UnifiedAccountOperationModel>()
+                .OrderByDescending(t => t.OperationId)
+                .ToList();
+            Operations = filteredOperationsVM;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             {
                 if (FromDate.HasValue)
                 {
-                    filtered = filtered.Where(d => selector(d) >= FromDate.Value);
+                     filtered = filtered.Where(d => selector(d) >= FromDate.Value);
                 }
 
                 if (ToDate.HasValue)

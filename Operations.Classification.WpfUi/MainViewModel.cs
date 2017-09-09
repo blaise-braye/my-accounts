@@ -15,6 +15,7 @@ using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
+using Operations.Classification.WpfUi.Managers.Reports;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Controls;
@@ -67,7 +68,7 @@ namespace Operations.Classification.WpfUi
 
             OperationsManagerViewModel = new OperationsManagerViewModel(BusyIndicator, operationsManager, importManager);
             AccountsManagerViewModel = new AccountsManagerViewModel(BusyIndicator, accountsManager, operationsManager, importManager);
-
+            DashboardViewModel = new DashboardViewModel(BusyIndicator);
             GmcManager = new GmcManager(BusyIndicator, App.CacheManager);
             _settingsManager = new SettingsManager(App.CacheManager);
 
@@ -104,6 +105,8 @@ namespace Operations.Classification.WpfUi
 
         public IAsyncCommand RefreshCommand { get; }
 
+        public DashboardViewModel DashboardViewModel { get; }
+
         public AccountsManagerViewModel AccountsManagerViewModel { get; }
 
         public GmcManager GmcManager { get; }
@@ -137,7 +140,7 @@ namespace Operations.Classification.WpfUi
         private void OnSettingsUpdated(Properties.Settings obj)
         {
             ApplicationCulture.ResetCulture();
-            AccountsManagerViewModel.UnifiedOperationsReporter.OnSettingsUpdated();
+            DashboardViewModel.OnSettingsUpdated();
             Application.Current.UpdateBindingTargets();
         }
 

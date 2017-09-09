@@ -19,7 +19,17 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         {
             FilterOnItemDateCommand = new RelayCommand<BasicTransactionModel>(FilterOnItemDate);
 
-            DeltaFilter = new TransactionDeltaFilter();
+            var deltaFilterData = new Dictionary<string, IList<DeltaAction>>
+            {
+                { "to add", new[] { DeltaAction.Add } },
+                { "to update", new[] { DeltaAction.UpdateMemo } },
+                { "to remove", new[] { DeltaAction.Remove } },
+                { "undeterministic status", new[] { DeltaAction.MultipleTargetsPossible, DeltaAction.NotUniqueKeyInTarget } },
+                { "up to date", new[] { DeltaAction.Nothing } }
+            };
+            DeltaFilter = new MultiSelectFilter();
+            DeltaFilter.Initialize(deltaFilterData, kv => kv.Key, kv => kv.Value);
+
             DateFilter = new DateRangeFilter();
             MemoFilter = new TextFilter();
             _anyFilter = new CompositeFilter(DeltaFilter, DateFilter, MemoFilter);
@@ -48,7 +58,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             set => Set(nameof(IsDeltaFilterActive), ref _isDeltaFilterActive, value);
         }
 
-        public TransactionDeltaFilter DeltaFilter { get; }
+        public MultiSelectFilter DeltaFilter { get; }
 
         public DateRangeFilter DateFilter { get; }
 

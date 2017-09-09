@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,7 +10,6 @@ using MyAccounts.Business.Managers.Imports;
 using MyAccounts.Business.Managers.Operations;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
-using Operations.Classification.WpfUi.Managers.Reports;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Projections;
 
@@ -52,12 +50,8 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             BeginEditCommand = new AsyncCommand(BeginEdit, () => !IsEditing && CurrentAccount != null);
             DeleteCommand = new AsyncCommand(Delete, () => !IsEditing && CurrentAccount != null);
             CommitEditCommand = new AsyncCommand(CommitEdit, () => IsEditing);
-            UpdateAccountSelectionCommand = new AsyncCommand<IEnumerable>(UpdateAccountSelection);
-            UnifiedOperationsReporter = new UnifiedOperationsReporter();
             _commands = new[] { LoadCommand, BeginEditCommand, CommitEditCommand, BeginNewCommand, DeleteCommand };
         }
-
-        public UnifiedOperationsReporter UnifiedOperationsReporter { get; }
 
         public ObservableCollection<AccountViewModel> Accounts
         {
@@ -116,9 +110,7 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
             get => _isLoading;
             set => Set(nameof(IsLoading), ref _isLoading, value);
         }
-
-        public AsyncCommand<IEnumerable> UpdateAccountSelectionCommand { get; }
-
+        
         public async Task<bool> BeginEdit()
         {
             if (CurrentAccount != null && await CommitEdit())
@@ -213,22 +205,11 @@ namespace Operations.Classification.WpfUi.Managers.Accounts
                 }
 
                 Accounts = new ObservableCollection<AccountViewModel>(result);
+                MessengerInstance.Send(new AccountsViewModelLoaded(result));
                 CurrentAccount = Accounts.FirstOrDefault(a => a.Id == currentAccountId);
-                await UpdateAccountSelection(CurrentAccount == null ? new AccountViewModel[0] : new[] { CurrentAccount });
             }
         }
-
-        private async Task UpdateAccountSelection(IEnumerable obj)
-        {
-            var selection = obj.Cast<AccountViewModel>().ToList();
-            if (selection.Count == 0)
-            {
-                selection.AddRange(Accounts);
-            }
-
-            await UnifiedOperationsReporter.UpdateAccountSelection(selection);
-        }
-
+        
         private async Task<bool> Delete()
         {
             var account = CurrentAccount;

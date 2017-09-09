@@ -18,7 +18,7 @@
             </StackPanel>
         </GroupBox>
         <GroupBox Header="delta actions">
-            <ListBox ItemsSource="{Binding DeltaFilter}" IsEnabled="{Binding IsDeltaFilterActive}">
+            <ListBox ItemsSource="{Binding DeltaFilter.Items}" IsEnabled="{Binding IsDeltaFilterActive}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type controls1:MenuItemViewModel}">
                         <CheckBox IsChecked="{Binding IsChecked}" HorizontalContentAlignment="Stretch"

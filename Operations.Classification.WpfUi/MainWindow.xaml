@@ -11,6 +11,7 @@
                       xmlns:command="http://www.galasoft.ch/mvvmlight"
                       xmlns:settings="clr-namespace:Operations.Classification.WpfUi.Managers.Settings"
                       xmlns:imports="clr-namespace:Operations.Classification.WpfUi.Managers.Imports"
+                      xmlns:reports="clr-namespace:Operations.Classification.WpfUi.Managers.Reports"
                       mc:Ignorable="d" DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
                       Icon="Resources/app_icon.ico"
                       Title="Accounts Operations Manager" d:DesignWidth="900" d:DesignHeight="400">
@@ -24,20 +25,11 @@
     </i:Interaction.Triggers>
     <Grid>
         <TabControl>
+            <TabItem Header="dashboard" Visibility="{Binding DashboardViewModel.Display, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <reports:DatshboardView DataContext="{Binding DashboardViewModel}" />
+            </TabItem>
             <TabItem Header="accounts">
-                <accounts:AccountsView DataContext="{Binding AccountsManagerViewModel}" />
-            </TabItem>
-            <TabItem Header="imports"
-                     Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <imports:ImportsManagerView DataContext="{Binding ImportsManagerViewModel}" />
-            </TabItem>
-            <TabItem Header="transactions"
-                     Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManagerViewModel}" />
-            </TabItem>
-            <TabItem Header="gmc"
-                     Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <gererMesComptes:GmcManagerView DataContext="{Binding GmcManager}" />
+                <accounts:AccountsView DataContext="{Binding}" />
             </TabItem>
         </TabControl>
         <Grid Visibility="{Binding BusyIndicator.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"

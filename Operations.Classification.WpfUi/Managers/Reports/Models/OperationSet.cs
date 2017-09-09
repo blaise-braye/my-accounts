@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MyAccounts.Business.AccountOperations.Unified;
 
 namespace Operations.Classification.WpfUi.Managers.Reports.Models
@@ -29,6 +30,38 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
         public decimal NetRevenue => Income - Outcome;
 
         public List<UnifiedAccountOperation> Operations { get; }
+        
+        public static List<OperationSet> GroupDailyOperations(List<OperationSet> operations)
+        {
+            var groupedByDay = operations.GroupBy(op => op.Day);
+
+            var flattifiedDailyOperations = groupedByDay.Select(
+                grp =>
+                {
+                    var bpd = new OperationSet(grp.Key, grp.Sum(pd => pd.InitialBalance));
+                    var grpOperations = grp.SelectMany(p => p.Operations);
+                    bpd.AddRange(grpOperations);
+                    return bpd;
+                }).ToList();
+
+            return flattifiedDailyOperations;
+        }
+
+        public static List<OperationSet> ComputeMonthlyOperations(List<OperationSet> dailyOperations)
+        {
+            var result = new List<OperationSet>();
+
+            var groupedByMonth = dailyOperations.OrderBy(db => db.Day).GroupBy(db => new DateTime(db.Day.Year, db.Day.Month, 1));
+            foreach (var grp in groupedByMonth)
+            {
+                var initialBalance = grp.First().InitialBalance;
+                var operations = grp.SelectMany(b => b.Operations);
+                var osb = new OperationSet(grp.Key, initialBalance).AddRange(operations);
+                result.Add(osb);
+            }
+
+            return result;
+        }
 
         public static OperationSet CreateForNextDay(OperationSet currentBpd)
         {

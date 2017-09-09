@@ -20,6 +20,8 @@ namespace Operations.Classification.WpfUi.Technical.Controls
 
         private bool _staysOpenOnClick;
 
+        private object _tag;
+
         public string Header
         {
             get => _header;
@@ -60,6 +62,12 @@ namespace Operations.Classification.WpfUi.Technical.Controls
         {
             get => _items;
             set => Set(nameof(Items), ref _items, value);
+        }
+        
+        public object Tag
+        {
+            get => _tag;
+            set { Set(() => Tag, ref _tag, value); }
         }
     }
 }

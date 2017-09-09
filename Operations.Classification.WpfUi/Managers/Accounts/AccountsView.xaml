@@ -4,75 +4,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:models="clr-namespace:Operations.Classification.WpfUi.Managers.Accounts.Models"
-             xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:command="http://www.galasoft.ch/mvvmlight"
+             xmlns:transactions="clr-namespace:Operations.Classification.WpfUi.Managers.Transactions"
+             xmlns:imports="clr-namespace:Operations.Classification.WpfUi.Managers.Imports"
+             xmlns:gererMesComptes="clr-namespace:Operations.Classification.WpfUi.Managers.Integration.GererMesComptes"
              mc:Ignorable="d"
-             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.AccountsManagerViewModel}"
+             d:DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
              d:DesignHeight="300" d:DesignWidth="500">
     <UserControl.Resources>
     </UserControl.Resources>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding BeginNewCommand}">
-                <Rectangle Width="24" Height="24">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_add}" Stretch="Fill" />
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Button>
-            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding BeginEditCommand}">
-                <Rectangle Width="24" Height="24">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_edit}" Stretch="Fill" />
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Button>
-            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding DeleteCommand}">
-                <Rectangle Width="24" Height="24">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{StaticResource appbar_delete}" Stretch="Fill" />
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Button>
-        </StackPanel>
-        
-        <ListBox DockPanel.Dock="Left" ItemsSource="{Binding Accounts}"
-                 SelectionMode="Extended"
-                    SelectedItem="{Binding CurrentAccount, Mode=TwoWay}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <command:EventToCommand Command="{Binding Mode=OneWay, Path=UpdateAccountSelectionCommand}"
-                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=SelectedItems}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <ListBox.Resources>
-                <DataTemplate DataType="{x:Type models:AccountViewModel}">
-                    <DockPanel>
-                        <StackPanel DockPanel.Dock="Left">
-                            <TextBlock Text="{Binding Path=Name}" />
-                            <TextBlock Text="{Binding Path=Status.Operations,StringFormat='{}{0} operations'}" />
-                            <TextBlock
-                                Text="{Binding Path=Status.LastImportedOperation,StringFormat='last imported operation {0}'}" />
-                            <TextBlock Text="{Binding Path=Status.Balance,Converter={StaticResource AmountValueConverter},StringFormat='current balance {0:C2}'}" />
-                        </StackPanel>
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.Resources>
-        </ListBox>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <DockPanel DockPanel.Dock="Left" DataContext="{Binding AccountsManagerViewModel}">
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Command="{Binding BeginNewCommand}">
+                    <Rectangle Width="24" Height="24">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource appbar_add}" Stretch="Fill" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Button>
+                <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Command="{Binding BeginEditCommand}">
+                    <Rectangle Width="24" Height="24">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource appbar_edit}" Stretch="Fill" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Button>
+                <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                        Command="{Binding DeleteCommand}">
+                    <Rectangle Width="24" Height="24">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource appbar_delete}" Stretch="Fill" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Button>
+            </StackPanel>
 
-            <oxy:PlotView  Grid.Row="0" Model="{Binding UnifiedOperationsReporter.MonthyOperationsModel}" />
-            <oxy:PlotView  Grid.Row="1" Model="{Binding UnifiedOperationsReporter.DailyOperationsModel}" />
-
-        </Grid>
-
+            <ListBox DockPanel.Dock="Left" ItemsSource="{Binding Accounts}" MinWidth="200"
+                     SelectionMode="Single"
+                     SelectedItem="{Binding CurrentAccount, Mode=TwoWay}">
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type models:AccountViewModel}">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Left">
+                                <TextBlock Text="{Binding Path=Name}" />
+                                <TextBlock Text="{Binding Path=Status.Operations,StringFormat='{}{0} operations'}" />
+                                <TextBlock
+                                    Text="{Binding Path=Status.LastImportedOperation,StringFormat='last imported operation {0}'}" />
+                                <TextBlock Text="{Binding Path=Status.Balance,Converter={StaticResource AmountValueConverter},StringFormat='current balance {0:C2}'}" />
+                            </StackPanel>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.Resources>
+            </ListBox>
+        </DockPanel>
+        <TabControl Visibility="{Binding AccountsManagerViewModel.HasCurrentAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="transactions">
+                <transactions:TransactionsFileManagerView DataContext="{Binding OperationsManagerViewModel}" />
+            </TabItem>
+            <TabItem Header="imports">
+                <imports:ImportsManagerView DataContext="{Binding ImportsManagerViewModel}" />
+            </TabItem>
+            <TabItem Header="gmc">
+                <gererMesComptes:GmcManagerView DataContext="{Binding GmcManager}" />
+            </TabItem>
+        </TabControl>
     </DockPanel>
 </UserControl>
