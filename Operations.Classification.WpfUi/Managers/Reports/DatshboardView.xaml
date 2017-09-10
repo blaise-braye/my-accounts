@@ -84,8 +84,8 @@
             </Popup>
         </StackPanel>
         <UniformGrid DockPanel.Dock="Top" Columns="2" Rows="1" MinHeight="400">
-            <oxy:PlotView  Model="{Binding MonthyOperationsModel}" />
-            <oxy:PlotView  Model="{Binding DailyOperationsModel}" />
+            <oxy:PlotView Controller="{Binding PlotController}"  Model="{Binding MonthyOperationsModel}" />
+            <oxy:PlotView Controller="{Binding PlotController}" Model="{Binding DailyOperationsModel}" />
         </UniformGrid>
         <DataGrid ItemsSource="{Binding Operations}" AutoGenerateColumns="True">
             <i:Interaction.Behaviors>

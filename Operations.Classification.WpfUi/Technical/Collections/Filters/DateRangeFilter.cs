@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GalaSoft.MvvmLight;
 
 namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 {
-    public class DateRangeFilter : ObservableObject, IFilter
+    public class DateRangeFilter : CompositeFilterBase
     {
         private DateTime? _fromDate;
         private DateTime? _toDate;
-
-        public event EventHandler FilterInvalidated;
-
+        
         public DateTime? FromDate
         {
             get => _fromDate;
@@ -36,15 +33,18 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             }
         }
 
-        public bool IsActive()
+        public override bool IsActive()
         {
             return FromDate.HasValue || ToDate.HasValue;
         }
 
-        public void Reset()
+        public override void Reset()
         {
-            FromDate = null;
-            ToDate = null;
+            Apply(() =>
+            {
+                FromDate = null;
+                ToDate = null;
+            });
         }
 
         public IEnumerable<T> Apply<T>(IEnumerable<T> locals, Func<T, DateTime> selector)
@@ -68,12 +68,25 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 
         public void SetDayFilter(DateTime objDate)
         {
-            FromDate = ToDate = objDate.Date;
+            if (FromDate != objDate.Date || ToDate != objDate.Date)
+            {
+                Apply(() =>
+                {
+                    FromDate = ToDate = objDate.Date;
+                });
+            }
         }
 
-        protected virtual void OnFilterChanged()
+        public void SetPeriod(DateTime fromDate, DateTime toDate)
         {
-            FilterInvalidated?.Invoke(this, EventArgs.Empty);
+            if (FromDate != fromDate || ToDate != toDate)
+            {
+                Apply(() =>
+                {
+                    FromDate = fromDate.Date;
+                    ToDate = toDate.Date;
+                });
+            }
         }
     }
 }

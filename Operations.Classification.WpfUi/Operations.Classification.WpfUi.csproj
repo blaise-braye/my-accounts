@@ -139,6 +139,8 @@
     <Compile Include="Managers\Reports\DirectionFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSetContainer.cs" />
     <Compile Include="Managers\Reports\DashboardOperationModel.cs" />
+    <Compile Include="Managers\Reports\PlotModelRangeSelectionHandler.cs" />
+    <Compile Include="Technical\Collections\Filters\CompositeFilterBase.cs" />
     <Compile Include="Technical\Collections\Filters\MultiSelectFilter.cs" />
     <Compile Include="Technical\Collections\Filters\MultiSelectFilterItem.cs" />
     <Compile Include="Technical\Messages\AsyncMessageReceiver.cs" />

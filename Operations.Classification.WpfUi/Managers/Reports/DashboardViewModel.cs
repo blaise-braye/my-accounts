@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
@@ -17,6 +18,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
     {
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly AsyncMessageReceiver _asyncMessageReceiver;
+        private readonly List<PlotModelRangeSelectionHandler> _selectionHandlers;
+
         private PlotModel _dailyOperationsModel;
 
         private PlotModel _monthyOperationsModel;
@@ -33,6 +36,14 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             Filter = new DashboardFilterViewModel();
             Filter.FilterInvalidated += async (sender, arg) =>
             {
+                if (sender == Filter.DateRangeFilter)
+                {
+                    foreach (var handler in _selectionHandlers)
+                    {
+                        SetRangeFromFilterDateRangeFilter(handler);
+                    }
+                }
+
                 if (sender == Filter.AccountsFilter)
                 {
                     await Refresh();
@@ -45,6 +56,13 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
             _asyncMessageReceiver = new AsyncMessageReceiver(MessengerInstance);
             _asyncMessageReceiver.RegisterAsync<AccountsViewModelLoaded>(this, OnAccountsViewModelLoaded);
+
+            PlotController = new PlotController();
+            // show tooltip on mouse over, instead of on click
+            PlotController.UnbindMouseDown(OxyMouseButton.Left);
+            PlotController.BindMouseEnter(PlotCommands.HoverSnapTrack);
+
+            _selectionHandlers = new List<PlotModelRangeSelectionHandler>();
         }
 
         public bool Display
@@ -54,6 +72,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         }
 
         public DashboardFilterViewModel Filter { get; }
+
+        public PlotController PlotController { get; }
 
         public PlotModel DailyOperationsModel
         {
@@ -85,6 +105,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         {
             var dailyOperationsModel = DailyOperationsModel;
             var monthyOperationsModel = MonthyOperationsModel;
+            
             DailyOperationsModel = null;
             MonthyOperationsModel = null;
 
@@ -281,10 +302,52 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 });
             }
 
+            _selectionHandlers.ForEach(h => h.Cleanup());
+            _selectionHandlers.Clear();
+
             _operationsetContainer = operationsetContainer;
             DailyOperationsModel = CreateDailyOperationsModel(operationsetContainer.DailyOperations);
+            AddRangeSelectionHandler(DailyOperationsModel, false);
+
             MonthyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
+            AddRangeSelectionHandler(MonthyOperationsModel, true);
             await RefreshFilteredOperations();
+        }
+
+        private void AddRangeSelectionHandler(PlotModel model, bool monthly)
+        {
+            var handler = new PlotModelRangeSelectionHandler(model);
+            SetRangeFromFilterDateRangeFilter(handler);
+
+            handler.RangeChangedFromMouseSelection += (sender, e) =>
+            {
+                var fromDate = DateTimeAxis.ToDateTime(handler.MinX).Date;
+                var toDate = DateTimeAxis.ToDateTime(handler.MaxX).Date;
+                if (monthly)
+                {
+                    fromDate = new DateTime(fromDate.Year, fromDate.Month, 1);
+                    toDate = new DateTime(toDate.Year, toDate.Month, 1).AddMonths(1).AddDays(-1);
+                }
+
+                Filter.DateRangeFilter.SetPeriod(fromDate, toDate);
+            };
+
+            _selectionHandlers.Add(handler);
+        }
+
+        private void SetRangeFromFilterDateRangeFilter(PlotModelRangeSelectionHandler handler)
+        {
+            if (Filter.DateRangeFilter.FromDate.HasValue && Filter.DateRangeFilter.ToDate.HasValue)
+            {
+                handler.SetXRange(
+                    DateTimeAxis.ToDouble(Filter.DateRangeFilter.FromDate.Value),
+                    DateTimeAxis.ToDouble(Filter.DateRangeFilter.ToDate.Value));
+                handler.DisplaySelection();
+            }
+            else
+            {
+                handler.HideAnnotation();
+            }
         }
 
         private async Task RefreshFilteredOperations()

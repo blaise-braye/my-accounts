@@ -4,22 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Operations.Classification.WpfUi.Technical.Controls;
 
 namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 {
-    public class MultiSelectFilter : ObservableObject, IFilter
+    public class MultiSelectFilter : CompositeFilterBase
     {
-        private bool _applying;
         private MenuItemViewModel[] _items;
         private MenuItemViewModel[] _dataitems;
         private object[] _selectedData;
         private Func<object, Func<object, bool>> _dataFilterBuilder;
-
-        public event EventHandler FilterInvalidated;
-
+        
         public MenuItemViewModel[] Items
         {
             get => _items ?? (_items = new MenuItemViewModel[0]);
@@ -82,12 +78,12 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             });
         }
 
-        public bool IsActive()
+        public override bool IsActive()
         {
             return !GetAllItem().IsChecked;
         }
 
-        public void Reset()
+        public override void Reset()
         {
             GetAllItem().IsChecked = true;
             RefreshFilterState(GetAllItem().CommandParameter);
@@ -184,33 +180,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 }
             }
         }
-
-        private void Apply(Action action)
-        {
-            var isapplying = _applying;
-            try
-            {
-                if (!isapplying)
-                {
-                    _applying = true;
-                }
-
-                action();
-            }
-            finally
-            {
-                if (!isapplying)
-                {
-                    _applying = false;
-                }
-            }
-
-            if (!isapplying)
-            {
-                FilterInvalidated?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
+        
         private void RefreshFilterState(object changedFilter)
         {
             Apply(() =>

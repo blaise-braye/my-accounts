@@ -1,12 +1,10 @@
-using System;
 using System.Linq;
 
 namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 {
-    public class CompositeFilter : IFilter
+    public class CompositeFilter : CompositeFilterBase, IFilter
     {
         private readonly IFilter[] _filters;
-        private bool _applying;
 
         public CompositeFilter(params IFilter[] filters)
         {
@@ -16,15 +14,13 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 filter.FilterInvalidated += OnNestedFilterChanged;
             }
         }
-
-        public event EventHandler FilterInvalidated;
-
-        public bool IsActive()
+        
+        public override bool IsActive()
         {
             return _filters.Any(f => f.IsActive());
         }
 
-        public void Reset()
+        public override void Reset()
         {
             Apply(
                 () =>
@@ -34,40 +30,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                         filter.Reset();
                     }
                 });
-        }
-
-        public void Apply(Action action)
-        {
-            var isapplying = _applying;
-            try
-            {
-                if (!isapplying)
-                {
-                    _applying = true;
-                }
-
-                action();
-            }
-            finally
-            {
-                if (!isapplying)
-                {
-                    _applying = false;
-                }
-            }
-
-            if (!isapplying)
-            {
-                FilterInvalidated?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        private void OnNestedFilterChanged(object sender, EventArgs e)
-        {
-            if (!_applying)
-            {
-                FilterInvalidated?.Invoke(sender, e);
-            }
         }
     }
 }
