@@ -67,15 +67,6 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
-            <ComboBox ItemsSource="{Binding AccountsManagerViewModel.Accounts}"
-                      SelectedItem="{Binding AccountsManagerViewModel.CurrentAccount}"
-                      DisplayMemberPath="Name"
-                      Foreground="WhiteSmoke"
-                      BorderThickness="0"
-                      Background="Transparent"
-                      controls:TextBoxHelper.Watermark="select an account" />
-
-
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <controls:MetroWindow.Flyouts>
