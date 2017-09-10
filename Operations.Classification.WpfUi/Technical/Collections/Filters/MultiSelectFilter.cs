@@ -14,6 +14,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
     {
         private bool _applying;
         private MenuItemViewModel[] _items;
+        private MenuItemViewModel[] _dataitems;
         private object[] _selectedData;
         private Func<object, Func<object, bool>> _dataFilterBuilder;
 
@@ -25,12 +26,18 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             private set { Set(() => Items, ref _items, value); }
         }
 
-        public object[] SelectedData
+        public MenuItemViewModel[] DataItems
         {
-            get => _selectedData ?? (_selectedData = Items.Where(i => i.IsChecked).Select(i => i.CommandParameter).ToArray());
-            private set { Set(() => SelectedData, ref _selectedData, value); }
+            get => _dataitems ?? (_dataitems = new MenuItemViewModel[0]);
+            private set { Set(() => DataItems, ref _dataitems, value); }
         }
 
+        public object[] SelectedData
+        {
+            get => _selectedData ?? (_selectedData = DataItems.Where(i => i.IsChecked).Select(i => i.CommandParameter).ToArray());
+            private set { Set(() => SelectedData, ref _selectedData, value); }
+        }
+        
         public void Initialize<TData>(
             IEnumerable<TData> source, 
             Func<TData, string> labelBuilder, 
@@ -49,27 +56,28 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 IsChecked = true,
             };
 
-            var items = new[] { allItem }
-                .Union(source.Select(data =>
+            var dataItems = source.Select(data =>
+            {
+                var item = new MenuItemViewModel
                 {
-                    var item = new MenuItemViewModel
-                    {
-                        StaysOpenOnClick = true,
-                        Command = cmd,
-                        CommandParameter = dataProvider == null ? data : dataProvider(data),
-                        Header = labelBuilder(data),
-                        IsCheckable = true,
-                        IsChecked = true
-                    };
+                    StaysOpenOnClick = true,
+                    Command = cmd,
+                    CommandParameter = dataProvider == null ? data : dataProvider(data),
+                    Header = labelBuilder(data),
+                    IsCheckable = true,
+                    IsChecked = true
+                };
 
-                    return item;
-                }))
-                .ToArray();
+                return item;
+            }).ToArray();
+
+            var items = new[] { allItem }.Union(dataItems).ToArray();
 
             Apply(() =>
             {
                 _dataFilterBuilder = dataFilterBuilder;
                 Items = items;
+                DataItems = dataItems;
                 SelectedData = null;
             });
         }
@@ -219,8 +227,8 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 }
                 else
                 {
-                    var allValues = Items.Select(i => i.CommandParameter).ToList();
-                    var filteredValues = Items.Where(i => i.IsChecked).Select(i => i.CommandParameter).ToList();
+                    var allValues = DataItems.Select(i => i.CommandParameter).ToList();
+                    var filteredValues = DataItems.Where(i => i.IsChecked).Select(i => i.CommandParameter).ToList();
                     if (allValues.Count == filteredValues.Count)
                     {
                         foreach (var item2 in Items)
