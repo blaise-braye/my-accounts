@@ -22,6 +22,7 @@ using MyAccounts.Business.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
 using Operations.Classification.WpfUi.Managers.Integration.GererMesComptes;
+using Operations.Classification.WpfUi.Managers.Reports;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
 using QifApi.Transactions;
@@ -42,7 +43,9 @@ namespace Operations.Classification.WpfUi
                     cfg.CreateMap<AccountViewModel, AccountEntity>();
                     cfg.CreateMap<AccountEntity, AccountViewModel>();
                     cfg.CreateMap<BasicTransaction, BasicTransactionModel>();
-                    cfg.CreateMap<UnifiedAccountOperation, UnifiedAccountOperationModel>();
+                    cfg.CreateMap<UnifiedAccountOperation, TransactionModel>();
+                    cfg.CreateMap<UnifiedAccountOperation, DashboardOperationModel>()
+                        .ForMember(s => s.Account, opt => opt.Ignore());
                     cfg.CreateMap<Properties.Settings, SettingsModel>();
                     cfg.CreateMap<SettingsModel, Properties.Settings>();
 

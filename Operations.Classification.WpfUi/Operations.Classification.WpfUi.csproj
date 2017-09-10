@@ -138,6 +138,7 @@
     </Compile>
     <Compile Include="Managers\Reports\DirectionFilter.cs" />
     <Compile Include="Managers\Reports\Models\OperationSetContainer.cs" />
+    <Compile Include="Managers\Reports\DashboardOperationModel.cs" />
     <Compile Include="Technical\Collections\Filters\MultiSelectFilter.cs" />
     <Compile Include="Technical\Collections\Filters\MultiSelectFilterItem.cs" />
     <Compile Include="Technical\Messages\AsyncMessageReceiver.cs" />
@@ -154,7 +155,7 @@
       <DependentUpon>SettingsEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Managers\Settings\SettingsModel.cs" />
-    <Compile Include="Managers\Transactions\UnifiedAccountOperationModel.cs" />
+    <Compile Include="Managers\Transactions\TransactionModel.cs" />
     <Compile Include="Managers\Settings\SettingsManager.cs" />
     <Compile Include="Technical\Collections\Filters\CompositeFilter.cs" />
     <Compile Include="Technical\Collections\Filters\DateRangeFilter.cs" />

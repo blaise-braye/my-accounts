@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Reports.Models;
-using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Messages;
 using Operations.Classification.WpfUi.Technical.Projections;
@@ -24,7 +23,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         private IList<AccountViewModel> _accounts;
 
         private bool _display;
-        private List<UnifiedAccountOperationModel> _operations;
+        private List<DashboardOperationModel> _operations;
         private OperationSetContainer _operationsetContainer;
 
         public DashboardViewModel(BusyIndicatorViewModel busyIndicator)
@@ -67,7 +66,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             private set => Set(nameof(MonthyOperationsModel), ref _monthyOperationsModel, value);
         }
 
-        public List<UnifiedAccountOperationModel> Operations
+        public List<DashboardOperationModel> Operations
         {
             get => _operations;
             private set => Set(nameof(Operations), ref _operations, value);
@@ -293,12 +292,16 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             var filteterdOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
             filteterdOperations = Filter.NoteFilter.Apply(filteterdOperations, o => o.Note);
             filteterdOperations = Filter.DirectionFilter.Apply(filteterdOperations, o => o.Income, o => o.Outcome);
-            var filteredOperationsVM = filteterdOperations
+            var accountById = _accounts.ToDictionary(a => a.Id);
+            var filteredOperationsVm = filteterdOperations
                 .Project()
-                .To<UnifiedAccountOperationModel>()
+                .To<DashboardOperationModel>((source, target) =>
+                {
+                    target.Account = accountById[_operationsetContainer.AccountIdByOperationUId[source.UId]];
+                })
                 .OrderByDescending(t => t.OperationId)
                 .ToList();
-            Operations = filteredOperationsVM;
+            Operations = filteredOperationsVm;
         }
     }
 }

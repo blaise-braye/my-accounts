@@ -1,31 +1,35 @@
-﻿using System;
+using System;
+using System.ComponentModel.DataAnnotations;
 using MyAccounts.Business.AccountOperations.Contracts;
+using Operations.Classification.WpfUi.Managers.Accounts.Models;
 
-namespace MyAccounts.Business.AccountOperations.Unified
+namespace Operations.Classification.WpfUi.Managers.Reports
 {
-    public class UnifiedAccountOperation : AccountOperationBase
+    public class DashboardOperationModel
     {
-        public UnifiedAccountOperation()
-        {
-            UId = Guid.NewGuid();
-        }
-
+        [Display(AutoGenerateField = false)]
         public Guid UId { get; set; }
 
-        public string Account { get; set; }
+        [Display(AutoGenerateField = false)]
+        public AccountViewModel Account { get; set; }
 
         public string OperationId { get; set; }
 
         public string PatternName { get; set; }
 
+        [DisplayFormat(DataFormatString = "d")]
         public DateTime ExecutionDate { get; set; }
 
+        [DisplayFormat(DataFormatString = "d")]
         public DateTime ValueDate { get; set; }
 
+        [Display(AutoGenerateField = false)]
         public string Currency { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Income { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Outcome { get; set; }
 
         public string ThirdParty { get; set; }
@@ -45,5 +49,7 @@ namespace MyAccounts.Business.AccountOperations.Unified
         public string Communication { get; set; }
 
         public string Note { get; set; }
+
+        public SourceKind SourceKind { get; set; }
     }
 }

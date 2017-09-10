@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MyAccounts.Business.AccountOperations.Unified;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Technical.Collections.Filters;
 
 namespace Operations.Classification.WpfUi.Managers.Reports.Models
 {
@@ -12,18 +13,29 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
 
         public List<OperationSet> MonthlyOperations { get; private set; }
 
+        public ReadOnlyDictionary<Guid, Guid> AccountIdByOperationUId { get; private set; }
+        
         public static OperationSetContainer Compute(IEnumerable<AccountViewModel> selection)
         {
-            var mixedAccountOperationOperations = selection
-                .Where(a => a.Operations?.Any() == true)
-                .SelectMany(account => ComputeOperationsPerDay(account.InitialBalance, account.Operations))
-                .OrderBy(op => op.Day).ToList();
+            var accountIdByOperationId = new Dictionary<Guid, Guid>();
+            List<OperationSet> mixedAccountOperationOperations = new List<OperationSet>();
+            foreach (var account in selection.Where(a => a.Operations?.Any() == true))
+            {
+                foreach (var operation in account.Operations)
+                {
+                    accountIdByOperationId.Add(operation.UId, account.Id);
+                }
 
-            var aggregattedDailyOperations = OperationSet.GroupDailyOperations(mixedAccountOperationOperations);
-            var aggregattedMonthlyOperations = OperationSet.ComputeMonthlyOperations(aggregattedDailyOperations);
+                var accountOperationsPerDay = ComputeOperationsPerDay(account.InitialBalance, account.Operations);
+                mixedAccountOperationOperations.AddRange(accountOperationsPerDay);
+            }
+            
+            var aggregattedDailyOperations = GroupDailyOperations(mixedAccountOperationOperations);
+            var aggregattedMonthlyOperations = ComputeMonthlyOperations(aggregattedDailyOperations);
 
             return new OperationSetContainer
             {
+                AccountIdByOperationUId = new ReadOnlyDictionary<Guid, Guid>(accountIdByOperationId),
                 DailyOperations = aggregattedDailyOperations,
                 MonthlyOperations = aggregattedMonthlyOperations
             };
@@ -68,6 +80,38 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
 
                             return nextBpd;
                         });
+            }
+
+            return result;
+        }
+
+        private static List<OperationSet> GroupDailyOperations(List<OperationSet> operations)
+        {
+            var groupedByDay = operations.OrderBy(op => op.Day).GroupBy(op => op.Day);
+
+            var flattifiedDailyOperations = groupedByDay.Select(
+                grp =>
+                {
+                    var bpd = new OperationSet(grp.Key, grp.Sum(pd => pd.InitialBalance));
+                    var grpOperations = grp.SelectMany(p => p.Operations);
+                    bpd.AddRange(grpOperations);
+                    return bpd;
+                }).ToList();
+
+            return flattifiedDailyOperations;
+        }
+
+        private static List<OperationSet> ComputeMonthlyOperations(List<OperationSet> dailyOperations)
+        {
+            var result = new List<OperationSet>();
+
+            var groupedByMonth = dailyOperations.OrderBy(db => db.Day).GroupBy(db => new DateTime(db.Day.Year, db.Day.Month, 1));
+            foreach (var grp in groupedByMonth)
+            {
+                var initialBalance = grp.First().InitialBalance;
+                var operations = grp.SelectMany(b => b.Operations);
+                var osb = new OperationSet(grp.Key, initialBalance).AddRange(operations);
+                result.Add(osb);
             }
 
             return result;

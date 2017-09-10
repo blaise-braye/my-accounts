@@ -4,7 +4,7 @@ using MyAccounts.Business.AccountOperations.Contracts;
 
 namespace Operations.Classification.WpfUi.Managers.Transactions
 {
-    public class UnifiedAccountOperationModel
+    public class TransactionModel
     {
         public string OperationId { get; set; }
 

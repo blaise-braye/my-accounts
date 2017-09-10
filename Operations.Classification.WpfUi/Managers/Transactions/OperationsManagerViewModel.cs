@@ -36,7 +36,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         private bool _isExporting;
 
         private bool _isFiltering;
-        private List<UnifiedAccountOperationModel> _operations;
+        private List<TransactionModel> _operations;
 
         public OperationsManagerViewModel(
             BusyIndicatorViewModel busyIndicator,
@@ -79,7 +79,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
         public RelayCommand BeginExportCommand { get; }
 
-        public List<UnifiedAccountOperationModel> Operations
+        public List<TransactionModel> Operations
         {
             get => _operations;
             private set => Set(nameof(Operations), ref _operations, value);
@@ -154,7 +154,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             var result = await _operationsManager.DetectPotentialDuplicates(CurrentAccount.Id);
             Operations = result
                 .Project()
-                .To<UnifiedAccountOperationModel>()
+                .To<TransactionModel>()
                 .OrderByDescending(t => t.OperationId)
                 .ToList();
         }
@@ -203,7 +203,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
 
             Operations = operations
                 .Project()
-                .To<UnifiedAccountOperationModel>()
+                .To<TransactionModel>()
                 .OrderByDescending(t => t.OperationId)
                 .ToList();
         }
