@@ -29,6 +29,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         public DashboardViewModel(BusyIndicatorViewModel busyIndicator)
         {
             _busyIndicator = busyIndicator;
+
             Filter = new DashboardFilterViewModel();
             Filter.FilterInvalidated += async (sender, arg) =>
             {
@@ -38,7 +39,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 }
                 else
                 {
-                    RefreshFilteredOperations();
+                    await RefreshFilteredOperations();
                 }
             };
 
@@ -283,24 +284,30 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             _operationsetContainer = operationsetContainer;
             DailyOperationsModel = CreateDailyOperationsModel(operationsetContainer.DailyOperations);
             MonthyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
-            RefreshFilteredOperations();
+            await RefreshFilteredOperations();
         }
 
-        private void RefreshFilteredOperations()
+        private async Task RefreshFilteredOperations()
         {
-            var filteredDailyOperationSets = Filter.DateRangeFilter.Apply(_operationsetContainer.DailyOperations, op => op.Day);
-            var filteterdOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
-            filteterdOperations = Filter.NoteFilter.Apply(filteterdOperations, o => o.Note);
-            filteterdOperations = Filter.DirectionFilter.Apply(filteterdOperations, o => o.Income, o => o.Outcome);
-            var accountById = _accounts.ToDictionary(a => a.Id);
-            var filteredOperationsVm = filteterdOperations
-                .Project()
-                .To<DashboardOperationModel>((source, target) =>
-                {
-                    target.Account = accountById[_operationsetContainer.AccountIdByOperationUId[source.UId]];
-                })
-                .OrderByDescending(t => t.OperationId)
-                .ToList();
+            var filteredOperationsVm = await Task.Run(() =>
+            {
+                var filteredDailyOperationSets = Filter.DateRangeFilter.Apply(_operationsetContainer.DailyOperations, op => op.Day);
+                var filteterdOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
+                filteterdOperations = Filter.NoteFilter.Apply(filteterdOperations, o => o.Note);
+                filteterdOperations = Filter.DirectionFilter.Apply(filteterdOperations, o => o.Income, o => o.Outcome);
+                var accountById = _accounts.ToDictionary(a => a.Id);
+
+                var result = filteterdOperations
+                    .Project()
+                    .To<DashboardOperationModel>((source, target) =>
+                    {
+                        target.Account = accountById[_operationsetContainer.AccountIdByOperationUId[source.UId]];
+                    })
+                    .OrderByDescending(t => t.ExecutionDate)
+                    .ToList();
+                return result;
+            });
+            
             Operations = filteredOperationsVm;
         }
     }
