@@ -66,7 +66,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             _anyFilter = new CompositeFilter(DateFilter, NoteFilter);
             _anyFilter.FilterInvalidated += OnAnyFilterInvalidated;
 
-            ResetFilterCommad = new RelayCommand(() => _anyFilter.Reset());
+            ResetFilterCommad = new RelayCommand(() => _anyFilter.Reset(), () => IsFiltering);
         }
 
         public AsyncCommand CommitExportCommand { get; }
@@ -142,6 +142,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         {
             RefreshIsFilteringState();
             RefreshOperations();
+            ResetFilterCommad.RaiseCanExecuteChanged();
         }
 
         private void RefreshIsFilteringState()

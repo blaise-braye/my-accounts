@@ -20,7 +20,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             DirectionFilter = new DirectionFilter();
             _anyFilter = new CompositeFilter(DateRangeFilter, NoteFilter, AccountsFilter, DirectionFilter);
             _anyFilter.FilterInvalidated += OnAnyFilterInvalidated;
-            ResetFilterCommad = new RelayCommand(Reset);
+            ResetFilterCommad = new RelayCommand(Reset, () => IsFiltering);
         }
 
         public event EventHandler FilterInvalidated;
@@ -65,6 +65,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         private void OnAnyFilterInvalidated(object sender, EventArgs e)
         {
             RefreshIsFilteringState();
+            ResetFilterCommad.RaiseCanExecuteChanged();
             FilterInvalidated?.Invoke(sender, e);
         }
     }
