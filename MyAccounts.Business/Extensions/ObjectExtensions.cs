@@ -11,7 +11,7 @@ namespace MyAccounts.Business.Extensions
         {
             var accessor = TypeAccessor.Create(obj.GetType());
             var members = accessor.GetMembers();
-            var keyvalues = members.ToDictionary(m => m.Name, m => JsonConvert.ToString(accessor[obj, m.Name]));
+            var keyvalues = members.ToDictionary(m => m.Name, m => accessor[obj, m.Name]?.ToString());
             return keyvalues;
         }
 
