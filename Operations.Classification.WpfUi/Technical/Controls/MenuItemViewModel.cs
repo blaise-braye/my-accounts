@@ -69,5 +69,17 @@ namespace Operations.Classification.WpfUi.Technical.Controls
             get => _tag;
             set { Set(() => Tag, ref _tag, value); }
         }
+
+        public void Uncheck()
+        {
+            IsChecked = false;
+            Command.Execute(CommandParameter);
+        }
+
+        public void Check()
+        {
+            IsChecked = true;
+            Command.Execute(CommandParameter);
+        }
     }
 }

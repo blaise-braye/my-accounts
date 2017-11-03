@@ -14,7 +14,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
         private MenuItemViewModel[] _items;
         private MenuItemViewModel[] _dataitems;
         private object[] _selectedData;
-        private Func<object, Func<object, bool>> _dataFilterBuilder;
         
         public MenuItemViewModel[] Items
         {
@@ -33,11 +32,31 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             get => _selectedData ?? (_selectedData = DataItems.Where(i => i.IsChecked).Select(i => i.CommandParameter).ToArray());
             private set { Set(() => SelectedData, ref _selectedData, value); }
         }
-        
-        public void Initialize<TData>(
-            IEnumerable<TData> source, 
-            Func<TData, string> labelBuilder, 
-            Func<TData, object> dataProvider = null,
+
+        public void Initialize<TSource, TData>(
+            IEnumerable<TSource> source,
+            Func<TSource, string> labelBuilder,
+            Func<TSource, TData> dataProvider = null,
+            Func<TData, Func<TData, bool>> dataFilterBuilder = null)
+        {
+            Func<TSource, object> boxedDataProvider = dataProvider != null ? s => dataProvider(s) : null as Func<TSource, object>;
+
+            Func<object, Func<object, bool>> boxedDataFilterBuilder = dataFilterBuilder == null
+                ? (Func<object, Func<object, bool>>)null
+                : d =>
+                {
+                    Func<TData, bool> filterBuilder = dataFilterBuilder((TData) d);
+                    bool BoxedFb(object obj) => filterBuilder((TData)obj);
+                    return BoxedFb;
+                };
+            
+            Initialize(source, labelBuilder, boxedDataProvider, boxedDataFilterBuilder);
+        }
+
+        public void Initialize<TSource>(
+            IEnumerable<TSource> source, 
+            Func<TSource, string> labelBuilder, 
+            Func<TSource, object> dataProvider = null,
             Func<object, Func<object, bool>> dataFilterBuilder = null)
         {
             var cmd = new RelayCommand<object>(RefreshFilterState);
@@ -71,7 +90,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 
             Apply(() =>
             {
-                _dataFilterBuilder = dataFilterBuilder;
                 Items = items;
                 DataItems = dataItems;
                 SelectedData = null;
@@ -91,46 +109,49 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 
         public IEnumerable<TData> Apply<TData>(IEnumerable<TData> source)
         {
-            var filtered = source;
-            if (IsActive())
-            {
-                if (_dataFilterBuilder == null)
-                {
-                    var selectedData = new HashSet<object>(GetExpandedSelectedData());
-                    filtered = filtered.Where(d => selectedData.Contains(d));
-                }
-                else
-                {
-                    var filters = GetExpandedSelectedData().Select(_dataFilterBuilder);
-                    filtered = filtered.Where(item => filters.Any(f => f(item)));
-                }
-            }
-
+            var filtered = Apply<TData, object>(source, null);
             return filtered;
         }
 
-        public IEnumerable<TData> Apply<TData, TMember>(IEnumerable<TData> source, Expression<Func<TData, TMember>> selector)
+        public MenuItemViewModel GetAllItem()
+        {
+            return Items[0];
+        }
+
+        public IEnumerable<TData> Apply<TData, TMember>(
+            IEnumerable<TData> source, 
+            Expression<Func<TData, TMember>> selector)
         {
             var filtered = source;
             if (IsActive())
             {
-                if (_dataFilterBuilder != null)
+                var expandedSelectedData = GetExpandedSelectedData().ToList();
+                if (expandedSelectedData.Any())
                 {
-                    throw new NotSupportedException();
-                }
+                    var selectedDataType = expandedSelectedData[0].GetType();
+                    if (selector != null)
+                    {
+                        if (typeof(TMember).IsAssignableFrom(selectedDataType))
+                        {
+                            var selectedData = new HashSet<object>(expandedSelectedData);
+                            var compiledSelector = selector.Compile();
+                            filtered = filtered.Where(d => selectedData.Contains(compiledSelector(d)));
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
+                    }
+                    else if (typeof(TMember).IsAssignableFrom(selectedDataType))
+                    {
+                        var selectedData = new HashSet<object>(expandedSelectedData);
+                        filtered = filtered.Where(d => selectedData.Contains(d));
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
 
-                if (GetExpandedSelectedData().Any())
-                {
-                    string propertyName = GetPropertyName(selector);
-
-                    var selectedDataType = GetExpandedSelectedData().First().GetType();
-                    var propertyAccessor = FastMember.TypeAccessor.Create(selectedDataType);
-
-                    var memberCollection = GetExpandedSelectedData().Select(d => propertyAccessor[d, propertyName]);
-
-                    var selectedData = new HashSet<object>(memberCollection);
-                    var compiledSelector = selector.Compile();
-                    filtered = filtered.Where(d => selectedData.Contains(compiledSelector(d)));
                 }
                 else
                 {
@@ -148,13 +169,13 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 throw new ArgumentNullException(nameof(propertyExpression));
             }
 
-            MemberExpression body = propertyExpression.Body as MemberExpression;
+            var body = propertyExpression.Body as MemberExpression;
             if (body == null)
             {
                 throw new ArgumentException(@"Invalid argument", nameof(propertyExpression));
             }
 
-            PropertyInfo member = body.Member as PropertyInfo;
+            var member = body.Member as PropertyInfo;
             if (member == null)
             {
                 throw new ArgumentException(@"Argument is not a property", nameof(propertyExpression));
@@ -180,7 +201,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                 }
             }
         }
-        
+
         private void RefreshFilterState(object changedFilter)
         {
             Apply(() =>
@@ -214,11 +235,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
 
                 SelectedData = null;
             });
-        }
-
-        private MenuItemViewModel GetAllItem()
-        {
-            return Items[0];
         }
     }
 }

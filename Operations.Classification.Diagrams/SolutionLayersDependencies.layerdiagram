@@ -44,29 +44,13 @@
     </layer>
     <layer Id="7387ac55-fc3d-4b86-aa24-7b84a518b947" name="Tests">
       <childLayers>
-        <layer Id="b6a60e7d-acc9-4006-be1e-7159d9e52325" name="Operations.Classification.WpfUi.Tests">
-          <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="9c8d13fa-c0d8-4ddb-b789-1e26d546c1e2" direction="Forward">
-              <layerMoniker Id="8c4762b5-85fc-4809-bf14-c44539555949" />
-            </dependencyFromLayerToLayer>
-          </dependencyToLayers>
-          <references>
-            <reference Id="f6b3ab33-5a2c-40e9-854e-4a1d22646b23" name="Operations.Classification.WpfUi.Tests">
-              <ArtifactNode Label="Operations.Classification.WpfUi.Tests" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.WpfUi.Tests/Operations.Classification.WpfUi.Tests.csproj)">
-                <Category Ref="File" />
-              </ArtifactNode>
-              <ExpandedNode Id="(Assembly=Operations.Classification.WpfUi.Tests)" Label="Operations.Classification.WpfUi.Tests.dll" Category="CodeSchema_Assembly">
-                <Category Ref="FileSystem.Category.FileOfType.dll" />
-                <LinkCategory Ref="Produces" />
-                <LinkCategory Ref="Represents" />
-              </ExpandedNode>
-            </reference>
-          </references>
-        </layer>
         <layer Id="e6b3178a-41f4-40ea-b310-4fda807d3809" name="Operations.Classification.Tests">
           <dependencyToLayers>
             <dependencyFromLayerToLayer Id="738d00ba-acc8-47d1-b9e1-e0cac82b6f01" direction="Forward">
               <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
+            </dependencyFromLayerToLayer>
+            <dependencyFromLayerToLayer Id="930d9eb7-fbe4-4c88-ba32-3a024a19c0d4" direction="Forward">
+              <layerMoniker Id="8c4762b5-85fc-4809-bf14-c44539555949" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>

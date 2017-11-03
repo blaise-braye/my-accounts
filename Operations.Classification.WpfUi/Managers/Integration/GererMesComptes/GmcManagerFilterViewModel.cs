@@ -29,7 +29,6 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             };
             DeltaFilter = new MultiSelectFilter();
             DeltaFilter.Initialize(deltaFilterData, kv => kv.Key, kv => kv.Value);
-
             DateFilter = new DateRangeFilter();
             MemoFilter = new TextFilter();
             _anyFilter = new CompositeFilter(DeltaFilter, DateFilter, MemoFilter);
