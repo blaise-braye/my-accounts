@@ -32,32 +32,11 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
             get => _selectedData ?? (_selectedData = DataItems.Where(i => i.IsChecked).Select(i => i.CommandParameter).ToArray());
             private set { Set(() => SelectedData, ref _selectedData, value); }
         }
-
-        public void Initialize<TSource, TData>(
-            IEnumerable<TSource> source,
-            Func<TSource, string> labelBuilder,
-            Func<TSource, TData> dataProvider = null,
-            Func<TData, Func<TData, bool>> dataFilterBuilder = null)
-        {
-            Func<TSource, object> boxedDataProvider = dataProvider != null ? s => dataProvider(s) : null as Func<TSource, object>;
-
-            Func<object, Func<object, bool>> boxedDataFilterBuilder = dataFilterBuilder == null
-                ? (Func<object, Func<object, bool>>)null
-                : d =>
-                {
-                    Func<TData, bool> filterBuilder = dataFilterBuilder((TData) d);
-                    bool BoxedFb(object obj) => filterBuilder((TData)obj);
-                    return BoxedFb;
-                };
-            
-            Initialize(source, labelBuilder, boxedDataProvider, boxedDataFilterBuilder);
-        }
-
+        
         public void Initialize<TSource>(
             IEnumerable<TSource> source, 
             Func<TSource, string> labelBuilder, 
-            Func<TSource, object> dataProvider = null,
-            Func<object, Func<object, bool>> dataFilterBuilder = null)
+            Func<TSource, object> dataProvider = null)
         {
             var cmd = new RelayCommand<object>(RefreshFilterState);
 
@@ -151,7 +130,6 @@ namespace Operations.Classification.WpfUi.Technical.Collections.Filters
                     {
                         throw new NotSupportedException();
                     }
-
                 }
                 else
                 {
