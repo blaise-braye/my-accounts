@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:controls1="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
+             xmlns:controls1="clr-namespace:MyAccounts.NetStandard.Controls;assembly=MyAccounts.NetStandard"
              mc:Ignorable="d" 
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.GmcManager.Filter}"
              d:DesignHeight="300" d:DesignWidth="300">

@@ -7,10 +7,10 @@ using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.GererMesComptes;
 using MyAccounts.Business.IO.Caching;
+using MyAccounts.NetStandard.Collections;
+using MyAccounts.NetStandard.Input;
+using MyAccounts.NetStandard.Projections;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Technical.Collections;
-using Operations.Classification.WpfUi.Technical.Input;
-using Operations.Classification.WpfUi.Technical.Projections;
 using QifApi.Transactions;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes

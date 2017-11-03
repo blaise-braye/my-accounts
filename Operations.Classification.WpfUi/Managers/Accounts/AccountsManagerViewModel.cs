@@ -8,10 +8,10 @@ using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Accounts;
 using MyAccounts.Business.Managers.Imports;
 using MyAccounts.Business.Managers.Operations;
+using MyAccounts.NetStandard.Input;
+using MyAccounts.NetStandard.Projections;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
-using Operations.Classification.WpfUi.Technical.Input;
-using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Accounts
 {

@@ -11,6 +11,7 @@ using MyAccounts.Business.Managers.Accounts;
 using MyAccounts.Business.Managers.Imports;
 using MyAccounts.Business.Managers.Operations;
 using MyAccounts.Business.Managers.Persistence;
+using MyAccounts.NetStandard.Input;
 using Operations.Classification.WpfUi.Managers.Accounts;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using Operations.Classification.WpfUi.Managers.Imports;
@@ -19,7 +20,6 @@ using Operations.Classification.WpfUi.Managers.Reports;
 using Operations.Classification.WpfUi.Managers.Settings;
 using Operations.Classification.WpfUi.Managers.Transactions;
 using Operations.Classification.WpfUi.Technical.Controls;
-using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Localization;
 using Operations.Classification.WpfUi.Technical.Messages;
 

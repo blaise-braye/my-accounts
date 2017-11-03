@@ -11,9 +11,9 @@ using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.IO;
 using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Imports;
+using MyAccounts.NetStandard.Input;
+using MyAccounts.NetStandard.Projections;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Technical.Input;
-using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Imports
 {

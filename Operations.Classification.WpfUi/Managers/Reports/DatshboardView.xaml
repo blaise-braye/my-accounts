@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
              xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:reports="clr-namespace:Operations.Classification.WpfUi.Managers.Reports"
+             xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
+             xmlns:controls1="clr-namespace:MyAccounts.NetStandard.Controls;assembly=MyAccounts.NetStandard"
              mc:Ignorable="d" 
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.DashboardViewModel}"
              d:DesignHeight="500" d:DesignWidth="300">
@@ -33,7 +34,7 @@
                                 <GroupBox Header="accounts">
                                     <ListBox ItemsSource="{Binding AccountsFilter.Items}" >
                                         <ListBox.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type controls:MenuItemViewModel}">
+                                            <DataTemplate DataType="{x:Type controls1:MenuItemViewModel}">
                                                 <CheckBox IsChecked="{Binding IsChecked}" HorizontalContentAlignment="Stretch"
                                                   Command="{Binding Command}"
                                                   CommandParameter="{Binding CommandParameter}"

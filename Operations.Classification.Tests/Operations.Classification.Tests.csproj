@@ -227,6 +227,10 @@
       <Project>{91FB57B2-F839-4D6F-A994-A30FABDBF2BA}</Project>
       <Name>MyAccounts.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MyAccounts.NetStandard\MyAccounts.NetStandard.csproj">
+      <Project>{608F8942-ABDD-4F89-95D9-93DFAD3B9AA8}</Project>
+      <Name>MyAccounts.NetStandard</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Operations.Classification.WpfUi\Operations.Classification.WpfUi.csproj">
       <Project>{89AAC261-6E53-4D9A-95B3-83D0B442E313}</Project>
       <Name>Operations.Classification.WpfUi</Name>

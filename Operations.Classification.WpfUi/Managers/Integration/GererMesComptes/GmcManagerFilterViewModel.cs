@@ -4,7 +4,7 @@ using System.Linq;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.GererMesComptes;
-using Operations.Classification.WpfUi.Technical.Collections.Filters;
+using MyAccounts.NetStandard.Collections.Filters;
 using QifApi.Transactions;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes

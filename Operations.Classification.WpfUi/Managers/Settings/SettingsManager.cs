@@ -8,8 +8,8 @@ using System.Windows.Forms;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.IO.Caching;
-using Operations.Classification.WpfUi.Technical.Input;
-using Operations.Classification.WpfUi.Technical.Projections;
+using MyAccounts.NetStandard.Input;
+using MyAccounts.NetStandard.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Settings
 {

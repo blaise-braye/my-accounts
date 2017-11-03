@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using Operations.Classification.WpfUi.Technical.Collections.Filters;
+using MyAccounts.NetStandard.Collections.Filters;
 
 namespace Operations.Classification.WpfUi.Managers.Reports
 {

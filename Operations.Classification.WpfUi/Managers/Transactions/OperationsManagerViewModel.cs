@@ -10,12 +10,12 @@ using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.Managers;
 using MyAccounts.Business.Managers.Operations;
+using MyAccounts.NetStandard.Collections.Filters;
+using MyAccounts.NetStandard.Input;
+using MyAccounts.NetStandard.Projections;
 using Newtonsoft.Json;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
-using Operations.Classification.WpfUi.Technical.Collections.Filters;
-using Operations.Classification.WpfUi.Technical.Input;
 using Operations.Classification.WpfUi.Technical.Messages;
-using Operations.Classification.WpfUi.Technical.Projections;
 
 namespace Operations.Classification.WpfUi.Managers.Transactions
 {

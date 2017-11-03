@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.GererMesComptes;
-using Operations.Classification.WpfUi.Technical.Collections.Filters;
+using MyAccounts.NetStandard.Collections.Filters;
 
 namespace Operations.Classification.WpfUi.Managers.Reports
 {

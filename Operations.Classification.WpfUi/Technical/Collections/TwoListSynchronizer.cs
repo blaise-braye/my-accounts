@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using MyAccounts.NetStandard.Collections;
 
 namespace Operations.Classification.WpfUi.Technical.Collections
 {
@@ -92,8 +93,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections
         /// <param name="list">The list to listen to.</param>
         protected void ListenForChangeEvents(IList list)
         {
-            var source = list as INotifyCollectionChanged;
-            if (source != null)
+            if (list is INotifyCollectionChanged source)
             {
                 CollectionChangedEventManager.AddListener(source, this);
             }
@@ -105,8 +105,7 @@ namespace Operations.Classification.WpfUi.Technical.Collections
         /// <param name="list">The list to stop listening to.</param>
         protected void StopListeningForChangeEvents(IList list)
         {
-            var source = list as INotifyCollectionChanged;
-            if (source != null)
+            if (list is INotifyCollectionChanged source)
             {
                 CollectionChangedEventManager.RemoveListener(source, this);
             }
