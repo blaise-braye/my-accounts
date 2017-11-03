@@ -16,7 +16,7 @@ namespace MyAccounts.Business.GererMesComptes
     {
         private static readonly CultureInfo _englishCulture = new CultureInfo("en-US");
 
-        private static readonly Regex _whiteSpaceRegex = new Regex(@"[ /_:\.&,]+", RegexOptions.Compiled);
+        private static readonly Regex _whiteSpaceRegex = new Regex(@"[ /_:\.&,\+]+", RegexOptions.Compiled);
 
         public static Configuration QifConfiguration => new Configuration
         {
