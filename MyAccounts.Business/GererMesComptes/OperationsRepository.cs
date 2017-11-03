@@ -175,7 +175,7 @@ namespace MyAccounts.Business.GererMesComptes
                         var exported = exportedbyKey[importedKeyItems.Key].ToList();
                         foreach (var importedKeyItem in importedKeyItems)
                         {
-                            available = exported.Any(exportedKeyItem => importedKeyItem.Memo == exportedKeyItem.Memo);
+                            available = exported.Any(exportedKeyItem => string.Equals(importedKeyItem.Memo, exportedKeyItem.Memo, StringComparison.InvariantCultureIgnoreCase));
 
                             if (!available)
                             {
