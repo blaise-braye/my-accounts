@@ -44,21 +44,21 @@
     </layer>
     <layer Id="7387ac55-fc3d-4b86-aa24-7b84a518b947" name="Tests">
       <childLayers>
-        <layer Id="e6b3178a-41f4-40ea-b310-4fda807d3809" name="Operations.Classification.Tests">
+        <layer Id="1268f6d0-a8d0-4735-9d54-4b46f944ae01" name="MyAccounts.Tests">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="738d00ba-acc8-47d1-b9e1-e0cac82b6f01" direction="Forward">
-              <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
-            </dependencyFromLayerToLayer>
-            <dependencyFromLayerToLayer Id="930d9eb7-fbe4-4c88-ba32-3a024a19c0d4" direction="Forward">
+            <dependencyFromLayerToLayer Id="0df307ed-5c04-4430-9065-43599e83d2fe" direction="Forward">
               <layerMoniker Id="8c4762b5-85fc-4809-bf14-c44539555949" />
+            </dependencyFromLayerToLayer>
+            <dependencyFromLayerToLayer Id="47131e5a-e657-42fe-be17-d38165ccc850" direction="Forward">
+              <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="36ed2cb1-0c8c-4468-9675-56b29165dbbd" name="Operations.Classification.Tests">
-              <ArtifactNode Label="Operations.Classification.Tests" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.Tests/Operations.Classification.Tests.csproj)">
+            <reference Id="6b8e6bc9-3a25-4ff9-a1c0-79963524f003" name="MyAccounts.Tests">
+              <ArtifactNode Label="MyAccounts.Tests" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Tests/MyAccounts.Tests.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
-              <ExpandedNode Id="(Assembly=Operations.Classification.Tests)" Label="Operations.Classification.Tests.dll" Category="CodeSchema_Assembly">
+              <ExpandedNode Id="(Assembly=MyAccounts.Tests)" Label="MyAccounts.Tests.dll" Category="CodeSchema_Assembly">
                 <Category Ref="FileSystem.Category.FileOfType.dll" />
                 <LinkCategory Ref="Produces" />
                 <LinkCategory Ref="Represents" />
@@ -66,18 +66,19 @@
             </reference>
           </references>
         </layer>
-        <layer Id="47ac8ab2-df29-4fa4-be6c-8f482951420e" name="Operations.Classification.Gmc.Tests">
+        <layer Id="64690107-64d0-4bd8-80f3-7604daff1b22" name="MyAccounts.Tests.Gmc">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="95eb3d1e-3f21-4180-ade6-1890b40391d3" direction="Forward">
+            <dependencyFromLayerToLayer Id="1a660e4d-e3ae-496a-98d0-769239bee864" direction="Forward">
               <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="9d19c121-e63f-4585-9d05-8a5b4028793a" name="Operations.Classification.Gmc.Tests">
-              <ArtifactNode Label="Operations.Classification.Gmc.Tests" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.Gmc.Tests/Operations.Classification.Gmc.Tests.csproj)">
+            <reference Id="b0be0bea-2732-4af9-95d4-4e4ceb59d242" name="MyAccounts.Tests.Gmc">
+              <ArtifactNode Label="MyAccounts.Tests.Gmc" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Tests.Gmc/MyAccounts.Tests.Gmc.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
-              <ExpandedNode Id="(Assembly=Operations.Classification.Gmc.Tests)" Label="Operations.Classification.Gmc.Tests.dll" Category="CodeSchema_Assembly">
+              <ExpandedNode Id="(Assembly=MyAccounts.Tests.Gmc)" Label="MyAccounts.Tests.Gmc.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
                 <LinkCategory Ref="Produces" />
                 <LinkCategory Ref="Represents" />
               </ExpandedNode>

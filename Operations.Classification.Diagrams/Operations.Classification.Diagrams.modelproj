@@ -38,13 +38,13 @@
       <Name>MyAccounts.Business</Name>
       <Project>{91fb57b2-f839-4d6f-a994-a30fabdbf2ba}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Operations.Classification.Gmc.Tests\Operations.Classification.Gmc.Tests.csproj">
-      <Name>Operations.Classification.Gmc.Tests</Name>
-      <Project>{079a59ff-71a3-4e6b-827f-be6a6d548d71}</Project>
+    <ProjectReference Include="..\MyAccounts.Tests.Gmc\MyAccounts.Tests.Gmc.csproj">
+      <Name>MyAccounts.Tests.Gmc</Name>
+      <Project>{adbf2e50-9be8-4ec0-9a9c-375b0960dd73}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Operations.Classification.Tests\Operations.Classification.Tests.csproj">
-      <Name>Operations.Classification.Tests</Name>
-      <Project>{5776ffe0-fab6-4bb0-9298-e7e9586280f1}</Project>
+    <ProjectReference Include="..\MyAccounts.Tests\MyAccounts.Tests.csproj">
+      <Name>MyAccounts.Tests</Name>
+      <Project>{c4798633-062b-4e90-8d97-dda90e78f704}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Operations.Classification.WpfUi\Operations.Classification.WpfUi.csproj">
       <Name>Operations.Classification.WpfUi</Name>
