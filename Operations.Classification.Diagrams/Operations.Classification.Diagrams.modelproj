@@ -38,6 +38,10 @@
       <Name>MyAccounts.Business</Name>
       <Project>{91fb57b2-f839-4d6f-a994-a30fabdbf2ba}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\MyAccounts.NetStandard\MyAccounts.NetStandard.csproj">
+      <Name>MyAccounts.NetStandard</Name>
+      <Project>{608f8942-abdd-4f89-95d9-93dfad3b9aa8}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\MyAccounts.Tests.Gmc\MyAccounts.Tests.Gmc.csproj">
       <Name>MyAccounts.Tests.Gmc</Name>
       <Project>{adbf2e50-9be8-4ec0-9a9c-375b0960dd73}</Project>

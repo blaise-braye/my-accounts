@@ -1,34 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="018fd092-ffb2-4258-ae51-b6415a007510" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
   <layers>
-    <layer Id="2d262c42-b444-44d4-b55b-fa84dc507f43" name="Business">
-      <childLayers>
-        <layer Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" name="MyAccounts.Business">
-          <references>
-            <reference Id="b4bd49f3-6bf3-4edf-bc1c-ca6442ed883a" name="MyAccounts.Business">
-              <ArtifactNode Label="MyAccounts.Business" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Business/MyAccounts.Business.csproj)">
-                <Category Ref="File" />
-              </ArtifactNode>
-              <ExpandedNode Id="(Assembly=MyAccounts.Business)" Label="MyAccounts.Business.dll" Category="CodeSchema_Assembly">
-                <Category Ref="FileSystem.Category.FileOfType.dll" />
-                <LinkCategory Ref="Produces" />
-                <LinkCategory Ref="Represents" />
-              </ExpandedNode>
-            </reference>
-          </references>
-        </layer>
-      </childLayers>
-    </layer>
-    <layer Id="a94d7652-14fe-4a5d-a7f8-1b481803dc8a" name="Front">
+    <layer Id="896f0e4a-d679-4e5f-967b-701b2d0ef385" name="Front">
       <dependencyToLayers>
-        <dependencyFromLayerToLayer Id="7875df24-441c-4767-b491-1f8f9c4f16d1" direction="Forward">
-          <layerMoniker Id="2d262c42-b444-44d4-b55b-fa84dc507f43" />
+        <dependencyFromLayerToLayer Id="2fe0b68c-c560-4339-8b4b-226bab169fb9" direction="Forward">
+          <layerMoniker Id="451baf2b-2cc7-429c-a23b-4d3ac43ece3e" />
         </dependencyFromLayerToLayer>
       </dependencyToLayers>
       <childLayers>
-        <layer Id="8c4762b5-85fc-4809-bf14-c44539555949" name="Operations.Classification.WpfUi">
+        <layer Id="278491ef-c86a-4a56-8b20-9b42d183609f" name="Operations.Classification.WpfUi">
           <references>
-            <reference Id="df937e02-20e7-4ff0-92bb-27bce3d0de0f" name="Operations.Classification.WpfUi">
+            <reference Id="a3bd4d37-ea6f-46bb-8955-a8569f2e0e0b" name="Operations.Classification.WpfUi">
               <ArtifactNode Label="Operations.Classification.WpfUi" Category="CodeSchema_Project" Id="(Assembly=../Operations.Classification.WpfUi/Operations.Classification.WpfUi.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
@@ -42,19 +24,51 @@
         </layer>
       </childLayers>
     </layer>
-    <layer Id="7387ac55-fc3d-4b86-aa24-7b84a518b947" name="Tests">
+    <layer Id="451baf2b-2cc7-429c-a23b-4d3ac43ece3e" name="Reusable">
       <childLayers>
-        <layer Id="1268f6d0-a8d0-4735-9d54-4b46f944ae01" name="MyAccounts.Tests">
+        <layer Id="e914fc2f-87c1-4c97-a090-471296af502d" name="MyAccounts.Business">
+          <references>
+            <reference Id="8b3b6a53-8951-440a-914a-e17ad2758ff2" name="MyAccounts.Business">
+              <ArtifactNode Label="MyAccounts.Business" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Business/MyAccounts.Business.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=MyAccounts.Business)" Label="MyAccounts.Business.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+        <layer Id="4e36ebde-acc1-4f9a-a03c-bae9f569f4e8" name="MyAccounts.NetStandard">
+          <references>
+            <reference Id="935d7bde-973d-4b72-a405-0ff3533de595" name="MyAccounts.NetStandard">
+              <ArtifactNode Label="MyAccounts.NetStandard" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.NetStandard/MyAccounts.NetStandard.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=MyAccounts.NetStandard)" Label="MyAccounts.NetStandard.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+    </layer>
+    <layer Id="e88591e9-a1ad-42c1-93d8-cdd4bd6329c5" name="Tests">
+      <childLayers>
+        <layer Id="7ee26468-11d8-464f-9242-68b394d4939f" name="MyAccounts.Tests">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="0df307ed-5c04-4430-9065-43599e83d2fe" direction="Forward">
-              <layerMoniker Id="8c4762b5-85fc-4809-bf14-c44539555949" />
+            <dependencyFromLayerToLayer Id="e839ee96-2ab5-47bd-bfbd-d079a4a94260" direction="Forward">
+              <layerMoniker Id="451baf2b-2cc7-429c-a23b-4d3ac43ece3e" />
             </dependencyFromLayerToLayer>
-            <dependencyFromLayerToLayer Id="47131e5a-e657-42fe-be17-d38165ccc850" direction="Forward">
-              <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
+            <dependencyFromLayerToLayer Id="0a2ae9cc-d56d-43cb-98ed-c56a064d7984" direction="Forward">
+              <layerMoniker Id="896f0e4a-d679-4e5f-967b-701b2d0ef385" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="6b8e6bc9-3a25-4ff9-a1c0-79963524f003" name="MyAccounts.Tests">
+            <reference Id="af715435-9e42-4107-8684-df06ab6cc6d3" name="MyAccounts.Tests">
               <ArtifactNode Label="MyAccounts.Tests" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Tests/MyAccounts.Tests.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
@@ -66,14 +80,14 @@
             </reference>
           </references>
         </layer>
-        <layer Id="64690107-64d0-4bd8-80f3-7604daff1b22" name="MyAccounts.Tests.Gmc">
+        <layer Id="bacbfdb4-f195-45cc-a55a-35498da44a4f" name="MyAccounts.Tests.Gmc">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="1a660e4d-e3ae-496a-98d0-769239bee864" direction="Forward">
-              <layerMoniker Id="1556b973-d5bb-4d11-8a69-1cc2da65d6ff" />
+            <dependencyFromLayerToLayer Id="881bb19f-e20d-4dd8-bdbd-0135adf528bc" direction="Forward">
+              <layerMoniker Id="e914fc2f-87c1-4c97-a090-471296af502d" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="b0be0bea-2732-4af9-95d4-4e4ceb59d242" name="MyAccounts.Tests.Gmc">
+            <reference Id="34299ae0-c945-4746-925f-4676c2b430fb" name="MyAccounts.Tests.Gmc">
               <ArtifactNode Label="MyAccounts.Tests.Gmc" Category="CodeSchema_Project" Id="(Assembly=../MyAccounts.Tests.Gmc/MyAccounts.Tests.Gmc.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
