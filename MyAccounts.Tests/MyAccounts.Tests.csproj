@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <CodeAnalysisRuleSet>..\AlteredMinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <ItemGroup>

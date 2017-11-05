@@ -55,7 +55,7 @@ namespace MyAccounts.NetStandard.Input
                 return Task.CompletedTask;
             }
 
-            if (input == null && typeof(TArgType).GetTypeInfo().IsValueType)
+            if (input == null && typeof(TArgType).IsValueType)
             {
                 return ExecuteAsync(default(TArgType));
             }

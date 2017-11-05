@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using MyAccounts.Business.GererMesComptes;
+using MyAccounts.NetStandard.Logging;
 using QifApi;
 
 namespace MyAccounts.Tests.Gmc.Steps

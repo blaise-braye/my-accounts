@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <CodeAnalysisRuleSet>..\AlteredMinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   
@@ -16,7 +16,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="QifApi" Version="1.0.6014.6272">
+    <PackageReference Include="QifApi" Version="1.1.0-beta1">
       <NoWarn></NoWarn>
     </PackageReference>
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />

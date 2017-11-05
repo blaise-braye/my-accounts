@@ -1,7 +1,7 @@
 using System;
 using log4net;
 
-namespace MyAccounts.Tests.Gmc.Steps
+namespace MyAccounts.NetStandard.Logging
 {
     public static class Log4NetExtentions
     {
