@@ -4,8 +4,9 @@
              xmlns:mobileUi="clr-namespace:MyAccounts.Classification.MobileUi"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:d1P1="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shared="clr-namespace:MyAccounts.Mobile.Shared;assembly=MyAccounts.Mobile.Shared"
              d1P1:Ignorable="d"
-             x:Class="MyAccounts.Classification.MobileUi.App">
+             x:Class="MyAccounts.Mobile.Shared.App">
   <Application.Resources>
         <ResourceDictionary>
             <Color x:Key="Primary">#2196F3</Color>
@@ -21,7 +22,7 @@
                 <Setter Property="BarTextColor" Value="White" />
             </Style>
             
-            <mobileUi:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+            <shared:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

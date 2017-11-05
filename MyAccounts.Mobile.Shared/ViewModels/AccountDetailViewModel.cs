@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
-using MyAccounts.Classification.MobileUi.Models;
+using MyAccounts.Mobile.Shared.Models;
 
-namespace MyAccounts.Classification.MobileUi.ViewModels
+namespace MyAccounts.Mobile.Shared.ViewModels
 {
     public class AccountDetailViewModel : ViewModelBase
     {

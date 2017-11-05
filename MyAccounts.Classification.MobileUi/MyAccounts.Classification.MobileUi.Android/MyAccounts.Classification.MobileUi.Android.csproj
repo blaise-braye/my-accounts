@@ -159,12 +159,15 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MyAccounts.Mobile.Shared\MyAccounts.Mobile.Shared.csproj">
+      <Project>{358e7e28-1e5d-42f4-831a-ca5c86b6c199}</Project>
+      <Name>MyAccounts.Mobile.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MyAccounts.NetStandard\MyAccounts.NetStandard.csproj">
       <Project>{608f8942-abdd-4f89-95d9-93dfad3b9aa8}</Project>
       <Name>MyAccounts.NetStandard</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.projitems" Label="Shared" Condition="Exists('..\MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

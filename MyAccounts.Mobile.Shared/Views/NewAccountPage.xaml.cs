@@ -1,13 +1,11 @@
 ﻿using System;
-using MyAccounts.Classification.MobileUi.Models;
+using MyAccounts.Mobile.Shared.Models;
 using Xamarin.Forms;
 
-namespace MyAccounts.Classification.MobileUi
+namespace MyAccounts.Mobile.Shared.Views
 {
     public partial class NewAccountPage : ContentPage
     {
-        public Item Item { get; set; }
-
         public NewAccountPage()
         {
             InitializeComponent();
@@ -21,7 +19,9 @@ namespace MyAccounts.Classification.MobileUi
             BindingContext = this;
         }
 
-        async void Save_Clicked(object sender, EventArgs e)
+        public Item Item { get; set; }
+
+        private async void Save_Clicked(object sender, EventArgs e)
         {
             MessagingCenter.Send(this, "AddItem", Item);
             await Navigation.PopToRootAsync();

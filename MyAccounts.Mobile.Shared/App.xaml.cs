@@ -1,6 +1,7 @@
-﻿using Xamarin.Forms;
+﻿using MyAccounts.Mobile.Shared.Views;
+using Xamarin.Forms;
 
-namespace MyAccounts.Classification.MobileUi
+namespace MyAccounts.Mobile.Shared
 {
     public partial class App : Application
     {
@@ -9,9 +10,13 @@ namespace MyAccounts.Classification.MobileUi
             InitializeComponent();
 
             if (Device.RuntimePlatform == Device.iOS)
+            {
                 MainPage = new MainPage();
+            }
             else
+            {
                 MainPage = new NavigationPage(new MainPage());
+            }
         }
     }
 }

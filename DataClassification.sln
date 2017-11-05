@@ -22,8 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operations.Classification.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAccounts.Business", "MyAccounts.Business\MyAccounts.Business.csproj", "{91FB57B2-F839-4D6F-A994-A30FABDBF2BA}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyAccounts.Classification.MobileUi", "MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.shproj", "{6108C450-262F-497E-A1EB-7FCA71113FD3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAccounts.Classification.MobileUi.Android", "MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.Android\MyAccounts.Classification.MobileUi.Android.csproj", "{19409700-6E7A-40A1-9E9F-82BD19098DEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAccounts.Classification.MobileUi.iOS", "MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.iOS\MyAccounts.Classification.MobileUi.iOS.csproj", "{75B5266F-5214-415A-80B7-2061396AE74F}"
@@ -36,12 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAccounts.Tests", "MyAccou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAccounts.Tests.Gmc", "MyAccounts.Tests.Gmc\MyAccounts.Tests.Gmc.csproj", "{ADBF2E50-9BE8-4EC0-9A9C-375B0960DD73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAccounts.Mobile.Shared", "MyAccounts.Mobile.Shared\MyAccounts.Mobile.Shared.csproj", "{358E7E28-1E5D-42F4-831A-CA5C86B6C199}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.projitems*{19409700-6e7a-40a1-9e9f-82bd19098dec}*SharedItemsImports = 4
-		MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.projitems*{6108c450-262f-497e-a1eb-7fca71113fd3}*SharedItemsImports = 13
-		MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi\MyAccounts.Classification.MobileUi.projitems*{75b5266f-5214-415a-80b7-2061396ae74f}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|iPhone = Debug|iPhone
@@ -217,6 +212,26 @@ Global
 		{ADBF2E50-9BE8-4EC0-9A9C-375B0960DD73}.Release|x64.Build.0 = Release|Any CPU
 		{ADBF2E50-9BE8-4EC0-9A9C-375B0960DD73}.Release|x86.ActiveCfg = Release|Any CPU
 		{ADBF2E50-9BE8-4EC0-9A9C-375B0960DD73}.Release|x86.Build.0 = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|x64.Build.0 = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Debug|x86.Build.0 = Debug|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|iPhone.Build.0 = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|x64.ActiveCfg = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|x64.Build.0 = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|x86.ActiveCfg = Release|Any CPU
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -225,13 +240,13 @@ Global
 		{89AAC261-6E53-4D9A-95B3-83D0B442E313} = {078567A8-7BF7-4031-9806-C6BD9D6B2D5E}
 		{0B3BF827-D5A9-474B-B6BD-D31E054AAE78} = {3EB9216F-64E7-45D9-ADE4-1941E5F43229}
 		{91FB57B2-F839-4D6F-A994-A30FABDBF2BA} = {5D6CCCEF-6E1E-4D40-B117-C7F1D26384D0}
-		{6108C450-262F-497E-A1EB-7FCA71113FD3} = {4BDDD06E-A2CA-4013-BCA9-84FE1B345E40}
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC} = {4BDDD06E-A2CA-4013-BCA9-84FE1B345E40}
 		{75B5266F-5214-415A-80B7-2061396AE74F} = {4BDDD06E-A2CA-4013-BCA9-84FE1B345E40}
 		{4BDDD06E-A2CA-4013-BCA9-84FE1B345E40} = {078567A8-7BF7-4031-9806-C6BD9D6B2D5E}
 		{608F8942-ABDD-4F89-95D9-93DFAD3B9AA8} = {5D6CCCEF-6E1E-4D40-B117-C7F1D26384D0}
 		{C4798633-062B-4E90-8D97-DDA90E78F704} = {132F170B-0A03-4B93-A0D6-FE2A7598247F}
 		{ADBF2E50-9BE8-4EC0-9A9C-375B0960DD73} = {132F170B-0A03-4B93-A0D6-FE2A7598247F}
+		{358E7E28-1E5D-42F4-831A-CA5C86B6C199} = {4BDDD06E-A2CA-4013-BCA9-84FE1B345E40}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C5379A6B-B8A1-4176-9D3A-2CF2FAB12C38}

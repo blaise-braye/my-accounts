@@ -4,7 +4,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Xamarin.Forms;
 
-namespace MyAccounts.Classification.MobileUi.ViewModels
+namespace MyAccounts.Mobile.Shared.ViewModels
 {
     public class AboutViewModel : ViewModelBase
     {

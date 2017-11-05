@@ -1,9 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
-using MyAccounts.Classification.MobileUi.Models;
-using MyAccounts.Classification.MobileUi.ViewModels;
+using MyAccounts.Mobile.Shared.Models;
+using MyAccounts.Mobile.Shared.ViewModels;
 using Xamarin.Forms;
 
-namespace MyAccounts.Classification.MobileUi
+namespace MyAccounts.Mobile.Shared.Views
 {
     public partial class AccountDetailPage : ContentPage
     {
@@ -23,7 +23,8 @@ namespace MyAccounts.Classification.MobileUi
             }            
         }
 
-        public AccountDetailPage(AccountDetailViewModel viewModel) : this()
+        public AccountDetailPage(AccountDetailViewModel viewModel) 
+            : this()
         {
             BindingContext = viewModel;
         }

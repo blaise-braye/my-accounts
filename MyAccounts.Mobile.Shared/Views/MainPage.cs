@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace MyAccounts.Classification.MobileUi
+namespace MyAccounts.Mobile.Shared.Views
 {
     public class MainPage : TabbedPage
     {

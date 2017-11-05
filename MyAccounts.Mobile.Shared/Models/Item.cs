@@ -1,9 +1,11 @@
-﻿namespace MyAccounts.Classification.MobileUi.Models
+﻿namespace MyAccounts.Mobile.Shared.Models
 {
     public class Item
     {
         public string Id { get; set; }
+
         public string Text { get; set; }
+
         public string Description { get; set; }
     }
 }

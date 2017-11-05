@@ -1,12 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using MyAccounts.Classification.MobileUi.Models;
-using MyAccounts.Classification.MobileUi.Services;
+using MyAccounts.Mobile.Shared.Models;
+using MyAccounts.Mobile.Shared.Services;
+using MyAccounts.Mobile.Shared.Views;
 using MyAccounts.NetStandard.Input;
 using Xamarin.Forms;
 
-namespace MyAccounts.Classification.MobileUi.ViewModels
+namespace MyAccounts.Mobile.Shared.ViewModels
 {
     public class AccountsViewModel : ViewModelBase
     {
@@ -39,10 +40,12 @@ namespace MyAccounts.Classification.MobileUi.ViewModels
 
         public BusyIndicatorViewModel BusyIndicator { get; } = new BusyIndicatorViewModel();
 
-        async Task ExecuteLoadItemsCommand()
+        public async Task ExecuteLoadItemsCommand()
         {
             if (BusyIndicator.IsBusy)
+            {
                 return;
+            }
 
             using (BusyIndicator.EncapsulateActiveJobDescription(this, "Loading items"))
             {

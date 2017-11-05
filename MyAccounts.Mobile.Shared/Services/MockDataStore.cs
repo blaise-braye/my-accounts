@@ -2,26 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MyAccounts.Classification.MobileUi.Models;
+using MyAccounts.Mobile.Shared.Models;
+using MyAccounts.Mobile.Shared.Services;
 
-[assembly:Xamarin.Forms.Dependency(typeof(MyAccounts.Classification.MobileUi.Services.MockDataStore))]
-namespace MyAccounts.Classification.MobileUi.Services
+[assembly:Xamarin.Forms.Dependency(typeof(MockDataStore))]
+namespace MyAccounts.Mobile.Shared.Services
 {
     public class MockDataStore : IDataStore<Item>
     {
-        readonly List<Item> _items;
+        private readonly List<Item> _items;
 
         public MockDataStore()
         {
             _items = new List<Item>();
             var mockItems = new List<Item>
             {
-                new Item { Id = Guid.NewGuid().ToString(), Text = "First item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Second item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fourth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fifth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description="This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "First item", Description = "This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Second item", Description = "This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description = "This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Fourth item", Description = "This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Fifth item", Description = "This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description = "This is an item description." },
             };
 
             foreach (var item in mockItems)
