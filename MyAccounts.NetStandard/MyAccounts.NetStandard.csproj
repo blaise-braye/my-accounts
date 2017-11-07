@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageTargetFallback>portable-net45+win8+wp8+wpa81</PackageTargetFallback>
+    <AssetTargetFallback>portable-net45+win8+wp8+wpa81</AssetTargetFallback>
     <CodeAnalysisRuleSet>..\AlteredMinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
