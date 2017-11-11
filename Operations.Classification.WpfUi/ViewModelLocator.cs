@@ -14,7 +14,6 @@
 
 using AutoMapper;
 using GalaSoft.MvvmLight.Ioc;
-using Microsoft.Practices.ServiceLocation;
 using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.Managers.Accounts;
@@ -62,8 +61,6 @@ namespace Operations.Classification.WpfUi
                         .ForAllOtherMembers(m => m.Ignore());
                 });
 
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
             ////if (ViewModelBase.IsInDesignModeStatic)
             ////{
             ////    // Create design time view services and models
@@ -78,7 +75,7 @@ namespace Operations.Classification.WpfUi
             SimpleIoc.Default.Register<MainViewModel>();
         }
 
-        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public MainViewModel Main => SimpleIoc.Default.GetInstance<MainViewModel>();
 
         public static void Cleanup()
         {
