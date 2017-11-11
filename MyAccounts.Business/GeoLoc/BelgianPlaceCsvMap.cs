@@ -2,7 +2,7 @@ using CsvHelper.Configuration;
 
 namespace MyAccounts.Business.GeoLoc
 {
-    public sealed class BelgianPlaceCsvMap : CsvClassMap<BelgianPlace>
+    public sealed class BelgianPlaceCsvMap : ClassMap<BelgianPlace>
     {
         public BelgianPlaceCsvMap()
         {

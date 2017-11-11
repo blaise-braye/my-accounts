@@ -54,7 +54,7 @@
     <PackageReference Include="QifApi" Version="1.1.0-beta1" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
-    <PackageReference Include="System.IO.Abstractions" Version="2.1.0.171" />
+    <PackageReference Include="System.IO.Abstractions" Version="2.1.0.174" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

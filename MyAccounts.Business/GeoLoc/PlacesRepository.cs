@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CsvHelper;
-using CsvHelper.Configuration;
 using log4net;
 using MyAccounts.Business.Properties;
 using Newtonsoft.Json;
@@ -33,7 +32,7 @@ namespace MyAccounts.Business.GeoLoc
         public List<BelgianPlace> GetBelgianPlaces()
         {
             List<BelgianPlace> belgianPlaces;
-            var config = new CsvConfiguration();
+            var config = new CsvHelper.Configuration.Configuration();
             config.RegisterClassMap<BelgianPlaceCsvMap>();
 
             StringReader sr = null;

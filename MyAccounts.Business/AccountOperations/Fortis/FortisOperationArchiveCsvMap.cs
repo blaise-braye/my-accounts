@@ -3,13 +3,14 @@ using MyAccounts.Business.AccountOperations.Contracts;
 
 namespace MyAccounts.Business.AccountOperations.Fortis
 {
-    public sealed class FortisOperationArchiveCsvMap : CsvClassMap<FortisOperation>
+    public sealed class FortisOperationArchiveCsvMap : ClassMap<FortisOperation>
     {
         public FortisOperationArchiveCsvMap()
         {
             Map(m => m.Reference).Name("ANNEE + REFERENCE");
-            Map(m => m.ExecutionDate).Name("DATE DE L'EXECUTION").TypeConverterOption("dd/MM/yyyy");
-            Map(m => m.ValueDate).Name("DATE VALEUR").TypeConverterOption("dd/MM/yyyy");
+            Map(m => m.ExecutionDate).Name("DATE DE L'EXECUTION").TypeConverterOption.Format("dd/MM/yyyy");
+            Map(m => m.ExecutionDate).Name("DATE DE L'EXECUTION").TypeConverterOption.Format("dd/MM/yyyy");
+            Map(m => m.ValueDate).Name("DATE VALEUR").TypeConverterOption.Format("dd/MM/yyyy");
             Map(m => m.Amount).Name("MONTANT");
             Map(m => m.Currency).Name("DEVISE DU COMPTE");
             Map(m => m.CounterpartyOfTheTransaction).Name("CONTREPARTIE DE L'OPERATION");
