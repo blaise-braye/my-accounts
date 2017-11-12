@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAccounts.Tests", "MyAccou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAccounts.Tests.Gmc", "MyAccounts.Tests.Gmc\MyAccounts.Tests.Gmc.csproj", "{ADBF2E50-9BE8-4EC0-9A9C-375B0960DD73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAccounts.Mobile.Shared", "MyAccounts.Mobile.Shared\MyAccounts.Mobile.Shared.csproj", "{358E7E28-1E5D-42F4-831A-CA5C86B6C199}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAccounts.Mobile.Shared", "MyAccounts.Mobile.Shared\MyAccounts.Mobile.Shared.csproj", "{358E7E28-1E5D-42F4-831A-CA5C86B6C199}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,7 +124,6 @@ Global
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Debug|x86.Build.0 = Debug|Any CPU
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Debug|x86.Deploy.0 = Debug|Any CPU
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Release|iPhone.ActiveCfg = Release|Any CPU
 		{19409700-6E7A-40A1-9E9F-82BD19098DEC}.Release|iPhone.Build.0 = Release|Any CPU
