@@ -12,6 +12,7 @@
     <PackageReference Include="AutoFixture.NUnit3" Version="3.51.0" />
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
     <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="Moq" Version="4.7.145" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NUnit" Version="3.9.0" />
