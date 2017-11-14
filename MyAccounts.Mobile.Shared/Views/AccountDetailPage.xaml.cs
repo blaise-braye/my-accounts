@@ -13,17 +13,17 @@ namespace MyAccounts.Mobile.Shared.Views
 
             if (ViewModelBase.IsInDesignModeStatic)
             {
-                var item = new Item
+                var item = new Account
                 {
-                    Text = "Item 1",
-                    Description = "This is an item description."
+                    Name = "Item 1",
+                    Summary = "This is an item description."
                 };
 
-                BindingContext = new AccountDetailViewModel(item);
+                BindingContext = new AccountDetailPageViewModel(item);
             }            
         }
 
-        public AccountDetailPage(AccountDetailViewModel viewModel) 
+        public AccountDetailPage(AccountDetailPageViewModel viewModel) 
             : this()
         {
             BindingContext = viewModel;

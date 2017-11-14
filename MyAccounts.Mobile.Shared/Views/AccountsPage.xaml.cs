@@ -12,7 +12,7 @@ namespace MyAccounts.Mobile.Shared.Views
             InitializeComponent();
         }
 
-        private AccountsViewModel ViewModel => BindingContext as AccountsViewModel;
+        private AccountsPageViewModel ViewModel => BindingContext as AccountsPageViewModel;
 
         protected override void OnAppearing()
         {
@@ -26,13 +26,13 @@ namespace MyAccounts.Mobile.Shared.Views
 
         private async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
         {
-            var item = args.SelectedItem as Item;
+            var item = args.SelectedItem as Account;
             if (item == null)
             {
                 return;
             }
 
-            await Navigation.PushAsync(new AccountDetailPage(new AccountDetailViewModel(item)));
+            await Navigation.PushAsync(new AccountDetailPage(new AccountDetailPageViewModel(item)));
 
             // Manually deselect item
             ItemsListView.SelectedItem = null;

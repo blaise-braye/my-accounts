@@ -21,15 +21,15 @@ namespace MyAccounts.Mobile.Shared
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
-            SimpleIoc.Default.Register<AccountsViewModel>();
-            SimpleIoc.Default.Register<AboutViewModel>();
+            SimpleIoc.Default.Register<AccountsPageViewModel>();
+            SimpleIoc.Default.Register<AboutPageViewModel>();
         }
 
-        public AccountsViewModel AccountsPage => SimpleIoc.Default.GetInstance<AccountsViewModel>();
+        public AccountsPageViewModel AccountsPage => SimpleIoc.Default.GetInstance<AccountsPageViewModel>();
 
-        public AboutViewModel AboutPage => SimpleIoc.Default.GetInstance<AboutViewModel>();
+        public AboutPageViewModel AboutPage => SimpleIoc.Default.GetInstance<AboutPageViewModel>();
 
-        public AccountDetailViewModel ItemDetailsPage => null;
+        public AccountDetailPageViewModel ItemDetailsPage => null;
 
         public static void Cleanup()
         {

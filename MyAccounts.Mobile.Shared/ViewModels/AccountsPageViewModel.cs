@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using MyAccounts.Mobile.Shared.Models;
@@ -9,26 +10,26 @@ using Xamarin.Forms;
 
 namespace MyAccounts.Mobile.Shared.ViewModels
 {
-    public class AccountsViewModel : ViewModelBase
+    public class AccountsPageViewModel : ViewModelBase
     {
         private string _title;
 
-        public AccountsViewModel()
+        public AccountsPageViewModel()
         {
-            Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            Title = "Accounts";
+            Items = new ObservableCollection<Account>();
             LoadItemsCommand = new AsyncCommand(ExecuteLoadItemsCommand);
             
-            MessagingCenter.Subscribe<NewAccountPage, Item>(this, "AddItem", async (obj, item) =>
+            MessagingCenter.Subscribe<NewAccountPage, Account>(this, "AddItem", async (obj, item) =>
             {
                 Items.Add(item);
                 await DataStore.AddItemAsync(item);
             });
         }
         
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
+        public IDataStore<Account, Guid> DataStore => DependencyService.Get<IDataStore<Account, Guid>>() ?? new MockDataStore();
 
-        public ObservableCollection<Item> Items { get; set; }
+        public ObservableCollection<Account> Items { get; set; }
 
         public IAsyncCommand LoadItemsCommand { get; }
         
@@ -40,14 +41,14 @@ namespace MyAccounts.Mobile.Shared.ViewModels
 
         public BusyIndicatorViewModel BusyIndicator { get; } = new BusyIndicatorViewModel();
 
-        public async Task ExecuteLoadItemsCommand()
+        private async Task ExecuteLoadItemsCommand()
         {
             if (BusyIndicator.IsBusy)
             {
                 return;
             }
 
-            using (BusyIndicator.EncapsulateActiveJobDescription(this, "Loading items"))
+            using (BusyIndicator.EncapsulateActiveJobDescription(this, "Loading accounts"))
             {
                 Items.Clear();
                 var items = await DataStore.GetItemsAsync(true);

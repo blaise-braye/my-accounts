@@ -6,15 +6,15 @@ using Xamarin.Forms;
 
 namespace MyAccounts.Mobile.Shared.ViewModels
 {
-    public class AboutViewModel : ViewModelBase
+    public class AboutPageViewModel : ViewModelBase
     {
         private string _title;
 
-        public AboutViewModel()
+        public AboutPageViewModel()
         {
             Title = "About";
 
-            OpenWebCommand = new RelayCommand(() => Device.OpenUri(new Uri("https://xamarin.com/platform")));
+            OpenWebCommand = new RelayCommand(() => Device.OpenUri(new Uri("https://datadigest.com")));
         }
         
         public string Title

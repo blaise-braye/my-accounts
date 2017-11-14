@@ -3,16 +3,16 @@ using System.Threading.Tasks;
 
 namespace MyAccounts.Mobile.Shared.Services
 {
-    public interface IDataStore<T>
+    public interface IDataStore<TEntity, in TKey>
     {
-        Task<bool> AddItemAsync(T item);
+        Task<bool> AddItemAsync(TEntity item);
 
-        Task<bool> UpdateItemAsync(T item);
+        Task<bool> UpdateItemAsync(TEntity item);
 
-        Task<bool> DeleteItemAsync(string id);
+        Task<bool> DeleteItemAsync(TKey key);
 
-        Task<T> GetItemAsync(string id);
+        Task<TEntity> GetItemAsync(TKey key);
 
-        Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
+        Task<IEnumerable<TEntity>> GetItemsAsync(bool forceRefresh = false);
     }
 }

@@ -3,14 +3,14 @@ using MyAccounts.Mobile.Shared.Models;
 
 namespace MyAccounts.Mobile.Shared.ViewModels
 {
-    public class AccountDetailViewModel : ViewModelBase
+    public class AccountDetailPageViewModel : ViewModelBase
     {
         private string _title;
 
-        public AccountDetailViewModel(Item item = null)
+        public AccountDetailPageViewModel(Account account = null)
         {
-            Title = item?.Text;
-            Item = item;
+            Title = account?.Name;
+            Account = account;
         }
         
         public string Title
@@ -19,6 +19,6 @@ namespace MyAccounts.Mobile.Shared.ViewModels
             set { Set(() => Title, ref _title, value); }
         }
 
-        public Item Item { get; }
+        public Account Account { get; }
     }
 }

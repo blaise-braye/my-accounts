@@ -5,7 +5,7 @@
              Title="{Binding Title}"
              BindingContext="{Binding Source={StaticResource Locator}, Path=ItemDetailsPage}">
 	<StackLayout Spacing="20" Padding="15">
-		<Label Text="{Binding Item.Text}" FontSize="Medium"/>
-        <Label Text="{Binding Item.Description}" FontSize="Small"/>
+		<Label Text="{Binding Account.Name}" FontSize="Medium"/>
+        <Label Text="{Binding Account.Summary}" FontSize="Small"/>
     </StackLayout>
 </ContentPage>

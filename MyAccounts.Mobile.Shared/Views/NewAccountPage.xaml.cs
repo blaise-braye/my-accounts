@@ -10,20 +10,20 @@ namespace MyAccounts.Mobile.Shared.Views
         {
             InitializeComponent();
 
-            Item = new Item
+            Account = new Account
             {
-                Text = "Item name",
-                Description = "This is an item description."
+                Name = "Item name",
+                Summary = "This is an item description."
             };
 
             BindingContext = this;
         }
 
-        public Item Item { get; set; }
+        public Account Account { get; set; }
 
         private async void Save_Clicked(object sender, EventArgs e)
         {
-            MessagingCenter.Send(this, "AddItem", Item);
+            MessagingCenter.Send(this, "AddItem", Account);
             await Navigation.PopToRootAsync();
         }
     }
