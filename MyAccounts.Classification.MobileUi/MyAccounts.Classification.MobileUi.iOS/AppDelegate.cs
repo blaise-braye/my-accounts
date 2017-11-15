@@ -1,18 +1,17 @@
-﻿
-using Foundation;
-using UIKit;
-
-namespace MyAccounts.Classification.MobileUi.iOS
+﻿namespace MyAccounts.Classification.MobileUi.iOS
 {
-	[Register("AppDelegate")]
-	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
-	{
-		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-		{
-			global::Xamarin.Forms.Forms.Init();
-			LoadApplication(new Mobile.Shared.App());
+    using Foundation;
+    using UIKit;
 
-			return base.FinishedLaunching(app, options);
-		}
-	}
+    [Register("AppDelegate")]
+    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+    {
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        {
+            global::Xamarin.Forms.Forms.Init();
+            this.LoadApplication(new Mobile.Shared.App());
+
+            return base.FinishedLaunching(app, options);
+        }
+    }
 }
