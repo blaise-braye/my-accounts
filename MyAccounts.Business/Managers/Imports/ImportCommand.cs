@@ -40,5 +40,7 @@ namespace MyAccounts.Business.Managers.Imports
         public string Encoding { get; set; }
 
         public string Culture { get; set; }
+
+        public string DecimalSeparator { get; set; }
     }
 }

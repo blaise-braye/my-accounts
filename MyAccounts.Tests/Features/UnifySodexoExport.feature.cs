@@ -9,12 +9,12 @@
 //  </auto-generated>
 // ------------------------------------------------------------------------------
 #region Designer generated code
-
-using TechTalk.SpecFlow;
-
 #pragma warning disable
 namespace MyAccounts.Tests.Features
 {
+    using TechTalk.SpecFlow;
+    
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.2.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
@@ -66,38 +66,59 @@ namespace MyAccounts.Tests.Features
             testRunner.CollectScenarioErrors();
         }
         
+        public virtual void FeatureBackground()
+        {
+#line 6
+#line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Key",
+                        "Value"});
+            table1.AddRow(new string[] {
+                        "Culture",
+                        "be-fr"});
+            table1.AddRow(new string[] {
+                        "DecimalSeparator",
+                        "."});
+#line 7
+    testRunner.Given("I am working with operations coming from a file having the following structure me" +
+                    "tadata", ((string)(null)), table1, "Given ");
+#line hidden
+        }
+        
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("parse \'BankTransfert\'")]
         public virtual void ParseBankTransfert()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'BankTransfert\'", ((string[])(null)));
-#line 6
+#line 12
 this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
 #line hidden
-#line 7
+#line 13
  testRunner.Given("I have read the following sodexo operations", "Date;Affilié;Amount\r\n02-03-2017;\"Versement de 19 eLunch Pass d\'une valeur de 1.1 " +
                     "€ de SELLIGENT\";\"+ 1.1 €\"\r\n02-02-2017;\"Versement de 21 eLunch Pass d\'une valeur " +
                     "de 1.1 € de SELLIGENT\";\"+ 1.1 €\"", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 14
+#line 20
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "OperationId",
                         "ThirdParty",
                         "PatternName",
                         "Communication"});
-            table1.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "20170302-IN",
                         "SELLIGENT",
                         "BankTransfert",
                         "Versement de 19 eLunch Pass d\'une valeur de 1.1 €"});
-            table1.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "20170202-IN",
                         "SELLIGENT",
                         "BankTransfert",
                         "Versement de 21 eLunch Pass d\'une valeur de 1.1 €"});
-#line 16
- testRunner.Then("the operations data is", ((string)(null)), table1, "Then ");
+#line 22
+ testRunner.Then("the operations data is", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -107,33 +128,35 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ParseCartPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("parse \'CartPayment\'", ((string[])(null)));
-#line 21
+#line 27
 this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
 #line hidden
-#line 22
+#line 28
 testRunner.Given("I have read the following sodexo operations", "Date;Affilié;Amount\r\n24-02-2017;\"Dépense CARREFOUR EXPRESS ETTERBEEK BRUXELLES (T" +
                     "ransaction 128260098)\";\"- 11.11 €\"\r\n23-02-2017;\"Dépense DELHAIZE LE LION / DE LE" +
                     "EUW LIEGE (Transaction 128074107)\";\"- 11.11 €\"", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 29
+#line 35
  testRunner.When("I unify and transform the read operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "OperationId",
                         "ThirdParty",
                         "City",
                         "PatternName"});
-            table2.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "20170224-128260098",
                         "CARREFOUR EXPRESS ETTERBEEK",
                         "BRUXELLES",
                         "CartPayment"});
-            table2.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "20170223-128074107",
                         "DELHAIZE LE LION / DE LEEUW",
                         "LIEGE",
                         "CartPayment"});
-#line 31
-    testRunner.Then("the operations data is", ((string)(null)), table2, "Then ");
+#line 37
+    testRunner.Then("the operations data is", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

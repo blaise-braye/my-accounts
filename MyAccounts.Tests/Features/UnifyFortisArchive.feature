@@ -9,6 +9,12 @@ Feature: Unify Fortis Operations Archive details
 # could multiple patterns match in certain circonstances?
 # what about generating knowledge from patterns, there must be some deterministic way to find some of them
 
+Background: all the test below have been run under the following conditions
+    Given I am working with operations coming from a file having the following structure metadata
+    | Key              | Value |
+    | Culture          | be-fr |
+    | DecimalSeparator | ,     |
+
 Scenario: parse 'PermanentOrder'
 	Given I have read the following fortis operations from archive files
 	| Reference | Detail                                                                                                                                                                                                                                  |

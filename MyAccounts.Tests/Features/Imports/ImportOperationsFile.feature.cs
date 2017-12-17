@@ -9,12 +9,12 @@
 //  </auto-generated>
 // ------------------------------------------------------------------------------
 #region Designer generated code
-
-using TechTalk.SpecFlow;
-
 #pragma warning disable
-namespace MyAccounts.Tests.Features
+namespace MyAccounts.Tests.Features.Imports
 {
+    using TechTalk.SpecFlow;
+    
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.2.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
@@ -90,13 +90,16 @@ this.ScenarioSetup(scenarioInfo);
             table1.AddRow(new string[] {
                         "Encoding",
                         "UTF-8"});
+            table1.AddRow(new string[] {
+                        "DecimalSeparator",
+                        ","});
 #line 16
  testRunner.When("I import the operations file with following parameters", ((string)(null)), table1, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "OperationId",
                         "ExecutionDate"});
-#line 21
+#line 22
  testRunner.Then("the imported operation data is", ((string)(null)), table2, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -105,9 +108,9 @@ this.ScenarioSetup(scenarioInfo);
             table3.AddRow(new string[] {
                         "Encoding",
                         "windows-1252"});
-#line 25
+#line 26
  testRunner.When("I change the last import command such that", ((string)(null)), table3, "When ");
-#line 29
+#line 30
  testRunner.And("I replay the entire reflog of operations", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -116,7 +119,7 @@ this.ScenarioSetup(scenarioInfo);
             table4.AddRow(new string[] {
                         "2017-0049",
                         "2017-02-04"});
-#line 31
+#line 32
  testRunner.Then("the imported operation data is", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();

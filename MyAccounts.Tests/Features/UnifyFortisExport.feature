@@ -2,6 +2,12 @@
 Feature: Unify Fortis Operations Export details
 	In order to classify my personal operations,
 	I want a more structure operation detail for my fortis transaction exports
+    
+Background: all the test below have been run under the following conditions
+    Given I am working with operations coming from a file having the following structure metadata
+    | Key              | Value |
+    | Culture          | be-fr |
+    | DecimalSeparator | ,     |
 
 Scenario: parse fortis amounts
 	Given I have read the following fortis operations from export files
@@ -15,6 +21,23 @@ Scenario: parse fortis amounts
 	| OperationId | Income | Outcome |
 	| VE1         | 0.01   | 0       |
 	| VE2         | 0      | 0.01    |
+    
+Scenario: parse fortis amounts dot case
+    Given I am working with operations coming from a file having the following structure metadata
+    | Key              | Value |
+    | Culture          | be-fr |
+    | DecimalSeparator | .     |
+	Given I have read the following fortis operations from export files
+	| Reference | Amount |
+    | VE3       | 0.01   |
+	| VE4       | -0.01  |
+
+	When I unify and transform the read operations
+
+	Then the operations data is
+	| OperationId | Income | Outcome |
+    | VE3         | 0.01   | 0       |
+	| VE4         | 0      | 0.01    |
 
 Scenario: parse 'BankTransfert'
 	Given I have read the following fortis operations from export files

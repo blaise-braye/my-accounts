@@ -6,18 +6,14 @@ namespace MyAccounts.Business.AccountOperations.Sodexo
 {
     public class SodexoToUnifiedAccountOperationMapper : AccountToUnifiedOperationMapperBase<SodexoOperation>
     {
-        public override UnifiedAccountOperation Map(SodexoOperation operation)
+        public override UnifiedAccountOperation Map(SodexoOperation operation, CultureInfo culture)
         {
             var rawAmount = operation.Amount.Replace(" ", string.Empty);
-
-            var culture = CultureInfo.GetCultureInfo("fr-BE");
-            var numberformat = (NumberFormatInfo)culture.NumberFormat.Clone();
-            numberformat.CurrencyDecimalSeparator = ".";
-
+            
             var amount = decimal.Parse(
                 rawAmount,
                 NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint | NumberStyles.AllowCurrencySymbol,
-                numberformat);
+                culture);
 
             decimal income = 0, outcome = 0;
             if (amount < 0)

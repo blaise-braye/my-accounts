@@ -124,23 +124,33 @@
     <Compile Include="Features\Accounts\WhenGettingTheAccounts.cs" />
     <Compile Include="Features\Accounts\WhenSearchingAccount.cs" />
     <Compile Include="Features\Filters\MultiSelectFilterTests.cs" />
-    <Compile Include="Features\ImportOperationsFile.feature.cs">
+    <Compile Include="Features\Imports\ImportOperationsFile.feature.cs">
       <DependentUpon>ImportOperationsFile.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Features\ParseAndUnifyOperations.feature.cs">
       <DependentUpon>ParseAndUnifyOperations.feature</DependentUpon>
     </Compile>
     <Compile Include="Features\ReadFortisExport.feature.cs">
       <DependentUpon>ReadFortisExport.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Features\UnifyFortisArchive.feature.cs">
       <DependentUpon>UnifyFortisArchive.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Features\UnifyFortisExport.feature.cs">
       <DependentUpon>UnifyFortisExport.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Features\UnifySodexoExport.feature.cs">
       <DependentUpon>UnifySodexoExport.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Features\When_I_serialize_operations_to_csv_fie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -152,7 +162,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Features\ImportOperationsFile.feature">
+    <None Include="Features\Imports\ImportOperationsFile.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ImportOperationsFile.feature.cs</LastGenOutput>
     </None>

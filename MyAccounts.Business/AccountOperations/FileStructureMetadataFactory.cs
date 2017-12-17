@@ -13,6 +13,7 @@ namespace MyAccounts.Business.AccountOperations
                 var defaultConfig = CsvAccountOperationManager.DefaultCsvConfigurations[sourceKind];
                 metadata.Encoding = defaultConfig.Encoding.WebName;
                 metadata.Culture = defaultConfig.CultureInfo.Name;
+                metadata.DecimalSeparator = defaultConfig.CultureInfo.NumberFormat.CurrencyDecimalSeparator;
             }
 
             return metadata;

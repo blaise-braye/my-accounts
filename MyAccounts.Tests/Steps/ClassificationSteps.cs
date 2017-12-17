@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ using MyAccounts.Business.AccountOperations.Fortis;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.GererMesComptes;
 using MyAccounts.Business.Managers.Imports;
+using MyAccounts.NetStandard.Input;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -38,6 +40,18 @@ namespace MyAccounts.Tests.Steps
         public async Task GivenIHaveAnEmptyOperationsRepository()
         {
             await _context.OperationsManager.Clear(_context.AccountId);
+        }
+
+        [Given(@"I am working with operations written with the following '(.*)' cluture")]
+        public void GivenIAmWorkingWithOperationsWrittenWithTheFollowingCluture(string culture)
+        {
+            _context.CurrentOperationsCulture = CultureInfo.GetCultureInfo(culture);
+        }
+        
+        [Given(@"I am working with operations coming from a file having the following structure metadata")]
+        public void GivenIAmWorkingWithOperationsComingFromAFileHavingTheFollowingStructureMetadata(Table table)
+        {
+            _context.CurrentOperationsFileStructureMetadata = table.CreateInstance<FileStructureMetadata>();
         }
 
         [When(@"I import the operations file with following parameters")]
@@ -80,12 +94,15 @@ namespace MyAccounts.Tests.Steps
         [Given(@"I have read the following fortis operations from export files")]
         public void GivenIHaveReadTheFollowingFortisOperationsFromExportFiles(Table table)
         {
-            _context.ReadOperations = table.CreateSet<FortisOperation>().Select(
-                o =>
-                {
-                    o.SourceKind = SourceKind.FortisCsvExport;
-                    return o;
-                }).Cast<AccountOperationBase>().ToList();
+            using (new TemporaryCulture(_context.CurrentOperationsFileStructureMetadata.GetCultureInfo()))
+            {
+                _context.ReadOperations = table.CreateSet<FortisOperation>().Select(
+                    o =>
+                    {
+                        o.SourceKind = SourceKind.FortisCsvExport;
+                        return o;
+                    }).Cast<AccountOperationBase>().ToList();
+            }
         }
 
         [Given(@"I have read the following sodexo operations")]
@@ -162,14 +179,15 @@ namespace MyAccounts.Tests.Steps
                 var fmd = FileStructureMetadataFactory.CreateDefault(sourceKind);
                 using (var fs = File.OpenRead(s))
                 {
-                    return _context.CsvAccountOperationManager.ReadAsync(fs, fmd);
+                    return _context.CsvAccountOperationManager.ReadAsync(fs, fmd)
+                        .ContinueWith(t =>
+                            t.Result.Select(op => _context.Transformer.Apply(op, fmd.GetCultureInfo())));
                 }
             });
 
             var operationsBatches = await Task.WhenAll(readTasks);
             _context.UnifiedOperations =
                 operationsBatches.SelectMany(operations => operations)
-                    .Select(operation => _context.Transformer.Apply(operation))
                     .SortByOperationIdDesc()
                     .ToList();
         }
@@ -210,7 +228,7 @@ namespace MyAccounts.Tests.Steps
         [When(@"I unify and transform the read operations")]
         public void WhenIUnifyAndTransformTheReadOperations()
         {
-            _context.UnifiedOperations = _context.ReadOperations.Select(o => _context.Transformer.Apply(o)).SortByOperationIdDesc().ToList();
+            _context.UnifiedOperations = _context.ReadOperations.Select(o => _context.Transformer.Apply(o, _context.CurrentOperationsFileStructureMetadata.GetCultureInfo())).SortByOperationIdDesc().ToList();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Abstractions.TestingHelpers;
 using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Contracts;
@@ -53,5 +54,9 @@ namespace MyAccounts.Tests.Steps
         public List<UnifiedAccountOperation> UnifiedOperations { get; set; }
 
         public byte[] AnOperationsFile { get; set; }
+
+        public CultureInfo CurrentOperationsCulture { get; set; }
+
+        public FileStructureMetadata CurrentOperationsFileStructureMetadata { get; set; }
     }
 }

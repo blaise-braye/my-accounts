@@ -157,7 +157,7 @@ namespace MyAccounts.Business.Managers.Operations
                 .Select(
                     operation =>
                     {
-                        var unifiedOperation = _transactionPatternMapper.Apply(operation);
+                        var unifiedOperation = _transactionPatternMapper.Apply(operation, fileStructureMetadata.GetCultureInfo());
 
                         if (string.IsNullOrEmpty(unifiedOperation.OperationId))
                         {
@@ -201,6 +201,11 @@ namespace MyAccounts.Business.Managers.Operations
             if (!string.IsNullOrEmpty(importCommand.Encoding))
             {
                 md.Encoding = importCommand.Encoding;
+            }
+
+            if (!string.IsNullOrEmpty(importCommand.DecimalSeparator))
+            {
+                md.DecimalSeparator = importCommand.DecimalSeparator;
             }
 
             return md;

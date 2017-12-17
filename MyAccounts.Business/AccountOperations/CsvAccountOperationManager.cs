@@ -116,7 +116,7 @@ namespace MyAccounts.Business.AccountOperations
         private static Configuration CreateCsvConfiguration(FileStructureMetadata fileStructureMetadata)
         {
             var csvConfiguration = CreateDefaultCsvConfiguration(fileStructureMetadata.SourceKind);
-            csvConfiguration.CultureInfo = CultureInfo.GetCultureInfo(fileStructureMetadata.Culture);
+            csvConfiguration.CultureInfo = fileStructureMetadata.GetCultureInfo();
             csvConfiguration.Encoding = Encoding.GetEncoding(fileStructureMetadata.Encoding);
             return csvConfiguration;
         }
@@ -129,7 +129,7 @@ namespace MyAccounts.Business.AccountOperations
                 case SourceKind.FortisCsvArchive:
                     configuration.RegisterClassMap<FortisOperationArchiveCsvMap>();
                     configuration.Encoding = Encoding.UTF8;
-                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.CultureInfo = FileStructureMetadata.GetCultureInfo("fr-BE", ",");
                     configuration.Delimiter = ";";
                     configuration.QuoteAllFields = true;
                     configuration.TrimOptions = TrimOptions.InsideQuotes;
@@ -140,7 +140,7 @@ namespace MyAccounts.Business.AccountOperations
                     configuration.RegisterClassMap<FortisOperationExportCsvMap>();
                     var ansiEncoding = Encoding.GetEncoding(1252);
                     configuration.Encoding = ansiEncoding;
-                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.CultureInfo = FileStructureMetadata.GetCultureInfo("fr-BE", ".");
                     configuration.Delimiter = ";";
                     configuration.QuoteAllFields = false;
                     configuration.TrimOptions = TrimOptions.Trim;
@@ -150,7 +150,7 @@ namespace MyAccounts.Business.AccountOperations
                 case SourceKind.SodexoCsvExport:
                     configuration.RegisterClassMap<SodexoOperationCsvMap>();
                     configuration.Encoding = Encoding.UTF8;
-                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.CultureInfo = FileStructureMetadata.GetCultureInfo("fr-BE", ".");
                     configuration.Delimiter = ";";
                     configuration.QuoteAllFields = true;
                     configuration.TrimOptions = TrimOptions.InsideQuotes;
@@ -160,7 +160,7 @@ namespace MyAccounts.Business.AccountOperations
                 case SourceKind.InternalCsvExport:
                     configuration.RegisterClassMap<UnifiedAccountOperationCsvMap>();
                     configuration.Encoding = Encoding.UTF8;
-                    configuration.CultureInfo = CultureInfo.GetCultureInfo("fr-BE");
+                    configuration.CultureInfo = FileStructureMetadata.GetCultureInfo("fr-BE", ".");
                     configuration.Delimiter = ";";
                     configuration.QuoteAllFields = true;
                     configuration.TrimOptions = TrimOptions.InsideQuotes;
@@ -173,7 +173,7 @@ namespace MyAccounts.Business.AccountOperations
 
             return configuration;
         }
-
+        
         private static void LogMissingFieldFound(string[] headerNames, int index, IReadingContext context)
         {
             if (headerNames != null && headerNames.Length != 0)

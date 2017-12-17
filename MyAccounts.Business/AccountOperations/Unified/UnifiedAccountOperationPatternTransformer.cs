@@ -37,9 +37,9 @@ namespace MyAccounts.Business.AccountOperations.Unified
             _placeInfoResolver = placeInfoResolver;
         }
 
-        public UnifiedAccountOperation Apply(AccountOperationBase operation)
+        public UnifiedAccountOperation Apply(AccountOperationBase operation, CultureInfo culture)
         {
-            var unified = _mapper.Map(operation);
+            var unified = _mapper.Map(operation, culture);
             return Apply(operation, unified);
         }
 

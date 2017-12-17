@@ -14,9 +14,10 @@ Scenario: custom encoding is taken into account during import
 	And I have an empty operations repository
 	
 	When I import the operations file with following parameters
-    | Key        | Value           |
-    | SourceKind | FortisCsvExport |
-    | Encoding   | UTF-8           |
+    | Key              | Value           |
+    | SourceKind       | FortisCsvExport |
+    | Encoding         | UTF-8           |
+    | DecimalSeparator | ,               |
     
 	Then the imported operation data is
     # no operation has been imported because operation id could no be read from the file, because of the accents (e.g. 'Numéro de séquence')

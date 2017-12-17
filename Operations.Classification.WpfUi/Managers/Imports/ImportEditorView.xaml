@@ -6,7 +6,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.ImportsManagerViewModel.Editor}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="400" d:DesignWidth="300">
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
@@ -67,6 +67,12 @@
                       controls:TextBoxHelper.Watermark="enter the culture"
                       SelectedValuePath="Name" DisplayMemberPath="DisplayName"
                       SelectedValue="{Binding Culture}" />
+
+
+            <Label Target="{Binding ElementName=TxtDecimalSeparator}" Content="Decimal separator :" />
+            <TextBox Name="TxtDecimalSeparator"
+                     controls:TextBoxHelper.Watermark="enter the decimal separator"
+                     Text="{Binding DecimalSeparator}" />
         </StackPanel>
     </DockPanel>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.AccountOperations.Fortis;
 using MyAccounts.Business.AccountOperations.Sodexo;
@@ -19,10 +20,10 @@ namespace MyAccounts.Business.AccountOperations
             _mappers[SourceKind.InternalCsvExport] = new UnifiedAccountOperationToUnifiedAccountOperationMapper();
         }
 
-        public UnifiedAccountOperation Map(AccountOperationBase operationBase)
+        public UnifiedAccountOperation Map(AccountOperationBase operationBase, CultureInfo culture)
         {
             var mapper = _mappers[operationBase.SourceKind];
-            var unifiedOperation = mapper.Map(operationBase);
+            var unifiedOperation = mapper.Map(operationBase, culture);
             return unifiedOperation;
         }
     }

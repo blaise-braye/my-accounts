@@ -2,6 +2,12 @@
 Feature: Unify Sodexo Export details
 	In order to classify my personal operations,
 	I want a more structured operation detail for my sodexo transaction exports
+    
+Background: all the test below have been run under the following conditions
+    Given I am working with operations coming from a file having the following structure metadata
+    | Key              | Value |
+    | Culture          | be-fr |
+    | DecimalSeparator | .     |
 
 Scenario: parse 'BankTransfert'
 	Given I have read the following sodexo operations

@@ -201,7 +201,8 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             var importCommands = await _importManager.Get(_currentAccount.Id, importId);
             foreach (var importCommand in importCommands)
             {
-                Editor.FillFromDirtyProperties(importCommand);
+                var toSkip = Editor.IsSourceNameReadOnly ? new[] { nameof(ImportCommand.SourceName) } : new string[0];
+                Editor.FillFromDirtyProperties(importCommand, toSkip);
             }
 
             var saved = await _importManager.Replace(importCommands);

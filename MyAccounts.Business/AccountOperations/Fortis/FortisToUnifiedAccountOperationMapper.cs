@@ -6,7 +6,7 @@ namespace MyAccounts.Business.AccountOperations.Fortis
 {
     public class FortisToUnifiedAccountOperationMapper : AccountToUnifiedOperationMapperBase<FortisOperation>
     {
-        public override UnifiedAccountOperation Map(FortisOperation fortisOperation)
+        public override UnifiedAccountOperation Map(FortisOperation fortisOperation, CultureInfo culture)
         {
             decimal income = 0, outcome = 0;
             if (!string.IsNullOrEmpty(fortisOperation.Amount))
@@ -14,7 +14,7 @@ namespace MyAccounts.Business.AccountOperations.Fortis
                 var amount = decimal.Parse(
                     fortisOperation.Amount,
                     NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint,
-                    CultureInfo.GetCultureInfo("fr-BE"));
+                    culture);
 
                 if (amount < 0)
                 {

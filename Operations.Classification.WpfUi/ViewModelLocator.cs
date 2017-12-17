@@ -13,6 +13,7 @@
 */
 
 using AutoMapper;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using MyAccounts.Business.AccountOperations;
 using MyAccounts.Business.AccountOperations.Unified;
@@ -36,36 +37,39 @@ namespace Operations.Classification.WpfUi
     {
         public ViewModelLocator()
         {
-            Mapper.Initialize(
-                cfg =>
-                {
-                    cfg.CreateMap<AccountViewModel, AccountEntity>();
-                    cfg.CreateMap<AccountEntity, AccountViewModel>();
-                    cfg.CreateMap<BasicTransaction, BasicTransactionModel>();
-                    cfg.CreateMap<UnifiedAccountOperation, TransactionModel>();
-                    cfg.CreateMap<UnifiedAccountOperation, DashboardOperationModel>()
-                        .ForMember(s => s.Account, opt => opt.Ignore());
-                    cfg.CreateMap<Properties.Settings, SettingsModel>();
-                    cfg.CreateMap<SettingsModel, Properties.Settings>();
+            if (!ViewModelBase.IsInDesignModeStatic)
+            {
+                Mapper.Initialize(
+                    cfg =>
+                    {
+                        cfg.CreateMap<AccountViewModel, AccountEntity>();
+                        cfg.CreateMap<AccountEntity, AccountViewModel>();
+                        cfg.CreateMap<BasicTransaction, BasicTransactionModel>();
+                        cfg.CreateMap<UnifiedAccountOperation, TransactionModel>();
+                        cfg.CreateMap<UnifiedAccountOperation, DashboardOperationModel>()
+                            .ForMember(s => s.Account, opt => opt.Ignore());
+                        cfg.CreateMap<Properties.Settings, SettingsModel>();
+                        cfg.CreateMap<SettingsModel, Properties.Settings>();
 
-                    cfg.CreateMap<ImportCommand, ImportCommandGridModel>();
-                    cfg.CreateMap<ImportCommand, ImportEditorViewModel>();
-                    cfg.CreateMap<FileStructureMetadata, ImportEditorViewModel>();
+                        cfg.CreateMap<ImportCommand, ImportCommandGridModel>();
+                        cfg.CreateMap<ImportCommand, ImportEditorViewModel>();
+                        cfg.CreateMap<FileStructureMetadata, ImportEditorViewModel>();
 
-                    cfg.CreateMap<ImportExecutionImpact, ImportCommandGridModel>()
-                        .ForMember(s => s.LastExecution, opt => opt.MapFrom(s => s.CreationDate))
-                        .ForMember(s => s.Success, opt => opt.MapFrom(s => s.Success))
-                        .ForMember(s => s.NewOperations, opt => opt.MapFrom(s => s.NewOperations))
-                        .ForMember(s => s.AlreadyKnown, opt => opt.MapFrom(s => s.AlreadyKnown))
-                        .ForMember(s => s.NotCompliant, opt => opt.MapFrom(s => s.NotCompliant))
-                        .ForAllOtherMembers(m => m.Ignore());
-                });
+                        cfg.CreateMap<ImportExecutionImpact, ImportCommandGridModel>()
+                            .ForMember(s => s.LastExecution, opt => opt.MapFrom(s => s.CreationDate))
+                            .ForMember(s => s.Success, opt => opt.MapFrom(s => s.Success))
+                            .ForMember(s => s.NewOperations, opt => opt.MapFrom(s => s.NewOperations))
+                            .ForMember(s => s.AlreadyKnown, opt => opt.MapFrom(s => s.AlreadyKnown))
+                            .ForMember(s => s.NotCompliant, opt => opt.MapFrom(s => s.NotCompliant))
+                            .ForAllOtherMembers(m => m.Ignore());
+                    });
+            }
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
+            //if (ViewModelBase.IsInDesignModeStatic)
+            //{
+            //    // Create design time view services and models
+            //    SimpleIoc.Default.Register<IDataService, DesignDataService>();
+            //}
             ////else
             ////{
             ////    // Create run time view services and models

@@ -56,13 +56,14 @@ namespace Operations.Classification.WpfUi.Technical.ChangeTracking
             }
         }
 
-        public void FillFromDirtyProperties(object targetData)
+        public void FillFromDirtyProperties(object targetData, params string[] toSkip)
         {
             var targetProperties = targetData
                 .GetType()
                 .GetProperties()
                 .Where(p => p.CanWrite)
                 .Select(p => p.Name)
+                .Where(p => !toSkip.Contains(p))
                 .ToDictionary(p => p);
             var targetPropertyAccessor = ObjectAccessor.Create(targetData);
             foreach (var propertyState in _entries.Values.Where(e => !e.IsMixed && e.IsDirty))

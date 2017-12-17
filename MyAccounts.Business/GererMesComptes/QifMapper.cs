@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using MyAccounts.Business.AccountOperations.Unified;
+using MyAccounts.NetStandard.Input;
 using QifApi;
 using QifApi.Config;
 using QifApi.Transactions;
@@ -137,31 +137,6 @@ namespace MyAccounts.Business.GererMesComptes
         private static string SetAcronymsToUpperCase(string labelLowerInvarient)
         {
             return labelLowerInvarient.Replace("p2p", "P2P");
-        }
-
-        public class TemporaryCulture : IDisposable
-        {
-            private readonly CultureInfo _previousCulture;
-
-            public TemporaryCulture(CultureInfo cultureInfo)
-            {
-                _previousCulture = CultureInfo.CurrentCulture;
-                CultureInfo.CurrentCulture = cultureInfo;
-            }
-
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    CultureInfo.CurrentCulture = _previousCulture;
-                }
-            }
         }
     }
 }

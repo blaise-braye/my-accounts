@@ -25,6 +25,8 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         private string _culture;
 
+        private string _decimalSeparator;
+
         public Guid[] Ids { get; set; }
 
         public bool IsNew => Ids == null;
@@ -70,6 +72,12 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             get => _culture;
             set => Set(() => Culture, ref _culture, value);
         }
+        
+        public string DecimalSeparator
+        {
+            get => _decimalSeparator;
+            set { Set(() => DecimalSeparator, ref _decimalSeparator, value); }
+        }
 
         public ICommand CommitCommand { get; set; }
 
@@ -81,9 +89,9 @@ namespace Operations.Classification.WpfUi.Managers.Imports
 
         public IEnumerable<CultureInfo> Cultures => CultureInfo.GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures).ToList();
 
-        public void FillFromDirtyProperties(object targetData)
+        public void FillFromDirtyProperties(object targetData, params string[] toSkip)
         {
-            _dataTracker.FillFromDirtyProperties(targetData);
+            _dataTracker.FillFromDirtyProperties(targetData, toSkip);
         }
 
         public void UpdateMixedState(object sourceData, params string[] toSkip)
