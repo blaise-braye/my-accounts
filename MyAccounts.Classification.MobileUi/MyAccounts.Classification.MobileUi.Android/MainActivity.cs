@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using OxyPlot;
 
 namespace MyAccounts.Classification.MobileUi.Droid
 {
@@ -14,9 +15,13 @@ namespace MyAccounts.Classification.MobileUi.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
+            var pv = new OxyPlot.Xamarin.Forms.PlotView()
+            {
+                Model = new PlotModel()
+            };
 
             Xamarin.Forms.Forms.Init(this, bundle);
-
+            OxyPlot.Xamarin.Forms.Platform.Android.PlotViewRenderer.Init();
             LoadApplication(new Mobile.Shared.App());
         }
 
