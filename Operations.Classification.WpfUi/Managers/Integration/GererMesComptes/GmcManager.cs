@@ -7,11 +7,13 @@ using GalaSoft.MvvmLight.Command;
 using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.Business.GererMesComptes;
 using MyAccounts.Business.IO.Caching;
+using MyAccounts.Business.Managers.Operations;
 using MyAccounts.NetStandard.Collections;
 using MyAccounts.NetStandard.Input;
 using MyAccounts.NetStandard.Projections;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
 using QifApi.Transactions;
+using OperationsRepository = MyAccounts.Business.GererMesComptes.OperationsRepository;
 
 namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 {
@@ -19,6 +21,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
     {
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly ICacheProvider _cacheProvider;
+        private readonly IOperationsManager _operationsManager;
 
         private Dictionary<Guid, TransactionDeltaSet> _loadedDeltas;
         private AccountViewModel _currentAccount;
@@ -26,17 +29,19 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
         private List<BasicTransactionModel> _currentAccountBasicTransactions;
         private TransactionDeltaSet _transactionDelta;
 
-        public GmcManager(BusyIndicatorViewModel busyIndicator, ICacheProvider cacheProvider)
+        public GmcManager(BusyIndicatorViewModel busyIndicator, ICacheProvider cacheProvider, IOperationsManager operationsManager)
         {
             _busyIndicator = busyIndicator;
             _cacheProvider = cacheProvider;
+            _operationsManager = operationsManager;
             Filter = new GmcManagerFilterViewModel();
             Filter.FilterInvalidated += OnFilterInvalidated;
             LocalTransactions = new SmartCollection<BasicTransactionModel>();
             RemoteTransactions = new SmartCollection<BasicTransactionModel>();
 
             RefreshRemoteKnowledgeCommand = new AsyncCommand(ComputeDeltaWithRemote);
-            SynchronizeCommand = new AsyncCommand(Synchronize);
+            PushChangesToGmcCommand = new AsyncCommand(PushChangesToGmc);
+            PullCategoriesFromGmcCommand = new AsyncCommand(PullCategoriesFromGmc);
             ClearCurrentAccountCacheAndResetCommand = new AsyncCommand(ClearCurrentAccountCacheAndReset);
 
             MessengerInstance.Register<AccountViewModel>(this, OnAccountViewModelReceived);
@@ -46,7 +51,9 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
 
         public AsyncCommand RefreshRemoteKnowledgeCommand { get; }
 
-        public IAsyncCommand SynchronizeCommand { get; }
+        public IAsyncCommand PushChangesToGmcCommand { get; }
+
+        public IAsyncCommand PullCategoriesFromGmcCommand { get; }
 
         public RelayCommand ClearCurrentAccountCacheAndResetCommand { get; }
 
@@ -209,7 +216,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
             RefreshTransactions();
         }
 
-        private async Task Synchronize()
+        private async Task PullCategoriesFromGmc()
         {
             var delta = TransactionDelta;
             if (!delta.LastDeltaDate.HasValue || delta.LastDeltaDate.Value < DateTime.Now.AddMinutes(-10))
@@ -217,7 +224,59 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 delta = await ComputeDeltaWithRemote();
             }
 
-            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Synchronizing data"))
+            bool result;
+
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Pulling operations categories from gmc"))
+            {
+                var uaoToUpdate = new List<UnifiedAccountOperation>();
+                var uaoByOperationId = CurrentAccount.Operations.ToDictionary(op => op.OperationId);
+                foreach (var transactionDelta in delta.ToList())
+                {
+                    if (transactionDelta.Action == DeltaAction.Add 
+                        || transactionDelta.Action == DeltaAction.UpdateMemo
+                        || transactionDelta.Action == DeltaAction.Nothing)
+                    {
+                        var operationId = transactionDelta.Source.Number;
+                        var uao = uaoByOperationId[operationId];
+
+                        var hasChanges = false;
+                        var remoteCategory = transactionDelta.Target.Category;
+                        var uselessPartIdx = remoteCategory.LastIndexOf("/", StringComparison.InvariantCulture);
+
+                        var cleanedRemoteCategory = remoteCategory.Substring(0, uselessPartIdx).Trim('.', ' ');
+
+                        if (uao.Category != cleanedRemoteCategory)
+                        {
+                            hasChanges = true;
+                            transactionDelta.Source.Category = cleanedRemoteCategory;
+                            uao.Category = cleanedRemoteCategory;
+                        }
+                        
+                        if (hasChanges)
+                        {
+                            uaoToUpdate.Add(uao);
+                        }
+                    }
+                }
+                
+                result = await _operationsManager.Update(CurrentAccount.Id, uaoToUpdate);
+            }
+
+            if (result)
+            {
+                RefreshTransactions();
+            }
+        }
+
+        private async Task PushChangesToGmc()
+        {
+            var delta = TransactionDelta;
+            if (!delta.LastDeltaDate.HasValue || delta.LastDeltaDate.Value < DateTime.Now.AddMinutes(-10))
+            {
+                delta = await ComputeDeltaWithRemote();
+            }
+
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Pushing new operations to gmc"))
             using (var client = new GererMesComptesClient())
             {
                 if (await client.Connect(Properties.Settings.Default.GmcUserName, Properties.Settings.Default.GmcPassword))

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using log4net;
+using MyAccounts.NetStandard.Logging;
 using Newtonsoft.Json;
 
 namespace MyAccounts.Business.IO.Caching
@@ -29,7 +30,7 @@ namespace MyAccounts.Business.IO.Caching
 
             if (!connected)
             {
-                _log.Debug($"Cache unavailable, computing value ({_cacheKey})");
+                _log.Verbose($"Cache unavailable, computing value ({_cacheKey})");
                 result = await valueLoader();
             }
             else
@@ -38,12 +39,12 @@ namespace MyAccounts.Business.IO.Caching
 
                 if (!keyExist)
                 {
-                    _log.Debug($"Cache value not found, computing value ({_cacheKey})");
+                    _log.Verbose($"Cache value not found, computing value ({_cacheKey})");
                     result = await valueLoader();
 
                     if (result != null && result.GetType() != _valueType)
                     {
-                        _log.Warn($"Won't cache computed value. Reason : invalid result type (expected : {_valueType}, actual {result.GetType()}");
+                        _log.Verbose($"Won't cache computed value. Reason : invalid result type (expected : {_valueType}, actual {result.GetType()}");
                     }
                     else
                     {
@@ -64,7 +65,7 @@ namespace MyAccounts.Business.IO.Caching
             var connected = Repository.IsConnected(_cacheKey);
             if (!connected)
             {
-                _log.Debug($"Cache unavailable, delete request ignored ({_cacheKey})");
+                _log.Verbose($"Cache unavailable, delete request ignored ({_cacheKey})");
                 return Task.FromResult(false);
             }
 
@@ -75,7 +76,7 @@ namespace MyAccounts.Business.IO.Caching
         {
             if (value != null && value.GetType() != _valueType)
             {
-                _log.Warn($"Won't cache value. Reason : invalid type (expected : {_valueType}, actual {value.GetType()}");
+                _log.Verbose($"Won't cache value. Reason : invalid type (expected : {_valueType}, actual {value.GetType()}");
                 return false;
             }
 
@@ -83,7 +84,7 @@ namespace MyAccounts.Business.IO.Caching
             bool isSet;
             if (connected)
             {
-                _log.Debug($"Storing cache value ({_cacheKey})");
+                _log.Verbose($"Storing cache value ({_cacheKey})");
                 var rawResult = JsonConvert.SerializeObject(value);
 
                 isSet = await Repository.StringSetAsync(_cacheKey, rawResult);
@@ -94,7 +95,7 @@ namespace MyAccounts.Business.IO.Caching
             }
             else
             {
-                _log.Debug($"Cache unavailable, value won't be cached ({_cacheKey})");
+                _log.Verbose($"Cache unavailable, value won't be cached ({_cacheKey})");
                 isSet = false;
             }
 
@@ -108,13 +109,13 @@ namespace MyAccounts.Business.IO.Caching
 
             if (!connected)
             {
-                _log.Debug($"Cache unavailable, returning null value ({_cacheKey})");
+                _log.Verbose($"Cache unavailable, returning null value ({_cacheKey})");
             }
             else
             {
-                _log.Debug($"Fetching cache value ({_cacheKey})");
+                _log.Verbose($"Fetching cache value ({_cacheKey})");
                 var cachedRawResult = await Repository.StringGetAsync(_cacheKey);
-                _log.Debug($"Fetched cache value ({_cacheKey})");
+                _log.Verbose($"Fetched cache value ({_cacheKey})");
                 result = Deserialize(cachedRawResult);
             }
 

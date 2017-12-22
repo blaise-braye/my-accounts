@@ -17,5 +17,7 @@ namespace MyAccounts.Business.Managers.Operations
         void Clear(Guid accountId);
 
         Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData);
+
+        Task<bool> Update(Guid accountId, IList<UnifiedAccountOperation> operations);
     }
 }

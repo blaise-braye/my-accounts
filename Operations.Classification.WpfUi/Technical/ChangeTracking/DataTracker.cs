@@ -45,6 +45,18 @@ namespace Operations.Classification.WpfUi.Technical.ChangeTracking
             }
         }
 
+        public void ResetOriginalValues()
+        {
+            foreach (var propertyState in _entries.Values)
+            {
+                if (propertyState.IsDirty && !propertyState.IsMixed)
+                {
+                    _propertyAccessor[propertyState.Name] = propertyState.OriginalValue;
+                    propertyState.Value = propertyState.OriginalValue;
+                }
+            }
+        }
+
         public void ResetSnapshot()
         {
             _entries.Clear();

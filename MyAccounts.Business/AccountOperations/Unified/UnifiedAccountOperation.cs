@@ -9,7 +9,7 @@ namespace MyAccounts.Business.AccountOperations.Unified
         {
             UId = Guid.NewGuid();
         }
-
+        
         public Guid UId { get; set; }
 
         public string Account { get; set; }
@@ -39,6 +39,8 @@ namespace MyAccounts.Business.AccountOperations.Unified
         public string City { get; set; }
 
         public string Mandat { get; set; }
+
+        public string Category { get; set; }
 
         public string ThirdPartyOperationRef { get; set; }
 

@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using MyAccounts.Business.Collections;
+using MyAccounts.NetStandard.Collections;
 
 namespace MyAccounts.Business.GeoLoc
 {

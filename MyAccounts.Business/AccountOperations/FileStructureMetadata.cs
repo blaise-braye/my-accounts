@@ -1,6 +1,5 @@
 using System.Globalization;
 using MyAccounts.Business.AccountOperations.Contracts;
-using MyAccounts.Business.GererMesComptes;
 
 namespace MyAccounts.Business.AccountOperations
 {

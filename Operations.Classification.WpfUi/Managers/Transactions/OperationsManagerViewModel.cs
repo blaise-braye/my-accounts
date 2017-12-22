@@ -49,6 +49,7 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
             BeginExportCommand = new RelayCommand(BeginExport);
             BeginDataQualityAnalysisCommand = new AsyncCommand(BeginDataQualityAnalysis);
             CommitExportCommand = new AsyncCommand(CommitExport);
+            CommitPendingChangesCommand = new AsyncCommand(SaveChanges);
             _sfd = new SaveFileDialog
             {
                 OverwritePrompt = true,
@@ -70,6 +71,8 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
         }
 
         public AsyncCommand CommitExportCommand { get; }
+
+        public AsyncCommand CommitPendingChangesCommand { get; }
 
         public TextFilter NoteFilter { get; }
 
@@ -207,6 +210,39 @@ namespace Operations.Classification.WpfUi.Managers.Transactions
                 .To<TransactionModel>()
                 .OrderByDescending(t => t.OperationId)
                 .ToList();
+        }
+
+        private async Task<bool> SaveChanges()
+        {
+            var result = false;
+
+            var dirtyOperations = Operations.Where(op => op.IsDirty()).ToList();
+            if (dirtyOperations.Any())
+            {
+                using (_busyIndicator.EncapsulateActiveJobDescription(this, "Saving changes"))
+                {
+                    var uaoByOperationId = GetFilteredAccountOperations().ToDictionary(op => op.OperationId);
+                    var uaoToUpdate = new List<UnifiedAccountOperation>();
+
+                    foreach (var dirtyOperation in dirtyOperations)
+                    {
+                        var uao = uaoByOperationId[dirtyOperation.OperationId];
+                        dirtyOperation.FillFromDirtyProperties(uao);
+                        uaoToUpdate.Add(uao);
+                    }
+
+                    result = await _operationsManager.Update(CurrentAccount.Id, uaoToUpdate);
+                    if (result)
+                    {
+                        foreach (var dirtyOperation in dirtyOperations)
+                        {
+                            dirtyOperation.StopTracking();
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         private IEnumerable<UnifiedAccountOperation> GetFilteredAccountOperations()

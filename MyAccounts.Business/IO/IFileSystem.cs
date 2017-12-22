@@ -71,7 +71,7 @@ namespace MyAccounts.Business.IO
 
         public bool FileExists(string path)
         {
-            return System.IO.File.Exists(path);
+            return File.Exists(path);
         }
 
         public DateTime FileGetCreationTime(string path)

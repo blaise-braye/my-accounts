@@ -90,7 +90,8 @@ namespace MyAccounts.Business.GererMesComptes
                     Number = operation.OperationId,
                     Amount = operation.Income - operation.Outcome,
                     Date = operation.ValueDate,
-                    Memo = BuildLabel(operation)
+                    Memo = BuildLabel(operation),
+                    Category = operation.Category
                 };
 
                 yield return basicTransaction;

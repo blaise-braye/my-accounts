@@ -27,6 +27,16 @@ namespace MyAccounts.Tests.Steps
             _context = context;
         }
 
+        [Given(@"I have an operations file with the current structure metadata")]
+        public void GivenIHaveAnOperationsFileWithTheCurrentStructureMetadata(string content)
+        {
+            var encoding = _context.CurrentOperationsFileStructureMetadata.Encoding;
+            var utf8Bytes = Encoding.UTF8.GetBytes(content);
+            var encodingBytes = Encoding.Convert(
+                Encoding.UTF8, Encoding.GetEncoding(encoding), utf8Bytes);
+            _context.AnOperationsFile = encodingBytes;
+        }
+        
         [Given(@"I have an operations file with the following '(.*)' content")]
         public void GivenIHaveAnOperationsFileWithTheFollowingContent(string encoding, string content)
         {
@@ -54,17 +64,24 @@ namespace MyAccounts.Tests.Steps
             _context.CurrentOperationsFileStructureMetadata = table.CreateInstance<FileStructureMetadata>();
         }
 
-        [When(@"I import the operations file with following parameters")]
-        public async Task WhenIImportTheOperationsFileWithFollowingParameters(Table table)
+        [Given(@"I import the operations file with the current structure metadata")]
+        [When(@"I import the operations file with the current structure metadata")]
+        public async Task WhenIImportTheOperationsFileWithTheCurrentStructureMetadata()
         {
-            var importCommand = new ImportCommand(_context.AccountId);
-            table.FillInstance(importCommand);
+            var sm = _context.CurrentOperationsFileStructureMetadata;
+            var importCommand = new ImportCommand(_context.AccountId)
+            {
+                Culture = sm.Culture,
+                DecimalSeparator = sm.DecimalSeparator,
+                Encoding = sm.Encoding,
+                SourceKind = sm.SourceKind
+            };
             
             await _context.ImportManager.RequestImportExecution(
                 importCommand,
                 new MemoryStream(_context.AnOperationsFile));
         }
-
+        
         [When(@"I change the last import command such that")]
         public async Task WhenIChangeTheLastImportCommandSuchThat(Table table)
         {

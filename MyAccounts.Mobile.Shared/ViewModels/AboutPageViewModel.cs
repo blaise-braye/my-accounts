@@ -15,9 +15,6 @@ namespace MyAccounts.Mobile.Shared.ViewModels
 
         public AboutPageViewModel()
         {
-            new OxyPlot.PlotModel { };
-            IPlotView view;
-            
             Title = "About";
             PieModel = CreatePieChart();
             AreaModel = CreateAreaChart();

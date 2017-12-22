@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MyAccounts.Business.Collections
+namespace MyAccounts.NetStandard.Collections
 {
     public class Trie
     {

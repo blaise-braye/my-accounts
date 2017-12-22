@@ -11,9 +11,9 @@ namespace Operations.Classification.WpfUi.Technical.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var flag = false;
-            if (value is bool)
+            if (value is bool b)
             {
-                flag = (bool)value;
+                flag = b;
             }
 
             return flag ? Visibility.Collapsed : Visibility.Visible;

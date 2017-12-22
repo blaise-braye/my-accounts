@@ -6,7 +6,6 @@
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:accounts="clr-namespace:Operations.Classification.WpfUi.Managers.Accounts"
                       xmlns:transactions="clr-namespace:Operations.Classification.WpfUi.Managers.Transactions"
-                      xmlns:gererMesComptes="clr-namespace:Operations.Classification.WpfUi.Managers.Integration.GererMesComptes"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       xmlns:command="http://www.galasoft.ch/mvvmlight"
                       xmlns:settings="clr-namespace:Operations.Classification.WpfUi.Managers.Settings"

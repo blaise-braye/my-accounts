@@ -101,6 +101,7 @@
     <Compile Include="Managers\Reports\Models\OperationSetContainer.cs" />
     <Compile Include="Managers\Reports\DashboardOperationModel.cs" />
     <Compile Include="Managers\Reports\PlotModelRangeSelectionHandler.cs" />
+    <Compile Include="Managers\Transactions\TransactionModel.Editable.cs" />
     <Compile Include="Technical\ChangeTracking\DataTracker.cs" />
     <Compile Include="Technical\ChangeTracking\PropertyState.cs" />
     <Compile Include="Technical\Converters\DefaultAmountValueConverter.cs" />

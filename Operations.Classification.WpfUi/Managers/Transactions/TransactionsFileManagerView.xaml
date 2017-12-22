@@ -12,6 +12,15 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                    ToolTip="Commit pending changes"
+                    Command="{Binding CommitPendingChangesCommand}">
+                <Rectangle Width="22" Height="22">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_save}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
                     ToolTip="Export filtered operations"
                     Command="{Binding BeginExportCommand}">
                 <Rectangle Width="24" Height="24">

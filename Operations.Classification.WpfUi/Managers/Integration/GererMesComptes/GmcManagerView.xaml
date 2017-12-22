@@ -20,7 +20,17 @@
                 </Rectangle>
             </Button>
             <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
-                    Command="{Binding SynchronizeCommand}">
+                    ToolTip="Pull categories from Gmc"
+                    Command="{Binding PullCategoriesFromGmcCommand}">
+                <Rectangle Width="24" Height="24">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_cloud_download}" Stretch="Fill" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Button>
+            <Button Padding="12" Style="{DynamicResource MetroCircleButtonStyle}"
+                    ToolTip="Push new operations from Gmc"
+                    Command="{Binding PushChangesToGmcCommand}">
                 <Rectangle Width="24" Height="24">
                     <Rectangle.Fill>
                         <VisualBrush Visual="{StaticResource appbar_cloud_upload}" Stretch="Fill" />

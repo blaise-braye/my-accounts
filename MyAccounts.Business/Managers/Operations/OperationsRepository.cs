@@ -37,6 +37,35 @@ namespace MyAccounts.Business.Managers.Operations
             return _csvAccountOperationManager.WriteAsync(target, operations);
         }
 
+        public async Task<bool> Update(Guid accountId, IList<UnifiedAccountOperation> operations)
+        {
+            var result = true;
+            var files = GetFilePaths(accountId, operations);
+            var existingOperations = await ReadOperations(files);
+            var operationsById = existingOperations.ToDictionary(op => op.UId);
+            foreach (var operation in operations)
+            {
+                if (!operationsById.ContainsKey(operation.UId))
+                {
+                    result = false;
+                    _logger.Error($"Operation with Uid {operation.UId} does not exist");
+                }
+                else
+                {
+                    operationsById[operation.UId] = operation;
+                }
+            }
+
+            if (result)
+            {
+                var operationsToWrite = operationsById.Values;
+
+                result = await WriteOperations(accountId, operationsToWrite);
+            }
+            
+            return result;
+        }
+        
         public async Task<List<UnifiedAccountOperation>> GetAll(Guid accountId)
         {
             var result = new List<UnifiedAccountOperation>();
@@ -44,27 +73,9 @@ namespace MyAccounts.Business.Managers.Operations
             var operationsDirectory = GetAccountOperationsDirectory(accountId);
             if (Fs.DirectoryExists(operationsDirectory))
             {
-                var files = Fs.DirectoryGetFiles(operationsDirectory, "*.json").OrderBy(f => Fs.FileGetCreationTime(f));
-                foreach (var file in files)
-                {
-                    Stream stream = null;
-                    try
-                    {
-                        stream = Fs.FileOpenRead(file);
-                        using (var sr = new StreamReader(stream))
-                        {
-                            stream = null;
-                            var jsonOperations = await sr.ReadToEndAsync();
-                            var operations =
-                                JsonConvert.DeserializeObject<List<UnifiedAccountOperation>>(jsonOperations);
-                            operations.ForEach(o => result.Insert(0, o));
-                        }
-                    }
-                    catch
-                    {
-                        stream?.Dispose();
-                    }
-                }
+                var files = Fs.DirectoryGetFiles(operationsDirectory, "*.json").ToArray();
+                var operations = await ReadOperations(files);
+                result.AddRange(operations.OrderByDescending(op => op.ValueDate));
             }
 
             return result;
@@ -85,9 +96,6 @@ namespace MyAccounts.Business.Managers.Operations
 
             try
             {
-                var operationsDirectory = GetAccountOperationsDirectory(importCommand.AccountId);
-                await _workingCopy.CreateFolderIfDoesNotExistsYet(operationsDirectory);
-
                 var filteredData = await ReadAndFilterNewImportDataOnly(importCommand, sourceData);
                 result.NotCompliant = filteredData.NotCompliant;
                 result.AlreadyKnown = filteredData.AlreadyKnown;
@@ -95,36 +103,15 @@ namespace MyAccounts.Business.Managers.Operations
 
                 if (filteredData.NewOperations.Length > 0)
                 {
-                    var newOperations = filteredData.NewOperations
-                        .OrderByDescending(t => t.OperationId, StringComparer.OrdinalIgnoreCase)
-                        .ToList();
+                    // Merge new operations with existing operations
+                    var newOperations = filteredData.NewOperations;
+                    var operationsFiles = GetFilePaths(importCommand.AccountId, newOperations);
 
-                    var jsonOperations = JsonConvert.SerializeObject(newOperations, Formatting.Indented);
+                    var existingOperations = await ReadOperations(operationsFiles);
+                    
+                    var operationsToWrite = existingOperations.Concat(newOperations).ToList();
 
-                    var filePrefixPath = Path.Combine(operationsDirectory, $"{filteredData.MaxDate:yyyy-MM-dd}");
-                    var filePath = $"{filePrefixPath}.json";
-
-                    var counter = 1;
-                    while (Fs.FileExists(filePath))
-                    {
-                        filePath = $"{filePrefixPath}.{counter}.json";
-                    }
-
-                    Stream stream = null;
-                    try
-                    {
-                        stream = Fs.FileCreate(filePath);
-                        using (var sw = new StreamWriter(stream))
-                        {
-                            stream = null;
-                            await sw.WriteAsync(jsonOperations);
-                        }
-                    }
-                    catch
-                    {
-                        stream?.Dispose();
-                        throw;
-                    }
+                    await WriteOperations(importCommand.AccountId, operationsToWrite);
                 }
             }
             catch (Exception exn)
@@ -134,6 +121,104 @@ namespace MyAccounts.Business.Managers.Operations
             }
 
             return result;
+        }
+
+        private string[] GetFilePaths(Guid accountId, IEnumerable<UnifiedAccountOperation> newOperations)
+        {
+            var operationsFiles = newOperations
+                .Select(t => GetFilePathByValueDate(accountId, t.ValueDate))
+                .Distinct()
+                .ToArray();
+            return operationsFiles;
+        }
+
+        private string GetFilePathByValueDate(Guid accountId, DateTime valueDate)
+        {
+            var operationsDirectory = GetAccountOperationsDirectory(accountId);
+
+            string operationFile = string.Empty;
+            
+            if (string.IsNullOrEmpty(operationFile))
+            {
+                operationFile = Path.Combine(operationsDirectory, $"{valueDate:yyyy-MM}.json");
+            }
+
+            return operationFile;
+        }
+        
+        private Task<List<UnifiedAccountOperation>> ReadOperations(params string[] files)
+        {
+            return Task.WhenAll(files.Select(async file =>
+            {
+                var result = new List<UnifiedAccountOperation>();
+                if (Fs.FileExists(file))
+                {
+                    Stream stream = null;
+                    try
+                    {
+                        stream = Fs.FileOpenRead(file);
+                        using (var sr = new StreamReader(stream))
+                        {
+                            stream = null;
+                            var jsonOperations = await sr.ReadToEndAsync();
+                            var operations =
+                                JsonConvert.DeserializeObject<List<UnifiedAccountOperation>>(jsonOperations);
+                            result.AddRange(operations);
+                        }
+                    }
+                    catch
+                    {
+                        stream?.Dispose();
+                    }
+                }
+
+                return result;
+            })).ContinueWith(task => task.Result.SelectMany(list => list).ToList());
+        }
+
+        /// <summary>
+        /// the written operations will override the operations of the related months
+        /// </summary>
+        /// <param name="accountId">account id</param>
+        /// <param name="operationsToWrite">operations to write</param>
+        /// <returns>A task</returns>
+        private async Task<bool> WriteOperations(Guid accountId, IEnumerable<UnifiedAccountOperation> operationsToWrite)
+        {
+            var operationsDirectory = GetAccountOperationsDirectory(accountId);
+            await _workingCopy.CreateFolderIfDoesNotExistsYet(operationsDirectory);
+
+            var operationsToTargetFile = operationsToWrite
+                .OrderByDescending(t => t.OperationId, StringComparer.OrdinalIgnoreCase)
+                .ToLookup(t => GetFilePathByValueDate(accountId, t.ValueDate));
+
+            var fileTasks = await Task.WhenAll(operationsToTargetFile.Select(async (fileAndOperations) =>
+            {
+                var file = fileAndOperations.Key;
+                var operations = fileAndOperations.ToList();
+
+                var jsonOperations = JsonConvert.SerializeObject(operations, Formatting.Indented);
+
+                Stream stream = null;
+                try
+                {
+                    stream = Fs.FileCreate(file);
+                    using (var sw = new StreamWriter(stream))
+                    {
+                        stream = null;
+                        await sw.WriteAsync(jsonOperations);
+                    }
+
+                    return true;
+                }
+                catch (Exception exn)
+                {
+                    stream?.Dispose();
+                    _logger.Error($"Failed to write operations to file {file}", exn);
+                    return false;
+                }
+            }));
+
+            return fileTasks.All(b => b);
         }
 
         private string GetAccountOperationsDirectory(Guid accountId)
@@ -146,8 +231,7 @@ namespace MyAccounts.Business.Managers.Operations
         {
             var knownOperations = await GetAll(importCommand.AccountId);
             var knownOperationsIds = new HashSet<string>(knownOperations.Select(o => o.OperationId));
-
-            var tmpLastDate = DateTime.MinValue;
+            
             FileStructureMetadata fileStructureMetadata = GetFileMetadata(importCommand);
 
             var operations = await _csvAccountOperationManager.ReadAsync(sourceData, fileStructureMetadata);
@@ -169,22 +253,12 @@ namespace MyAccounts.Business.Managers.Operations
                             result.AlreadyKnown++;
                             unifiedOperation = null;
                         }
-                        else if (unifiedOperation.ValueDate > tmpLastDate)
-                        {
-                            tmpLastDate = unifiedOperation.ValueDate;
-                        }
 
                         return unifiedOperation;
                     })
                 .Where(o => o != null)
                 .ToArray();
-
-            if (tmpLastDate == DateTime.MinValue)
-            {
-                tmpLastDate = DateTime.Today;
-            }
-
-            result.MaxDate = tmpLastDate;
+            
             result.NewOperations = operationsToImport;
             return result;
         }
@@ -213,8 +287,6 @@ namespace MyAccounts.Business.Managers.Operations
 
         private class ReadAndFilterNewImportDataOnlyResult
         {
-            public DateTime MaxDate { get; set; }
-
             public UnifiedAccountOperation[] NewOperations { get; set; }
 
             public int NotCompliant { get; set; }

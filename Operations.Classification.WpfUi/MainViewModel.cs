@@ -69,7 +69,7 @@ namespace Operations.Classification.WpfUi
             OperationsManagerViewModel = new OperationsManagerViewModel(BusyIndicator, operationsManager, importManager);
             AccountsManagerViewModel = new AccountsManagerViewModel(BusyIndicator, accountsManager, operationsManager, importManager);
             DashboardViewModel = new DashboardViewModel(BusyIndicator);
-            GmcManager = new GmcManager(BusyIndicator, App.CacheManager);
+            GmcManager = new GmcManager(BusyIndicator, App.CacheManager, operationsManager);
             _settingsManager = new SettingsManager(App.CacheManager);
 
             MessengerInstance.Register<Properties.Settings>(this, OnSettingsUpdated);

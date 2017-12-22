@@ -54,12 +54,14 @@ namespace MyAccounts.NetStandard.Collections.Filters
             {
                 if (FromDate.HasValue)
                 {
-                     filtered = filtered.Where(d => selector(d) >= FromDate.Value);
+                    var fDate = FromDate.Value;
+                     filtered = filtered.Where(d => selector(d) >= fDate);
                 }
 
                 if (ToDate.HasValue)
                 {
-                    filtered = filtered.Where(d => selector(d) <= ToDate.Value);
+                    var tDate = ToDate.Value;
+                    filtered = filtered.Where(d => selector(d) <= tDate);
                 }
             }
 

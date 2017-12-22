@@ -67,7 +67,7 @@ namespace Operations.Classification.WpfUi
 
             var root = hierarchy.Root;
             root.AddAppender(debugAppender);
-            root.Level = Level.All;
+            root.Level = Level.Debug;
 
             hierarchy.Configured = true;
         }

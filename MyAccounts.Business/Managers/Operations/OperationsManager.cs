@@ -22,6 +22,8 @@ namespace MyAccounts.Business.Managers.Operations
         Task Clear(Guid accountId);
 
         Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData);
+
+        Task<bool> Update(Guid accountId, IList<UnifiedAccountOperation> operations);
     }
 
     public class OperationsManager : IOperationsManager
@@ -125,6 +127,19 @@ namespace MyAccounts.Business.Managers.Operations
         {
             _operationsRepository.Clear(accountId);
             await GetCacheEntry(accountId).DeleteAsync();
+        }
+
+        public async Task<bool> Update(Guid accountId, IList<UnifiedAccountOperation> operations)
+        {
+            var result = await _operationsRepository.Update(accountId, operations);
+            if (result)
+            {
+                await GetCacheEntry(accountId).DeleteAsync();
+            }
+
+            _log.Debug($"Updated succeeded ? {result}. {operations.Count} operation(s) to save");
+
+            return result;
         }
 
         public async Task<ImportExecutionImpact> ExecuteImport(ImportCommand importCommand, Stream sourceData)
