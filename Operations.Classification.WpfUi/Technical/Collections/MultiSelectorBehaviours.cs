@@ -57,11 +57,8 @@ namespace Operations.Classification.WpfUi.Technical.Collections
                 Set_synchronizationManager(dependencyObject, null);
             }
 
-            IList list = e.NewValue as IList;
-            Selector selector = dependencyObject as Selector;
-
             // check that this property is an IList, and that it is being set on a ListBox
-            if (list != null && selector != null)
+            if (e.NewValue is IList && dependencyObject is Selector selector)
             {
                 SynchronizationManager synchronizer = Get_synchronizationManager(dependencyObject);
                 if (synchronizer == null)

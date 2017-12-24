@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace MyAccounts.NetStandard.Collections.Filters
 {
-    public class CompositeFilter : CompositeFilterBase, IFilter
+    public class CompositeFilter : CompositeFilterBase
     {
         private readonly IFilter[] _filters;
 

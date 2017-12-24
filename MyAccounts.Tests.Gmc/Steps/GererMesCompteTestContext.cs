@@ -10,8 +10,10 @@ using QifApi;
 
 namespace MyAccounts.Tests.Gmc.Steps
 {
-    public class GererMesCompteTestContext
+    public class GererMesCompteTestContext : IDisposable
     {
+        private bool _disposedValue; // To detect redundant calls
+
         public GererMesCompteTestContext(PostScenarioCleaner cleaner)
         {
             Cleaner = cleaner;
@@ -35,6 +37,24 @@ namespace MyAccounts.Tests.Gmc.Steps
         public RunImportResult LastQifImportResult { get; set; }
         
         public TransactionDeltaSet LastOperationsDelta { get; set; }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    GmcClient.Dispose();
+                }
+                
+                _disposedValue = true;
+            }
+        }
 
         public class LoggingHandler : DelegatingHandler
         {
