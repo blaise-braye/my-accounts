@@ -21,8 +21,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         private readonly List<PlotModelRangeSelectionHandler> _selectionHandlers;
 
         private PlotModel _dailyOperationsModel;
+        private PlotModel _monthlyOperationsModel;
 
-        private PlotModel _monthyOperationsModel;
         private IList<AccountViewModel> _accounts;
 
         private bool _display;
@@ -81,12 +81,12 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             set => Set(nameof(DailyOperationsModel), ref _dailyOperationsModel, value);
         }
 
-        public PlotModel MonthyOperationsModel
+        public PlotModel MonthlyOperationsModel
         {
-            get => _monthyOperationsModel;
-            private set => Set(nameof(MonthyOperationsModel), ref _monthyOperationsModel, value);
+            get => _monthlyOperationsModel;
+            private set => Set(nameof(MonthlyOperationsModel), ref _monthlyOperationsModel, value);
         }
-
+        
         public List<DashboardOperationModel> Operations
         {
             get => _operations;
@@ -104,10 +104,9 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         public void OnSettingsUpdated()
         {
             var dailyOperationsModel = DailyOperationsModel;
-            var monthyOperationsModel = MonthyOperationsModel;
-            
+            var monthyOperationsModel = MonthlyOperationsModel;
             DailyOperationsModel = null;
-            MonthyOperationsModel = null;
+            MonthlyOperationsModel = null;
 
             if (dailyOperationsModel != null)
             {
@@ -132,7 +131,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                     netRevenueSerie.LabelFormatString = GetNetRevenueLabelFormatString();
                 }
 
-                MonthyOperationsModel = monthyOperationsModel;
+                MonthlyOperationsModel = monthyOperationsModel;
             }
         }
 
@@ -154,8 +153,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             if (operations.Count > 0)
             {
                 var lastItem = operations[operations.Count - 1];
-                dateTimeAxis.Maximum = DateTimeAxis.ToDouble(lastItem.Day);
-                dateTimeAxis.Minimum = DateTimeAxis.ToDouble(lastItem.Day.AddMonths(-2));
+                dateTimeAxis.Maximum = DateTimeAxis.ToDouble(lastItem.Period);
+                dateTimeAxis.Minimum = DateTimeAxis.ToDouble(lastItem.Period.AddMonths(-2));
             }
 
             operationsModel.Axes.Add(dateTimeAxis);
@@ -182,15 +181,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             {
                 IntervalType = DateTimeIntervalType.Months
             };
-
-            if (operations.Count > 0)
-            {
-                var lastItem = operations[operations.Count - 1];
-                var maxDay = lastItem.Day.AddDays(15);
-                dateTimeAxis.Maximum = DateTimeAxis.ToDouble(maxDay);
-                dateTimeAxis.Minimum = DateTimeAxis.ToDouble(maxDay.AddMonths(-13));
-            }
-
+            
             operationsModel.Axes.Add(dateTimeAxis);
 
             var gridLines = new LinearAxis { Position = AxisPosition.Left, ExtraGridlines = new double[] { 0 }, ExtraGridlineStyle = LineStyle.Dot };
@@ -215,7 +206,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
             return operationsModel;
         }
-
+        
         private static string GetNetRevenueLabelFormatString()
         {
             if (!Properties.Settings.Default.HideAmounts)
@@ -262,7 +253,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             string trackerFormatString)
         {
             var series = CreateDataPointSeries<LinearBarSeries>(operations, title, dataFieldY, trackerFormatString);
-
+            
             series.FillColor = fillColor;
             series.BarWidth = 30;
 
@@ -277,7 +268,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 ItemsSource = operations,
                 TrackerFormatString = trackerFormatString,
                 Title = title,
-                DataFieldX = nameof(OperationSet.Day),
+                DataFieldX = nameof(OperationSet.Period),
                 DataFieldY = dataFieldY
             };
 
@@ -297,7 +288,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             {
                 await Task.Run(() =>
                 {
-                    var filteredAccounts = Filter.AccountsFilter.Apply(_accounts);
+                    var filteredAccounts = Filter.AccountsFilter.Apply(_accounts).ToList();
                     operationsetContainer = OperationSetContainer.Compute(filteredAccounts);
                 });
             }
@@ -309,8 +300,9 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             DailyOperationsModel = CreateDailyOperationsModel(operationsetContainer.DailyOperations);
             AddRangeSelectionHandler(DailyOperationsModel, false);
 
-            MonthyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
-            AddRangeSelectionHandler(MonthyOperationsModel, true);
+            MonthlyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
+            AddRangeSelectionHandler(MonthlyOperationsModel, true);
+            
             await RefreshFilteredOperations();
         }
 
@@ -354,7 +346,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         {
             var filteredOperationsVm = await Task.Run(() =>
             {
-                var filteredDailyOperationSets = Filter.DateRangeFilter.Apply(_operationsetContainer.DailyOperations, op => op.Day);
+                var filteredDailyOperationSets = Filter.DateRangeFilter.Apply(_operationsetContainer.DailyOperations, op => op.Period);
                 var filteterdOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
                 filteterdOperations = Filter.NoteFilter.Apply(filteterdOperations, o => o.Note);
                 filteterdOperations = Filter.DirectionFilter.Apply(filteterdOperations, o => o.Income, o => o.Outcome);

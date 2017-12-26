@@ -98,8 +98,12 @@
       <DependentUpon>DatshboardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Managers\Reports\DirectionFilter.cs" />
+    <Compile Include="Managers\Reports\Models\DateRange.cs" />
+    <Compile Include="Managers\Reports\Models\GroupedOperationSet.cs" />
     <Compile Include="Managers\Reports\Models\OperationSetContainer.cs" />
     <Compile Include="Managers\Reports\DashboardOperationModel.cs" />
+    <Compile Include="Managers\Reports\Models\OperationSetGroup.cs" />
+    <Compile Include="Managers\Reports\Models\RecurrenceFamily.cs" />
     <Compile Include="Managers\Reports\PlotModelRangeSelectionHandler.cs" />
     <Compile Include="Managers\Transactions\TransactionModel.Editable.cs" />
     <Compile Include="Technical\ChangeTracking\DataTracker.cs" />

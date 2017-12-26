@@ -14,104 +14,100 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
         public List<OperationSet> MonthlyOperations { get; private set; }
 
         public ReadOnlyDictionary<Guid, Guid> AccountIdByOperationUId { get; private set; }
-        
-        public static OperationSetContainer Compute(IEnumerable<AccountViewModel> selection)
-        {
-            var accountIdByOperationId = new Dictionary<Guid, Guid>();
-            List<OperationSet> mixedAccountOperationOperations = new List<OperationSet>();
-            foreach (var account in selection.Where(a => a.Operations?.Any() == true))
-            {
-                foreach (var operation in account.Operations)
-                {
-                    accountIdByOperationId.Add(operation.UId, account.Id);
-                }
 
-                var accountOperationsPerDay = ComputeOperationsPerDay(account.InitialBalance, account.Operations);
-                mixedAccountOperationOperations.AddRange(accountOperationsPerDay);
+        public OperationSetGroup DailyCategories { get; private set; }
+
+        public OperationSetGroup MonthlyCategories { get; private set; }
+
+        public static OperationSetContainer Compute(IList<AccountViewModel> accounts)
+        {
+            var accountIdByOperationId = accounts.Where(a => a.Operations?.Any() == true).SelectMany(a =>
+                    a.Operations.Select(o => new { AccountId = a.Id, OperationUid = o.UId }))
+                .ToDictionary(o => o.OperationUid, o => o.AccountId);
+
+            var alloperations = accounts
+                .Where(a => a.Operations?.Any() == true)
+                .SelectMany(a => a.Operations)
+                .OrderBy(o => o.ExecutionDate).ToList();
+            
+            var compute = new OperationSetContainer();
+            
+            if (alloperations.Any())
+            {
+                var range = new DateRange
+                {
+                    Max = alloperations[alloperations.Count - 1].ExecutionDate,
+                    Min = alloperations[0].ExecutionDate
+                };
+                
+                var initialBalance = accounts.Sum(a => a.InitialBalance);
+
+                var dailyOperations = AggregateOperations(initialBalance, range, RecurrenceFamily.Daily, alloperations);
+                var monthlyOperations = AggregateOperations(initialBalance, range, RecurrenceFamily.Monthly, alloperations);
+                var categoryDailyOperations = AggregateOperationsByCategory(range, RecurrenceFamily.Daily, alloperations);
+                var categoryMonthlyOperations = AggregateOperationsByCategory(range, RecurrenceFamily.Monthly, alloperations);
+
+                compute.AccountIdByOperationUId = new ReadOnlyDictionary<Guid, Guid>(accountIdByOperationId);
+                compute.DailyOperations = dailyOperations;
+                compute.MonthlyOperations = monthlyOperations;
+                compute.DailyCategories = new OperationSetGroup(categoryDailyOperations, range, RecurrenceFamily.Daily);
+                compute.MonthlyCategories = new OperationSetGroup(categoryMonthlyOperations, range, RecurrenceFamily.Monthly);
             }
             
-            var aggregattedDailyOperations = GroupDailyOperations(mixedAccountOperationOperations);
-            var aggregattedMonthlyOperations = ComputeMonthlyOperations(aggregattedDailyOperations);
-
-            return new OperationSetContainer
-            {
-                AccountIdByOperationUId = new ReadOnlyDictionary<Guid, Guid>(accountIdByOperationId),
-                DailyOperations = aggregattedDailyOperations,
-                MonthlyOperations = aggregattedMonthlyOperations
-            };
+            return compute;
         }
 
-        private static List<OperationSet> ComputeOperationsPerDay(decimal initialBalance, List<UnifiedAccountOperation> operations)
+        private static List<GroupedOperationSet> AggregateOperationsByCategory(DateRange range, RecurrenceFamily recurrence, IEnumerable<UnifiedAccountOperation> operations)
         {
-            operations = operations.OrderBy(o => o.ExecutionDate).ToList();
-
-            var seedBpd = new OperationSet(operations[0].ExecutionDate, initialBalance);
-
-            var result = new List<OperationSet> { seedBpd };
-
-            if (operations.Any())
+            var categoryGroups = operations.GroupBy(op => op.GetCategoryByLevel(0));
+            var result = categoryGroups.Select(grp => new GroupedOperationSet
             {
-                operations
-                    .Aggregate(
-                        seedBpd,
-                        (currentBpd, operation) =>
-                        {
-                            var operationDay = operation.ExecutionDate;
-
-                            while (currentBpd.Day < operationDay.AddDays(-1))
-                            {
-                                currentBpd = OperationSet.CreateForNextDay(currentBpd);
-                                result.Add(currentBpd);
-                            }
-
-                            OperationSet nextBpd;
-
-                            if (currentBpd.Day.Equals(operation.ExecutionDate))
-                            {
-                                nextBpd = currentBpd;
-                                currentBpd.Add(operation);
-                            }
-                            else
-                            {
-                                nextBpd = OperationSet.CreateForNextDay(currentBpd);
-                                nextBpd.Add(operation);
-                                result.Add(nextBpd);
-                            }
-
-                            return nextBpd;
-                        });
-            }
+                Key = grp.Key,
+                PeriodicOperations = AggregateOperations(0, range, recurrence, grp)
+            }).ToList();
 
             return result;
         }
-
-        private static List<OperationSet> GroupDailyOperations(List<OperationSet> operations)
-        {
-            var groupedByDay = operations.OrderBy(op => op.Day).GroupBy(op => op.Day);
-
-            var flattifiedDailyOperations = groupedByDay.Select(
-                grp =>
-                {
-                    var bpd = new OperationSet(grp.Key, grp.Sum(pd => pd.InitialBalance));
-                    var grpOperations = grp.SelectMany(p => p.Operations);
-                    bpd.AddRange(grpOperations);
-                    return bpd;
-                }).ToList();
-
-            return flattifiedDailyOperations;
-        }
-
-        private static List<OperationSet> ComputeMonthlyOperations(List<OperationSet> dailyOperations)
+        
+        private static List<OperationSet> AggregateOperations(
+            decimal initialBalance, 
+            DateRange range,
+            RecurrenceFamily recurrence,
+            IEnumerable<UnifiedAccountOperation> orderedOperations)
         {
             var result = new List<OperationSet>();
+            
+            var start = recurrence.GetPeriod(range.Min);
 
-            var groupedByMonth = dailyOperations.OrderBy(db => db.Day).GroupBy(db => new DateTime(db.Day.Year, db.Day.Month, 1));
-            foreach (var grp in groupedByMonth)
+            var currentBpd = new OperationSet(recurrence, start, initialBalance);
+            result.Add(currentBpd);
+
+            using (var operationEnumerator = orderedOperations.GetEnumerator())
             {
-                var initialBalance = grp.First().InitialBalance;
-                var operations = grp.SelectMany(b => b.Operations);
-                var osb = new OperationSet(grp.Key, initialBalance).AddRange(operations);
-                result.Add(osb);
+                while (operationEnumerator.MoveNext())
+                {
+                    var operation = operationEnumerator.Current;
+                    if (operation == null) continue;
+
+                    var operationPeriod = recurrence.GetPeriod(operation.ExecutionDate);
+
+                    while (currentBpd.Period < operationPeriod)
+                    {
+                        currentBpd = OperationSet.CreateForNextStep(currentBpd);
+                        result.Add(currentBpd);
+                    }
+
+                    currentBpd.Add(operation);
+                }
+            }
+            
+            start = currentBpd.Period;
+            var end = recurrence.GetPeriod(range.Max);
+            while (start < end)
+            {
+                currentBpd = OperationSet.CreateForNextStep(currentBpd);
+                result.Add(currentBpd);
+                start = currentBpd.Period;
             }
 
             return result;

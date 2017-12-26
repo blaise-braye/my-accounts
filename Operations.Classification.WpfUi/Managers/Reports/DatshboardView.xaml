@@ -92,7 +92,7 @@
             </Grid.RowDefinitions>
             <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
                 <UniformGrid Columns="2" Rows="1" MinHeight="250">
-                    <oxy:PlotView Controller="{Binding PlotController}"  Model="{Binding MonthyOperationsModel}" />
+                    <oxy:PlotView Controller="{Binding PlotController}"  Model="{Binding MonthlyOperationsModel}" />
                     <oxy:PlotView Controller="{Binding PlotController}" Model="{Binding DailyOperationsModel}" />
                 </UniformGrid>
             </ScrollViewer>
