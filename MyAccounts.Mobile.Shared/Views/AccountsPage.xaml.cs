@@ -26,7 +26,8 @@ namespace MyAccounts.Mobile.Shared.Views
 
         private async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
         {
-            if (!(args.SelectedItem is Account item))
+            var item = args.SelectedItem as Account;
+            if (item == null)
             {
                 return;
             }

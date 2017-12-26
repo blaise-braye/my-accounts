@@ -47,5 +47,23 @@ namespace MyAccounts.Business.AccountOperations.Unified
         public string Communication { get; set; }
 
         public string Note { get; set; }
+
+        public string GetCategoryByLevel(int level)
+        {
+            if (level < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(level));
+            }
+
+            if (string.IsNullOrWhiteSpace(Category))
+            {
+                return string.Empty;
+            }
+
+            var categs = Category?.Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+            
+            var blank = categs == null || level >= categs.Length;
+            return blank ? string.Empty : categs[level].Trim();
+        }
     }
 }

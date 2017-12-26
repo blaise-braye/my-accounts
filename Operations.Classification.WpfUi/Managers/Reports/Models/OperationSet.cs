@@ -6,15 +6,18 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
 {
     public class OperationSet
     {
-        public OperationSet(DateTime day, decimal initialBalance)
+        public OperationSet(RecurrenceFamily recurrence, DateTime period, decimal initialBalance)
         {
-            Day = day;
+            Recurrence = recurrence;
+            Period = period;
             InitialBalance = initialBalance;
             Balance = initialBalance;
             Operations = new List<UnifiedAccountOperation>();
         }
+        
+        public RecurrenceFamily Recurrence { get; }
 
-        public DateTime Day { get; }
+        public DateTime Period { get; }
 
         public decimal InitialBalance { get; }
 
@@ -28,11 +31,28 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
 
         public decimal NetRevenue => Income - Outcome;
 
+        public DateTime? MinExecutionDate { get; private set; }
+
+        public DateTime? MaxExecutionDate { get; private set; }
+
         public List<UnifiedAccountOperation> Operations { get; }
-        
-        public static OperationSet CreateForNextDay(OperationSet currentBpd)
+
+        public static OperationSet CreateForNextStep(OperationSet currentBpd)
         {
-            return new OperationSet(currentBpd.Day.AddDays(1), currentBpd.Balance)
+            DateTime nextStepDay;
+            switch (currentBpd.Recurrence)
+            {
+                case RecurrenceFamily.Daily:
+                    nextStepDay = currentBpd.Period.AddDays(1);
+                    break;
+                case RecurrenceFamily.Monthly:
+                    nextStepDay = currentBpd.Period.AddMonths(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return new OperationSet(currentBpd.Recurrence, nextStepDay, currentBpd.Balance)
                        {
                            Balance = currentBpd.Balance
                        };
@@ -44,6 +64,16 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
             Income += operation.Income;
             Outcome += operation.Outcome;
             Balance = Balance + operation.Income - operation.Outcome;
+
+            if (!MinExecutionDate.HasValue || operation.ExecutionDate < MinExecutionDate)
+            {
+                MinExecutionDate = operation.ExecutionDate;
+            }
+
+            if (!MaxExecutionDate.HasValue || operation.ExecutionDate > MaxExecutionDate)
+            {
+                MaxExecutionDate = operation.ExecutionDate;
+            }
         }
 
         public OperationSet AddRange(IEnumerable<UnifiedAccountOperation> operations)

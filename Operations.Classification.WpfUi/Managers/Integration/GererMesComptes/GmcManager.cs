@@ -232,8 +232,7 @@ namespace Operations.Classification.WpfUi.Managers.Integration.GererMesComptes
                 var uaoByOperationId = CurrentAccount.Operations.ToDictionary(op => op.OperationId);
                 foreach (var transactionDelta in delta.ToList())
                 {
-                    if (transactionDelta.Action == DeltaAction.Add 
-                        || transactionDelta.Action == DeltaAction.UpdateMemo
+                    if (transactionDelta.Action == DeltaAction.UpdateMemo
                         || transactionDelta.Action == DeltaAction.Nothing)
                     {
                         var operationId = transactionDelta.Source.Number;
