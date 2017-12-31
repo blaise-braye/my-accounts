@@ -9,6 +9,7 @@
              xmlns:reports="clr-namespace:Operations.Classification.WpfUi.Managers.Reports"
              xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
              xmlns:controls1="clr-namespace:MyAccounts.NetStandard.Controls;assembly=MyAccounts.NetStandard"
+             xmlns:wpfUi="clr-namespace:Operations.Classification.WpfUi"
              mc:Ignorable="d" 
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.DashboardViewModel}"
              d:DesignHeight="500" d:DesignWidth="300">
@@ -90,12 +91,38 @@
                 <RowDefinition Height="5"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-                <UniformGrid Columns="2" Rows="1" MinHeight="250">
-                    <oxy:PlotView Controller="{Binding PlotController}"  Model="{Binding MonthlyOperationsModel}" />
-                    <oxy:PlotView Controller="{Binding PlotController}" Model="{Binding DailyOperationsModel}" />
-                </UniformGrid>
-            </ScrollViewer>
+            <TabControl>
+                <TabItem Header="Graphs">
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                        <UniformGrid Columns="2" Rows="1" MinHeight="250">
+                            <oxy:PlotView Controller="{Binding PlotController}"  Model="{Binding MonthlyOperationsModel}" />
+                            <oxy:PlotView Controller="{Binding PlotController}" Model="{Binding DailyOperationsModel}" />
+                        </UniformGrid>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Grids Evolution" IsSelected="True">
+                    <DataGrid reports:DataGridRowModel.ItemsSource="{Binding YearlyEvolution}" HeadersVisibility="All">
+                        <DataGrid.Resources>
+                            <DataTemplate DataType="{x:Type reports:CompareCellModel}">
+                                <TextBlock Text="{Binding Outcome, StringFormat=-{0:c2}}"></TextBlock>
+                            </DataTemplate>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <Setter Property="Header" Value="{Binding Header}" />
+                                <Setter Property="HeaderStyle">
+                                    <Setter.Value>
+                                        <Style TargetType="{x:Type DataGridRowHeader}">
+                                            <Setter Property="Padding" Value="4"></Setter>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+            
             <GridSplitter Grid.Row="1" Background="#CCC" ShowsPreview="true" Height="3" VerticalAlignment="Top" HorizontalAlignment="Stretch" ResizeDirection="Rows"/>
             <DataGrid Grid.Row="2" ItemsSource="{Binding Operations}" AutoGenerateColumns="True">
                 <i:Interaction.Behaviors>

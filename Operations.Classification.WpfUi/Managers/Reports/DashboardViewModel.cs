@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using MyAccounts.Business.AccountOperations.Unified;
 using MyAccounts.NetStandard.Input;
 using MyAccounts.NetStandard.Projections;
 using Operations.Classification.WpfUi.Managers.Accounts.Models;
@@ -22,6 +23,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
         private PlotModel _dailyOperationsModel;
         private PlotModel _monthlyOperationsModel;
+        
+        private List<RowModel> _yearlyEvolution;
 
         private IList<AccountViewModel> _accounts;
 
@@ -85,6 +88,12 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         {
             get => _monthlyOperationsModel;
             private set => Set(nameof(MonthlyOperationsModel), ref _monthlyOperationsModel, value);
+        }
+
+        public List<RowModel> YearlyEvolution
+        {
+            get => _yearlyEvolution;
+            set => Set(nameof(YearlyEvolution), ref _yearlyEvolution, value);
         }
         
         public List<DashboardOperationModel> Operations
@@ -274,6 +283,78 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
             return series;
         }
+        
+        private static List<RowModel> CreateYearlyOutcomeEvolution(
+            RecurrenceFamily recurrence,
+            IList<UnifiedAccountOperation> operations)
+        {
+            var top = 5;
+            var otherIdx = top;
+            
+            var recurrenceOperations = operations.OrderBy(op => op.ExecutionDate)
+                .GroupBy(op => recurrence.GetPeriod(op.ExecutionDate));
+            
+            var aggregatedCategories = operations.GroupBy(op => op.GetCategoryByLevel(0))
+                .OrderByDescending(grp => grp.Count())
+                .Take(top)
+                .Select((grp, idx) => new { grp.Key, idx })
+                .ToDictionary(g => g.Key, g => g.idx);
+
+            var result = new List<RowModel>();
+            recurrenceOperations.Aggregate((RowModel)null, (previousRow, currentRecurrence) =>
+            {
+                CompareCellModel[] cells = new CompareCellModel[top + 1];
+                
+                foreach (var aggregatedCategory in aggregatedCategories)
+                {
+                    cells[aggregatedCategory.Value] = new CompareCellModel(aggregatedCategory.Key);
+                }
+                
+                cells[otherIdx] = new CompareCellModel("Other");
+
+                foreach (var categGrp in currentRecurrence.GroupBy(y => y.GetCategoryByLevel(0)))
+                {
+                    int cellId;
+                    if (aggregatedCategories.ContainsKey(categGrp.Key))
+                    {
+                        cellId = aggregatedCategories[categGrp.Key];
+                    }
+                    else
+                    {
+                        cellId = otherIdx;
+                    }
+
+                    var cell = cells[cellId];
+                    
+                    foreach (var operation in categGrp)
+                    {
+                        cell.Income += operation.Income;
+                        cell.Outcome += operation.Outcome;
+                    }
+
+                    if (previousRow != null)
+                    {
+                        var previousCell = previousRow[cellId];
+                        if (previousCell.Income > 0)
+                        {
+                            cell.IncomeEvolution = (cell.Income - previousCell.Income) / previousCell.Income * 100;
+                        }
+
+                        if (previousCell.Outcome > 0)
+                        {
+                            cell.OutcomeEvolution = (cell.Outcome - previousCell.Outcome) / previousCell.Outcome * 100;
+                        }
+                    }
+                }
+
+                var row = new RowModel { Header = recurrence.Format(currentRecurrence.Key), Cells = cells };
+                result.Add(row);
+
+                return row;
+            });
+
+            return result;
+        }
 
         private Task OnAccountsViewModelLoaded(AccountsViewModelLoaded arg)
         {
@@ -283,6 +364,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         private async Task Refresh()
         {
             OperationSetContainer operationsetContainer = null;
+            List<RowModel> yearlyEvolution = null;
 
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Computing reporting index"))
             {
@@ -290,19 +372,22 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 {
                     var filteredAccounts = Filter.AccountsFilter.Apply(_accounts).ToList();
                     operationsetContainer = OperationSetContainer.Compute(filteredAccounts);
+                    yearlyEvolution = CreateYearlyOutcomeEvolution(RecurrenceFamily.Yearly, operationsetContainer.Operations);
                 });
             }
-
+            
             _selectionHandlers.ForEach(h => h.Cleanup());
             _selectionHandlers.Clear();
 
             _operationsetContainer = operationsetContainer;
+
             DailyOperationsModel = CreateDailyOperationsModel(operationsetContainer.DailyOperations);
             AddRangeSelectionHandler(DailyOperationsModel, false);
 
             MonthlyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
             AddRangeSelectionHandler(MonthlyOperationsModel, true);
-            
+
+            YearlyEvolution = yearlyEvolution;
             await RefreshFilteredOperations();
         }
 

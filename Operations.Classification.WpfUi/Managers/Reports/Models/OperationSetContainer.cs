@@ -9,6 +9,10 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
 {
     public class OperationSetContainer
     {
+        public DateRange Range { get; private set; }
+
+        public List<UnifiedAccountOperation> Operations { get; private set; }
+
         public List<OperationSet> DailyOperations { get; private set; }
 
         public List<OperationSet> MonthlyOperations { get; private set; }
@@ -18,7 +22,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
         public OperationSetGroup DailyCategories { get; private set; }
 
         public OperationSetGroup MonthlyCategories { get; private set; }
-
+        
         public static OperationSetContainer Compute(IList<AccountViewModel> accounts)
         {
             var accountIdByOperationId = accounts.Where(a => a.Operations?.Any() == true).SelectMany(a =>
@@ -47,6 +51,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
                 var categoryDailyOperations = AggregateOperationsByCategory(range, RecurrenceFamily.Daily, alloperations);
                 var categoryMonthlyOperations = AggregateOperationsByCategory(range, RecurrenceFamily.Monthly, alloperations);
 
+                compute.Range = range;
+                compute.Operations = alloperations;
                 compute.AccountIdByOperationUId = new ReadOnlyDictionary<Guid, Guid>(accountIdByOperationId);
                 compute.DailyOperations = dailyOperations;
                 compute.MonthlyOperations = monthlyOperations;
@@ -68,7 +74,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
 
             return result;
         }
-        
+
         private static List<OperationSet> AggregateOperations(
             decimal initialBalance, 
             DateRange range,

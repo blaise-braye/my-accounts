@@ -63,7 +63,7 @@ namespace MyAccounts.Business.AccountOperations.Unified
             var categs = Category?.Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
             
             var blank = categs == null || level >= categs.Length;
-            return blank ? string.Empty : categs[level];
+            return blank ? string.Empty : categs[level].Trim();
         }
     }
 }

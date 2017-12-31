@@ -61,6 +61,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -80,6 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Managers\Reports\DataGridRowModel.cs" />
     <Compile Include="Managers\Accounts\Models\AccountDataInvalidated.cs" />
     <Compile Include="Managers\Accounts\Models\AccountImportDataChanged.cs" />
     <Compile Include="Managers\Accounts\Models\AccountsViewModelLoaded.cs" />
@@ -93,6 +95,8 @@
     <Compile Include="Managers\Integration\GererMesComptes\GmcManagerFilterView.xaml.cs">
       <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Managers\Reports\CompareCellModel.cs" />
+    <Compile Include="Managers\Reports\RowModel.cs" />
     <Compile Include="Managers\Reports\DashboardFilterViewModel.cs" />
     <Compile Include="Managers\Reports\DatshboardView.xaml.cs">
       <DependentUpon>DatshboardView.xaml</DependentUpon>
@@ -105,6 +109,7 @@
     <Compile Include="Managers\Reports\Models\OperationSetGroup.cs" />
     <Compile Include="Managers\Reports\Models\RecurrenceFamily.cs" />
     <Compile Include="Managers\Reports\PlotModelRangeSelectionHandler.cs" />
+    <Compile Include="Managers\Reports\RowModelColumn.cs" />
     <Compile Include="Managers\Transactions\TransactionModel.Editable.cs" />
     <Compile Include="Technical\ChangeTracking\DataTracker.cs" />
     <Compile Include="Technical\ChangeTracking\PropertyState.cs" />
