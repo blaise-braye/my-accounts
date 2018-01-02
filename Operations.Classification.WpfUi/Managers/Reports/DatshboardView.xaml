@@ -9,10 +9,36 @@
              xmlns:reports="clr-namespace:Operations.Classification.WpfUi.Managers.Reports"
              xmlns:controls="clr-namespace:Operations.Classification.WpfUi.Technical.Controls"
              xmlns:controls1="clr-namespace:MyAccounts.NetStandard.Controls;assembly=MyAccounts.NetStandard"
-             xmlns:wpfUi="clr-namespace:Operations.Classification.WpfUi"
              mc:Ignorable="d" 
              d:DataContext="{Binding Source={StaticResource Locator}, Path=Main.DashboardViewModel}"
              d:DesignHeight="500" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="CompareCellModelOutcomeTemplate" DataType="{x:Type reports:CompareCellModel}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock TextAlignment="Right" Text="{Binding Outcome, StringFormat={}{0:c2}}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="CompareCellModelOutcomeEvolutionTemplate" DataType="{x:Type reports:CompareCellModel}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock TextAlignment="Right" Text="{Binding OutcomeEvolution, StringFormat={}{0:p2}}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="CompareCellModelIncomeTemplate" DataType="{x:Type reports:CompareCellModel}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock TextAlignment="Right" Text="{Binding Income, StringFormat={}{0:c2}}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="CompareCellModelIncomeEvolutionTemplate" DataType="{x:Type reports:CompareCellModel}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock TextAlignment="Right" Text="{Binding IncomeEvolution, StringFormat={}{0:p2}}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <reports:MetricTemplateSelector x:Key="MetricTemplateSelector" 
+                                        CompareCellModelOutcomeTemplate="{StaticResource CompareCellModelOutcomeTemplate}"
+                                        CompareCellModelOutcomeEvolutionTemplate="{StaticResource CompareCellModelOutcomeEvolutionTemplate}"
+                                        CompareCellModelIncomeTemplate ="{StaticResource CompareCellModelIncomeTemplate}"
+                                        CompareCellModelIncomeEvolutionTemplate ="{StaticResource CompareCellModelIncomeEvolutionTemplate}"/>
+    </UserControl.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <ToggleButton Padding="12" Style="{DynamicResource MetroCircleToggleButtonStyle}"
@@ -101,28 +127,27 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Grids Evolution" IsSelected="True">
-                    <DataGrid reports:DataGridRowModel.ItemsSource="{Binding YearlyEvolution}" HeadersVisibility="All">
-                        <DataGrid.Resources>
-                            <DataTemplate DataType="{x:Type reports:CompareCellModel}">
-                                <TextBlock Text="{Binding Outcome, StringFormat=-{0:c2}}"></TextBlock>
-                            </DataTemplate>
-                        </DataGrid.Resources>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="{x:Type DataGridRow}">
-                                <Setter Property="Header" Value="{Binding Header}" />
-                                <Setter Property="HeaderStyle">
-                                    <Setter.Value>
-                                        <Style TargetType="{x:Type DataGridRowHeader}">
-                                            <Setter Property="Padding" Value="4"></Setter>
-                                        </Style>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Left" Margin="4,0,4,4">
+                            <Label Content="Main metric" Target="{Binding ElementName=CmdRecurrenceFocus}" />
+                            <ComboBox x:Name="CmdRecurrenceFocus" ItemsSource="{Binding RecurrenceMetrics}" SelectedItem="{Binding RecurrenceMainMetric}" 
+                                      SelectionChanged="CmdRecurrenceFocus_OnSelectionChanged"
+                                      />
+                        </StackPanel>
+                        <DataGrid CanUserAddRows="False"
+                                  x:Name="RecurrenceGrid"
+                                  BorderThickness="1"
+                                  reports:DataGridRowModel.SortMemberPath="{Binding RecurrenceMainMetric}"
+                                  reports:DataGridRowModel.CellTemplateSelector="{StaticResource MetricTemplateSelector}"
+                                  reports:DataGridRowModel.ItemsSource="{Binding YearlyEvolution}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Period" Binding="{Binding Path=Period}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
                 </TabItem>
             </TabControl>
-            
+
             <GridSplitter Grid.Row="1" Background="#CCC" ShowsPreview="true" Height="3" VerticalAlignment="Top" HorizontalAlignment="Stretch" ResizeDirection="Rows"/>
             <DataGrid Grid.Row="2" ItemsSource="{Binding Operations}" AutoGenerateColumns="True">
                 <i:Interaction.Behaviors>
@@ -144,3 +169,6 @@
 
     </DockPanel>
 </UserControl>
+
+
+

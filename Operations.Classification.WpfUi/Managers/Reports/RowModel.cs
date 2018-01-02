@@ -7,12 +7,12 @@ namespace Operations.Classification.WpfUi.Managers.Reports
     {
         private CompareCellModel[] _cells;
 
-        private string _header;
+        private string _period;
 
-        public string Header
+        public string Period
         {
-            get => _header;
-            set => Set(nameof(Header), ref _header, value);
+            get => _period;
+            set => Set(nameof(Period), ref _period, value);
         }
 
         public CompareCellModel[] Cells

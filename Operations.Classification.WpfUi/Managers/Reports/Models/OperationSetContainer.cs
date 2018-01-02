@@ -33,9 +33,15 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
                 .Where(a => a.Operations?.Any() == true)
                 .SelectMany(a => a.Operations)
                 .OrderBy(o => o.ExecutionDate).ToList();
-            
-            var compute = new OperationSetContainer();
-            
+
+            var compute = new OperationSetContainer
+            {
+                Operations = alloperations,
+                AccountIdByOperationUId = new ReadOnlyDictionary<Guid, Guid>(accountIdByOperationId),
+                DailyOperations = new List<OperationSet>(),
+                MonthlyOperations = new List<OperationSet>()
+            };
+
             if (alloperations.Any())
             {
                 var range = new DateRange
@@ -52,8 +58,6 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
                 var categoryMonthlyOperations = AggregateOperationsByCategory(range, RecurrenceFamily.Monthly, alloperations);
 
                 compute.Range = range;
-                compute.Operations = alloperations;
-                compute.AccountIdByOperationUId = new ReadOnlyDictionary<Guid, Guid>(accountIdByOperationId);
                 compute.DailyOperations = dailyOperations;
                 compute.MonthlyOperations = monthlyOperations;
                 compute.DailyCategories = new OperationSetGroup(categoryDailyOperations, range, RecurrenceFamily.Daily);

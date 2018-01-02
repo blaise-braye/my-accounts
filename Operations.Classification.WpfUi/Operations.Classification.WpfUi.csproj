@@ -96,6 +96,7 @@
       <DependentUpon>GmcManagerFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Managers\Reports\CompareCellModel.cs" />
+    <Compile Include="Managers\Reports\MetricTemplateSelector.cs" />
     <Compile Include="Managers\Reports\RowModel.cs" />
     <Compile Include="Managers\Reports\DashboardFilterViewModel.cs" />
     <Compile Include="Managers\Reports\DatshboardView.xaml.cs">
@@ -109,7 +110,7 @@
     <Compile Include="Managers\Reports\Models\OperationSetGroup.cs" />
     <Compile Include="Managers\Reports\Models\RecurrenceFamily.cs" />
     <Compile Include="Managers\Reports\PlotModelRangeSelectionHandler.cs" />
-    <Compile Include="Managers\Reports\RowModelColumn.cs" />
+    <Compile Include="Managers\Reports\IndexedDataGridTemplateColumn.cs" />
     <Compile Include="Managers\Transactions\TransactionModel.Editable.cs" />
     <Compile Include="Technical\ChangeTracking\DataTracker.cs" />
     <Compile Include="Technical\ChangeTracking\PropertyState.cs" />

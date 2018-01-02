@@ -17,5 +17,12 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         {
             Popup.IsOpen = true;
         }
+
+        private void CmdRecurrenceFocus_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var mts = (MetricTemplateSelector)Resources["MetricTemplateSelector"];
+            mts.Focus = CmdRecurrenceFocus.SelectedItem?.ToString();
+            RecurrenceGrid.Items.Refresh();
+        }
     }
 }
