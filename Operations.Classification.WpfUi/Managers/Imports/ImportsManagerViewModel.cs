@@ -118,6 +118,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
             }
 
             var editor = new ImportEditorViewModel();
+            editor.BeginEdit();
             SetupEditorCommands(editor);
             Editor = editor;
         }
