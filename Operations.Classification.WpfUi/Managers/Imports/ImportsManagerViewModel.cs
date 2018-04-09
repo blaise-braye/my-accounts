@@ -22,6 +22,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         private readonly BusyIndicatorViewModel _busyIndicator;
         private readonly IImportManager _importManager;
         private readonly OpenFileDialog _ofd;
+
         private AccountViewModel _currentAccount;
 
         private ImportEditorViewModel _editor;
@@ -75,9 +76,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         public AsyncCommand BeginEditImportsCommand { get; }
 
         public RelayCommand ReplayImportsCommand { get; }
-
-        public AsyncCommand BeginDownloadCommand { get; set; }
-
+        
         public AsyncCommand CommitEditCommand { get; }
 
         public RelayCommand CancelEditCommand { get; }
@@ -109,7 +108,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
         {
             Imports = _currentAccount?.Imports;
         }
-
+        
         private void BeginNewImport()
         {
             if (IsEditing)
@@ -290,7 +289,7 @@ namespace Operations.Classification.WpfUi.Managers.Imports
                 Editor.FilePaths = string.Join(",", _ofd.FileNames);
             }
         }
-
+        
         private void SetupEditorCommands(ImportEditorViewModel editor)
         {
             editor.CommitCommand = new AsyncCommand(CommitEdit);
