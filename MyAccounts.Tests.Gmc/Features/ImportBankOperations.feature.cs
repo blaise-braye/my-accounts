@@ -163,14 +163,12 @@ this.FeatureBackground();
                     " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 63
- testRunner.When("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2016\r\nT0.01\r\nMA First Operation\r\nN2017-0148\r\n^\r\nD09/28/2016\r\nT" +
-                    "0.02\r\nMA Second Operation\r\nN2017-0149\r\n^\r\nD04/01/2016\r\nT0.02\r\nMA Third Operation" +
+ testRunner.When("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/28/2018\r\nT0.01\r\nMA First Operation\r\nN2017-0148\r\n^\r\nD09/28/2018\r\nT" +
+                    "0.02\r\nMA Second Operation\r\nN2017-0149\r\n^\r\nD09/29/2018\r\nT0.02\r\nMA Third Operation" +
                     "\r\nN2017-0150\r\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 83
  testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
                     " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 85
- testRunner.Then("the last qif data import succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Number",
@@ -179,21 +177,23 @@ this.FeatureBackground();
                         "Memo"});
             table2.AddRow(new string[] {
                         "",
-                        "2016-09-28T00:00:00",
+                        "2018-09-28T00:00:00",
                         "0.01",
                         "A First Operation"});
             table2.AddRow(new string[] {
                         "",
-                        "2016-09-28T00:00:00",
+                        "2018-09-28T00:00:00",
                         "0.02",
                         "A Second Operation"});
             table2.AddRow(new string[] {
                         "",
-                        "2016-04-01T00:00:00",
+                        "2018-09-29T00:00:00",
                         "0.02",
                         "A Third Operation"});
-#line 86
- testRunner.And("the last exported qif data are the following operations", ((string)(null)), table2, "And ");
+#line 85
+ testRunner.Then("the last exported qif data are the following operations", ((string)(null)), table2, "Then ");
+#line 92
+    testRunner.And("the last qif data import succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -203,19 +203,19 @@ this.FeatureBackground();
         public virtual void IdentifyRemoteWithNewAvailableQifData()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Identify remote with new available qif data", ((string[])(null)));
-#line 93
+#line 94
 this.ScenarioSetup(scenarioInfo);
 #line 5
 this.FeatureBackground();
 #line hidden
-#line 94
+#line 95
  testRunner.Given("I import the qif data on account \'ScenarioContext:ScenarioInfo.Title\'", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/28/2013\r\nT0.01\r\nMRemove\r\n^\r\nD0" +
                     "9/29/2013\r\nT0.02\r\nMSome Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 111
+#line 112
  testRunner.And("I wait that last imported qifdata in account \'ScenarioContext:ScenarioInfo.Title\'" +
                     " is available in export", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 113
+#line 114
  testRunner.When("I apply a dry run for the available qif data to account \'ScenarioContext:Scenario" +
                     "Info.Title\'", "!Type:Bank\r\nD09/27/2013\r\nT1.00\r\nMUnchanged\r\n^\r\nD09/29/2013\r\nT0.02\r\nMUpdated Memo\r" +
                     "\n^\r\nD01/11/2014\r\nT0.01\r\nMAdded Memo\r\n^", ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -235,7 +235,7 @@ this.FeatureBackground();
             table3.AddRow(new string[] {
                         "2013-09-28$0.01",
                         "Remove"});
-#line 130
+#line 131
  testRunner.Then("the last dry run result produces the following delta report", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();

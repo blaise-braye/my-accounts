@@ -63,17 +63,17 @@ N2017-0149
 	When I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
 	"""
 !Type:Bank
-D09/28/2016
+D09/28/2018
 T0.01
 MA First Operation
 N2017-0148
 ^
-D09/28/2016
+D09/28/2018
 T0.02
 MA Second Operation
 N2017-0149
 ^
-D04/01/2016
+D09/29/2018
 T0.02
 MA Third Operation
 N2017-0150
@@ -82,13 +82,14 @@ N2017-0150
 
 	And I wait that last imported qifdata in account 'ScenarioContext:ScenarioInfo.Title' is available in export
 	
-	Then the last qif data import succeeded
-	And the last exported qif data are the following operations
+	Then the last exported qif data are the following operations
 	| Number | Date                | Amount | Memo               |
-	|        | 2016-09-28T00:00:00 | 0.01   | A First Operation  |
-	|        | 2016-09-28T00:00:00 | 0.02   | A Second Operation |
+	|        | 2018-09-28T00:00:00 | 0.01   | A First Operation  |
+	|        | 2018-09-28T00:00:00 | 0.02   | A Second Operation |
 	# extra item is imported
-	|        | 2016-04-01T00:00:00 | 0.02   | A Third Operation  |
+	|        | 2018-09-29T00:00:00 | 0.02   | A Third Operation  |
+
+    And the last qif data import succeeded
 	
 Scenario: Identify remote with new available qif data
 	Given I import the qif data on account 'ScenarioContext:ScenarioInfo.Title'
