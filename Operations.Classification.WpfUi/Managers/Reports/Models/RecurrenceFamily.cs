@@ -18,7 +18,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports.Models
                 case RecurrenceFamily.Daily:
                     return day.ToString("d");
                 case RecurrenceFamily.Monthly:
-                    return day.ToString("yyyyMM");
+                    return day.ToString("yyyy-MM");
                 case RecurrenceFamily.Yearly:
                     return day.ToString("yyyy");
                 default:

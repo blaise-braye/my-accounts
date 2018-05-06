@@ -7,6 +7,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
     {
         public string Focus { get; set; }
 
+        public DataTemplate CompareCellModelBalanceTemplate { get; set; }
+
         public DataTemplate CompareCellModelOutcomeTemplate { get; set; }
 
         public DataTemplate CompareCellModelOutcomeEvolutionTemplate { get; set; }
@@ -19,6 +21,8 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         {
             switch (Focus)
             {
+                case nameof(CompareCellModel.Balance):
+                    return CompareCellModelBalanceTemplate;
                 case nameof(CompareCellModel.Income):
                     return CompareCellModelIncomeTemplate;
                 case nameof(CompareCellModel.Outcome):

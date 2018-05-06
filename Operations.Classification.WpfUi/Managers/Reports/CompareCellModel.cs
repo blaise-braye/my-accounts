@@ -6,10 +6,10 @@ namespace Operations.Classification.WpfUi.Managers.Reports
     {
         private decimal _outcome;
         private decimal _income;
-
+        private decimal _balance;
         private decimal _incomeEvolution;
-
         private decimal _outcomeEvolution;
+        private decimal _balanceEvolution;
 
         public CompareCellModel(string title)
         {
@@ -40,6 +40,18 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         {
             get => _outcomeEvolution;
             set => Set(nameof(OutcomeEvolution), ref _outcomeEvolution, value);
+        }
+        
+        public decimal Balance
+        {
+            get => _balance;
+            set { Set(() => Balance, ref _balance, value); }
+        }
+
+        public decimal BalanceEvolution
+        {
+            get => _balanceEvolution;
+            set { Set(() => BalanceEvolution, ref _balanceEvolution, value); }
         }
     }
 }

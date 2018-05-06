@@ -24,40 +24,24 @@ namespace Operations.Classification.WpfUi.Managers.Reports
         private PlotModel _dailyOperationsModel;
         private PlotModel _monthlyOperationsModel;
         
-        private List<RowModel> _yearlyEvolution;
+        private List<RowModel> _pivotEvolution;
 
         private IList<AccountViewModel> _accounts;
 
         private bool _display;
         private List<DashboardOperationModel> _operations;
         private OperationSetContainer _operationsetContainer;
-
-        private string _recurrenceMainMetric;
+        
+        private string _pivotEvolutionMainMetric;
+        private RecurrenceFamily _pivotEvolutionPeriod;
 
         public DashboardViewModel(BusyIndicatorViewModel busyIndicator)
         {
             _busyIndicator = busyIndicator;
 
+            RefreshPivotEvolutionCommand = new AsyncCommand(RefreshPivotEvolution, () => !_busyIndicator.IsBusy);
             Filter = new DashboardFilterViewModel();
-            Filter.FilterInvalidated += async (sender, arg) =>
-            {
-                if (sender == Filter.DateRangeFilter)
-                {
-                    foreach (var handler in _selectionHandlers)
-                    {
-                        SetRangeFromFilterDateRangeFilter(handler);
-                    }
-                }
-
-                if (sender == Filter.AccountsFilter)
-                {
-                    await Refresh();
-                }
-                else
-                {
-                    await RefreshFilteredOperations();
-                }
-            };
+            Filter.FilterInvalidated += async (sender, arg) => { await Refresh(sender); };
 
             _asyncMessageReceiver = new AsyncMessageReceiver(MessengerInstance);
             _asyncMessageReceiver.RegisterAsync<AccountsViewModelLoaded>(this, OnAccountsViewModelLoaded);
@@ -69,14 +53,17 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
             _selectionHandlers = new List<PlotModelRangeSelectionHandler>();
 
-            RecurrenceMainMetric = nameof(CompareCellModel.Outcome);
+            _pivotEvolutionMainMetric = nameof(CompareCellModel.Balance);
+            _pivotEvolutionPeriod = RecurrenceFamily.Yearly;
         }
-
+        
         public bool Display
         {
             get => _display;
             set { Set(() => Display, ref _display, value); }
         }
+        
+        public IAsyncCommand RefreshPivotEvolutionCommand { get; }
 
         public DashboardFilterViewModel Filter { get; }
 
@@ -94,10 +81,10 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             private set => Set(nameof(MonthlyOperationsModel), ref _monthlyOperationsModel, value);
         }
 
-        public List<RowModel> YearlyEvolution
+        public List<RowModel> PivotEvolution
         {
-            get => _yearlyEvolution;
-            set => Set(nameof(YearlyEvolution), ref _yearlyEvolution, value);
+            get => _pivotEvolution;
+            set => Set(nameof(PivotEvolution), ref _pivotEvolution, value);
         }
 
         public List<DashboardOperationModel> Operations
@@ -105,21 +92,36 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             get => _operations;
             private set => Set(nameof(Operations), ref _operations, value);
         }
-
-        public string RecurrenceMainMetric
+        
+        public RecurrenceFamily PivotEvolutionPeriod
         {
-            get => _recurrenceMainMetric;
-            set { Set(() => RecurrenceMainMetric, ref _recurrenceMainMetric, value); }
+            get => _pivotEvolutionPeriod;
+            set
+            {
+                if (Set(() => PivotEvolutionPeriod, ref _pivotEvolutionPeriod, value))
+                {
+                    RefreshPivotEvolutionCommand?.Execute(null);
+                }
+            }
         }
 
-        public string[] RecurrenceMetrics => new[] { nameof(CompareCellModel.Outcome), nameof(CompareCellModel.Income), nameof(CompareCellModel.OutcomeEvolution), nameof(CompareCellModel.IncomeEvolution) };
+        public string PivotEvolutionMainMetric
+        {
+            get => _pivotEvolutionMainMetric;
+            set { Set(() => PivotEvolutionMainMetric, ref _pivotEvolutionMainMetric, value); }
+        }
 
-        public async Task ResetAccounts(IList<AccountViewModel> accounts)
+        public string[] RecurrenceMetrics => new[] { nameof(CompareCellModel.Balance), nameof(CompareCellModel.Outcome), nameof(CompareCellModel.Income), nameof(CompareCellModel.OutcomeEvolution), nameof(CompareCellModel.IncomeEvolution) };
+        
+        public IEnumerable<RecurrenceFamily> RecurrenceFamilies => Enum.GetValues(typeof(RecurrenceFamily)).Cast<RecurrenceFamily>();
+        
+        public Task ResetAccounts(IList<AccountViewModel> accounts)
         {
             _accounts = accounts;
             Display = _accounts?.Any(a => a.Operations.Any()) == true;
-            Filter.AccountsFilter.Initialize(accounts, account => account.Name);
-            await Refresh();
+
+            Filter.Initialize(accounts);
+            return Task.FromResult(0);
         }
 
         public void OnSettingsUpdated()
@@ -295,7 +297,14 @@ namespace Operations.Classification.WpfUi.Managers.Reports
 
             return series;
         }
-        
+
+        private static Task<List<RowModel>> CreateRecurrentEvolutionAsync(
+            RecurrenceFamily recurrence,
+            IList<UnifiedAccountOperation> operations)
+        {
+            return Task.Run(() => CreateRecurrentEvolution(recurrence, operations));
+        }
+
         private static List<RowModel> CreateRecurrentEvolution(
             RecurrenceFamily recurrence,
             IList<UnifiedAccountOperation> operations)
@@ -305,7 +314,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             
             var aggregatedCategories = operations.GroupBy(op => op.GetCategoryByLevel(0))
                 .OrderByDescending(grp => grp.Count())
-                .Take(5)
+                .Take(9)
                 .Select((grp, idx) => new { grp.Key, idx })
                 .ToDictionary(g => g.Key, g => g.idx + 1);
             
@@ -340,6 +349,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                     {
                         cell.Income += operation.Income;
                         cell.Outcome += operation.Outcome;
+                        cell.Balance = cell.Income - cell.Outcome;
                     }
                 }
 
@@ -348,6 +358,7 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 {
                     seed.Outcome += current.Outcome;
                     seed.Income += current.Income;
+                    seed.Balance = seed.Income - seed.Outcome;
 
                     return seed;
                 });
@@ -368,6 +379,11 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                         {
                             cell.OutcomeEvolution = (cell.Outcome - previousCell.Outcome) / previousCell.Outcome;
                         }
+
+                        if (previousCell.Balance != 0)
+                        {
+                            cell.BalanceEvolution = (cell.Balance - previousCell.Balance) / previousCell.Balance;
+                        }
                     }
                 }
 
@@ -387,10 +403,29 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             return ResetAccounts(arg.Accounts);
         }
 
-        private async Task Refresh()
+        private async Task Refresh(object sender)
+        {
+            if (sender == Filter.DateRangeFilter)
+            {
+                foreach (var handler in _selectionHandlers)
+                {
+                    SetRangeFromFilterDateRangeFilter(handler);
+                }
+            }
+
+            if (sender == Filter || sender == Filter.AccountsFilter)
+            {
+                await RefreshAll();
+            }
+            else
+            {
+                await RefreshFilteredOperations();
+            }
+        }
+
+        private async Task RefreshAll()
         {
             OperationSetContainer operationsetContainer = null;
-            List<RowModel> yearlyEvolution = null;
 
             using (_busyIndicator.EncapsulateActiveJobDescription(this, "Computing reporting index"))
             {
@@ -398,7 +433,6 @@ namespace Operations.Classification.WpfUi.Managers.Reports
                 {
                     var filteredAccounts = Filter.AccountsFilter.Apply(_accounts).ToList();
                     operationsetContainer = OperationSetContainer.Compute(filteredAccounts);
-                    yearlyEvolution = CreateRecurrentEvolution(RecurrenceFamily.Yearly, operationsetContainer.Operations);
                 });
             }
             
@@ -413,10 +447,24 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             MonthlyOperationsModel = CreateMonthlyOperationsModel(operationsetContainer.MonthlyOperations);
             AddRangeSelectionHandler(MonthlyOperationsModel, true);
 
-            YearlyEvolution = yearlyEvolution;
-            await RefreshFilteredOperations();
+            await Task.WhenAll(
+                RefreshPivotEvolution(),
+                RefreshFilteredOperations());
+
+            RefreshPivotEvolutionCommand.RaiseCanExecuteChanged();
         }
 
+        private async Task RefreshPivotEvolution()
+        {
+            using (_busyIndicator.EncapsulateActiveJobDescription(this, "Refreshing period evolution"))
+            {
+                var result = await CreateRecurrentEvolutionAsync(PivotEvolutionPeriod, _operationsetContainer.Operations);
+                PivotEvolution = result;
+            }
+
+            RefreshPivotEvolutionCommand.RaiseCanExecuteChanged();
+        }
+        
         private void AddRangeSelectionHandler(PlotModel model, bool monthly)
         {
             var handler = new PlotModelRangeSelectionHandler(model);
@@ -458,12 +506,13 @@ namespace Operations.Classification.WpfUi.Managers.Reports
             var filteredOperationsVm = await Task.Run(() =>
             {
                 var filteredDailyOperationSets = Filter.DateRangeFilter.Apply(_operationsetContainer.DailyOperations, op => op.Period);
-                var filteterdOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
-                filteterdOperations = Filter.NoteFilter.Apply(filteterdOperations, o => o.Note);
-                filteterdOperations = Filter.DirectionFilter.Apply(filteterdOperations, o => o.Income, o => o.Outcome);
+                var filteredOperations = filteredDailyOperationSets.SelectMany(s => s.Operations);
+                filteredOperations = Filter.NoteFilter.Apply(filteredOperations, o => o.Note);
+                filteredOperations = Filter.DirectionFilter.Apply(filteredOperations, o => o.Income, o => o.Outcome);
+                filteredOperations = Filter.CategoryFilter.Apply(filteredOperations, o => o.GetCategoryByLevel(0));
                 var accountById = _accounts.ToDictionary(a => a.Id);
 
-                var result = filteterdOperations
+                var result = filteredOperations
                     .Project()
                     .To<DashboardOperationModel>((source, target) =>
                     {

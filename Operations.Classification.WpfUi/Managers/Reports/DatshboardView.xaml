@@ -18,6 +18,12 @@
                 <TextBlock TextAlignment="Right" Text="{Binding Outcome, StringFormat={}{0:c2}}"></TextBlock>
             </StackPanel>
         </DataTemplate>
+        <DataTemplate x:Key="CompareCellModelBalanceTemplate" DataType="{x:Type reports:CompareCellModel}">            
+            <UniformGrid Columns="2">
+                <TextBlock TextAlignment="Right" Text="{Binding Balance, StringFormat={}{0:c2}}"></TextBlock>
+                <TextBlock TextAlignment="Right" Text="{Binding BalanceEvolution, StringFormat={}{0:p2}}"></TextBlock>
+            </UniformGrid>
+        </DataTemplate>
         <DataTemplate x:Key="CompareCellModelOutcomeEvolutionTemplate" DataType="{x:Type reports:CompareCellModel}">
             <StackPanel Orientation="Vertical">
                 <TextBlock TextAlignment="Right" Text="{Binding OutcomeEvolution, StringFormat={}{0:p2}}"></TextBlock>
@@ -34,6 +40,7 @@
             </StackPanel>
         </DataTemplate>
         <reports:MetricTemplateSelector x:Key="MetricTemplateSelector" 
+                                        CompareCellModelBalanceTemplate="{StaticResource CompareCellModelBalanceTemplate}"
                                         CompareCellModelOutcomeTemplate="{StaticResource CompareCellModelOutcomeTemplate}"
                                         CompareCellModelOutcomeEvolutionTemplate="{StaticResource CompareCellModelOutcomeEvolutionTemplate}"
                                         CompareCellModelIncomeTemplate ="{StaticResource CompareCellModelIncomeTemplate}"
@@ -94,6 +101,18 @@
                                         <TextBox Text="{Binding NoteFilter.Text}"></TextBox>
                                     </StackPanel>
                                 </GroupBox>
+                                <GroupBox Header="Category">
+                                    <ListBox ItemsSource="{Binding CategoryFilter.Items}" MaxHeight="200">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type controls1:MenuItemViewModel}">
+                                                <CheckBox IsChecked="{Binding IsChecked}" HorizontalContentAlignment="Stretch"
+                                                          Command="{Binding Command}"
+                                                          CommandParameter="{Binding CommandParameter}"
+                                                          Content="{Binding Header}" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </GroupBox>
                             </StackPanel>
                         </GroupBox>
 
@@ -119,7 +138,7 @@
             </Grid.RowDefinitions>
             <TabControl>
                 <TabItem Header="Graphs">
-                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <UniformGrid Columns="2" Rows="1" MinHeight="250">
                             <oxy:PlotView Controller="{Binding PlotController}"  Model="{Binding MonthlyOperationsModel}" />
                             <oxy:PlotView Controller="{Binding PlotController}" Model="{Binding DailyOperationsModel}" />
@@ -128,21 +147,26 @@
                 </TabItem>
                 <TabItem Header="Grids Evolution" IsSelected="True">
                     <DockPanel>
-                        <StackPanel DockPanel.Dock="Left" Margin="4,0,4,4">
+                        <StackPanel DockPanel.Dock="Left" Margin="4,0,8,4">
+                            <Label Content="Periods" Target="{Binding ElementName=CmdRecurrenceFocus}" />
+                            <ComboBox ItemsSource="{Binding RecurrenceFamilies}" SelectedItem="{Binding PivotEvolutionPeriod, Mode=TwoWay}"/>
                             <Label Content="Main metric" Target="{Binding ElementName=CmdRecurrenceFocus}" />
-                            <ComboBox x:Name="CmdRecurrenceFocus" ItemsSource="{Binding RecurrenceMetrics}" SelectedItem="{Binding RecurrenceMainMetric}" 
+                            <ComboBox x:Name="CmdRecurrenceFocus" ItemsSource="{Binding RecurrenceMetrics}" SelectedItem="{Binding PivotEvolutionMainMetric}" 
                                       SelectionChanged="CmdRecurrenceFocus_OnSelectionChanged"
                                       />
                         </StackPanel>
                         <DataGrid CanUserAddRows="False"
                                   x:Name="RecurrenceGrid"
-                                  BorderThickness="1"
-                                  reports:DataGridRowModel.SortMemberPath="{Binding RecurrenceMainMetric}"
+                                  BorderThickness="1" SelectionUnit="CellOrRowHeader" HeadersVisibility="All"
+                                  reports:DataGridRowModel.SortMemberPath="{Binding PivotEvolutionMainMetric}"
                                   reports:DataGridRowModel.CellTemplateSelector="{StaticResource MetricTemplateSelector}"
-                                  reports:DataGridRowModel.ItemsSource="{Binding YearlyEvolution}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Period" Binding="{Binding Path=Period}" />
-                            </DataGrid.Columns>
+                                  reports:DataGridRowModel.ItemsSource="{Binding PivotEvolution}">
+                            <DataGrid.RowHeaderStyle>
+                                <Style TargetType="{x:Type DataGridRowHeader}">
+                                    <Setter Property="Width" Value="80" />
+                                    <Setter Property="Content" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}},Path=Item.Period}" />
+                                </Style>
+                            </DataGrid.RowHeaderStyle>
                         </DataGrid>
                     </DockPanel>
                 </TabItem>

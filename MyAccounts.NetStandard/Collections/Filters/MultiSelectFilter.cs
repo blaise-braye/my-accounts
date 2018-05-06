@@ -76,7 +76,8 @@ namespace MyAccounts.NetStandard.Collections.Filters
 
         public override bool IsActive()
         {
-            return !GetAllItem().IsChecked;
+            var allItem = GetAllItem();
+            return allItem != null && !allItem.IsChecked;
         }
 
         public override void Reset()
@@ -93,7 +94,7 @@ namespace MyAccounts.NetStandard.Collections.Filters
 
         public MenuItemViewModel GetAllItem()
         {
-            return Items[0];
+            return Items.FirstOrDefault();
         }
 
         public IEnumerable<TData> Apply<TData, TMember>(
