@@ -7,7 +7,7 @@ namespace MyAccounts.Business.AccountOperations.Fortis
     {
         public FortisOperationExportCsvMap()
         {
-            Map(m => m.Reference).Name("Numéro de séquence");
+            Map(m => m.Reference).Name("Numéro de séquence", "Nº de séquence");
             Map(m => m.ExecutionDate).Name("Date d'exécution").TypeConverterOption.Format("dd/MM/yyyy");
             Map(m => m.ValueDate).Name("Date valeur").TypeConverterOption.Format("dd/MM/yyyy");
             Map(m => m.Amount).Name("Montant");
