@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using FastMember;
+using log4net;
 using MyAccounts.Business.AccountOperations.Contracts;
 using MyAccounts.Business.GeoLoc;
 using MyAccounts.Business.Properties;
@@ -13,6 +14,8 @@ namespace MyAccounts.Business.AccountOperations.Unified
 {
     public class UnifiedAccountOperationPatternTransformer
     {
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(UnifiedAccountOperationPatternTransformer));
+
         private static readonly TypeAccessor _unifiedOpAccessors;
 
         private static readonly Dictionary<string, Type> _unifiedOpProperties;
@@ -45,7 +48,7 @@ namespace MyAccounts.Business.AccountOperations.Unified
 
         public UnifiedAccountOperation Apply(AccountOperationBase source, UnifiedAccountOperation target)
         {
-            var tuple = _patterns
+            var tuples = _patterns
                 .SelectMany(p => p.PatternMappings.Select(patternMapping => new
                 {
                     patternMapping,
@@ -58,13 +61,25 @@ namespace MyAccounts.Business.AccountOperations.Unified
                     p.CompiledOperationIdPattern,
                     Match = p.patternMapping.CompiledExpression.Match(source)
                 })
-                .SingleOrDefault(p => p.Match.Success);
+                .Where(p => p.Match.Success)
+                .ToList();
+
+            var tuple = tuples.FirstOrDefault();
 
             if (tuple == null)
             {
+                _logger.WarnFormat("no mapper found for operation {0}", target.OperationId);
                 return target;
             }
 
+            if (tuples.Count > 1)
+            {
+                _logger.WarnFormat(
+                    "multiple mappers found for a sinle operation. OperationId : {0}. Mapper names: {1}.",
+                    target.OperationId,
+                    string.Join(",", tuples.Select(p => p.patternMapping.Name)));
+            }
+            
             var symbols = new Dictionary<string, object>();
 
             AddSourcePropertiesToSymbols(source, symbols);
